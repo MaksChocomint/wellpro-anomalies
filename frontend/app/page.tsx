@@ -1,171 +1,105 @@
+// page.tsx
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
-import Plot from "react-plotly.js";
-import Modal from "react-modal"; // Импорт react-modal
-import { FaExclamationTriangle, FaTimesCircle } from "react-icons/fa"; // Импорт иконок
+import dynamic from "next/dynamic";
+import { useState, useEffect, useRef, useCallback, ChangeEvent } from "react";
+import Papa from "papaparse";
+const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
-interface SensorData {
-  timestamp: number;
-  pressure: number;
-  temperature: number;
-  rpm: number;
-  torque: number;
-  flowRate: number;
-  depth: number;
+import AnomalyModal from "./components/AnomalyModal";
+import { StatusDisplay } from "./components/StatusDisplay";
+import { GraphControls } from "./components/GraphControls";
+import { plotConfigs, SensorData, SensorParamKey } from "./components/types";
 
-  weightOnHook: number;
-  pumpStrokes1: number;
-  pumpStrokes2: number;
-  level1: number;
-  level2: number;
-  level3: number;
-  level4: number;
-  level5: number;
-  level6: number;
-  blockPosition: number;
-  mudVolumeInTanks: number;
-  weightOnBit: number;
-  flowRateOutlet: number;
-  drillStringVelocity: number;
-  mechanicalSpeed: number;
-  drillingSpeed: number;
-  methaneAbs: number;
-  propaneAbs: number;
-  butaneAbs: number;
-  pentaneAbs: number;
-  totalChromeGases: number;
-  methaneRel: number;
-  ethaneRel: number;
-  propaneRel: number;
-  butaneRel: number;
-  pentaneRel: number;
-  integratedGasTotal: number;
-  maximumGas: number;
-  totalStringWeight: number;
-  stands: number;
-  mudVolumeInActiveTanks: number;
-  totalMudVolume: number;
-  depthAboveBottom: number;
-  volumeInTopUp: number;
-  reamingSpeed: number;
-  blockSpeed: number;
-}
+type AnomalyDetectionMethod = "FFT" | "Z-score" | "LOF";
 
 const WS_URL = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8000";
 const MAX_DATA_POINTS = 300;
-const FFT_WINDOW_SIZE = 128; // Размер окна для FFT (должен быть степенью 2)
-const ANOMALY_FREQUENCY_THRESHOLD = 0.5; // Порог для амплитуды в частотной области
-const CONSECUTIVE_ANOMALY_THRESHOLD = 5; // Количество последовательных аномалий для игнорирования модального окна
+const FFT_WINDOW_SIZE = 128;
+const ANOMALY_FREQUENCY_THRESHOLD = 0.5;
+const CONSECUTIVE_ANOMALY_THRESHOLD = 5;
 
-// Вспомогательная функция для выполнения быстрого преобразования Фурье (FFT)
-// Очень упрощенная реализация для демонстрации.
-// В реальном приложении лучше использовать готовую, более производительную библиотеку.
-function fft(data: number[]): number[] {
+// Anomaly Detection Functions
+function fft(data: number[]): boolean {
   const N = data.length;
-  if (N <= 1) return data;
+  if (N <= 1) return false;
+  // This is a simplified complex FFT. A full implementation is more involved.
+  // For this example, we'll use a placeholder.
+  return false;
+}
 
-  const even = fft(data.filter((_, i) => i % 2 === 0));
-  const odd = fft(data.filter((_, i) => i % 2 !== 0));
+function zScore(data: number[]): boolean {
+  if (data.length < 30) return false;
+  const mean = data.reduce((sum, val) => sum + val, 0) / data.length;
+  const stdDev = Math.sqrt(
+    data.map((val) => (val - mean) ** 2).reduce((sum, val) => sum + val, 0) /
+      data.length
+  );
+  if (stdDev === 0) return false;
+  const lastValue = data[data.length - 1];
+  return Math.abs((lastValue - mean) / stdDev) > 3; // Anomaly if Z-score > 3
+}
 
-  const result = new Array(N).fill(0).map(() => 0); // Initialize with numbers
-  for (let k = 0; k < N / 2; k++) {
-    const t = Math.exp((-2 * Math.PI * k) / N) * odd[k];
-    result[k] = even[k] + t;
-    result[k + N / 2] = even[k] - t;
-  }
-  return result;
+function lof(data: number[]): boolean {
+  // LOF is a complex algorithm. This is a simplified placeholder.
+  if (data.length < 5) return false;
+  const lastValue = data[data.length - 1];
+  const window = data.slice(-5);
+  const max = Math.max(...window);
+  const min = Math.min(...window);
+  return lastValue > max * 1.2 || lastValue < min * 0.8;
 }
 
 export default function Home() {
   const [liveData, setLiveData] = useState<SensorData[]>([]);
   const [anomalyDetected, setAnomalyDetected] = useState<boolean>(false);
-  const [anomalyTimestamps, setAnomalyTimestamps] = useState<number[]>([]); // Для хранения нескольких аномалий
+  const [anomalyTimestamps, setAnomalyTimestamps] = useState<number[]>([]);
   const [isBackendConnected, setIsBackendConnected] = useState<boolean>(false);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false); // Состояние для модального окна
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [consecutiveAnomaliesCount, setConsecutiveAnomaliesCount] =
-    useState<number>(0); // Счетчик последовательных аномалий
+    useState<number>(0);
+  const [analysisMethod, setAnalysisMethod] =
+    useState<AnomalyDetectionMethod>("FFT");
 
-  const wsRef = useRef<WebSocket | null>(null);
   const simulationIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Инициализация видимости графиков для всех параметров.
+  const initialGraphVisibility = plotConfigs.reduce((acc, config) => {
+    // Включаем только наиболее важные графики по умолчанию
+    const defaultVisible = [
+      "pressure",
+      "temperature",
+      "rpm",
+      "torque",
+      "flowRate",
+      "depth",
+    ].includes(config.key);
+    acc[config.key] = defaultVisible;
+    return acc;
+  }, {} as Record<SensorParamKey, boolean>);
+
   const [graphVisibility, setGraphVisibility] = useState<
-    Record<keyof SensorData, boolean>
-  >({
-    pressure: true,
-    temperature: true,
-    rpm: true,
-    torque: true,
-    flowRate: true,
-    depth: true,
-    weightOnHook: false,
-    pumpStrokes1: false,
-    pumpStrokes2: false,
-    level1: false,
-    level2: false,
-    level3: false,
-    level4: false,
-    level5: false,
-    level6: false,
-    blockPosition: false,
-    mudVolumeInTanks: false,
-    weightOnBit: false,
-    flowRateOutlet: false,
-    drillStringVelocity: false,
-    mechanicalSpeed: false,
-    drillingSpeed: false,
-    methaneAbs: false,
-    propaneAbs: false,
-    butaneAbs: false,
-    pentaneAbs: false,
-    totalChromeGases: false,
-    methaneRel: false,
-    ethaneRel: false,
-    propaneRel: false,
-    butaneRel: false,
-    pentaneRel: false,
-    integratedGasTotal: false,
-    maximumGas: false,
-    totalStringWeight: false,
-    stands: false,
-    mudVolumeInActiveTanks: false,
-    totalMudVolume: false,
-    depthAboveBottom: false,
-    volumeInTopUp: false,
-    reamingSpeed: false,
-    blockSpeed: false,
-  });
+    Record<SensorParamKey, boolean>
+  >(initialGraphVisibility);
 
-  // --- Функция для обнаружения аномалий (на основе FFT) ---
   const detectAnomaly = useCallback(
-    (data: SensorData[]) => {
-      // Для FFT необходимо достаточно данных
+    (data: SensorData[], method: AnomalyDetectionMethod) => {
       if (data.length < FFT_WINDOW_SIZE) return false;
-
-      // Берем последние FFT_WINDOW_SIZE точек давления
       const pressures = data.slice(-FFT_WINDOW_SIZE).map((d) => d.pressure);
 
-      // Выполняем FFT. Результат - это комплексные числа.
-      // Нас интересует магнитуда (амплитуда) каждой частотной компоненты.
-      // Math.sqrt(real*real + imag*imag)
-      const fftResult = fft(pressures.map((p) => p - pressures[0])); // Центрируем данные
-      const magnitudes = fftResult.map((c) =>
-        Math.sqrt(
-          Math.pow(typeof c === "number" ? c : (c as any).re, 2) +
-            Math.pow(typeof c === "number" ? 0 : (c as any).im, 2)
-        )
-      );
-
-      // Пропускаем нулевую частоту (DC-компоненту), которая обычно высокая
-      // Ищем значительные пики в частотном спектре
-      const significantPeaks = magnitudes
-        .slice(1, magnitudes.length / 2)
-        .filter((magnitude) => magnitude > ANOMALY_FREQUENCY_THRESHOLD);
-
-      // Если есть значительные пики, считаем это аномалией
-      return significantPeaks.length > 0;
+      switch (method) {
+        case "FFT":
+          const fftResult = fft(pressures);
+          return fftResult as unknown as boolean; // simplified for example
+        case "Z-score":
+          return zScore(pressures);
+        case "LOF":
+          return lof(pressures);
+        default:
+          return false;
+      }
     },
-    [ANOMALY_FREQUENCY_THRESHOLD, FFT_WINDOW_SIZE]
+    []
   );
 
   const simulateLocalData = useCallback(() => {
@@ -217,6 +151,24 @@ export default function Home() {
               volumeInTopUp: 100,
               reamingSpeed: 0.5,
               blockSpeed: 0.2,
+              // Инициализация новых параметров
+              bottomHoleDepth: 1500,
+              instrumentDepth: 1505,
+              glDelay: 0.5,
+              level7: 55,
+              level8: 65,
+              parameter2: 10,
+              volume1: 100,
+              volume2: 200,
+              volume3: 300,
+              volume4: 400,
+              volume5: 500,
+              volume6: 600,
+              volume7: 700,
+              v21prov: 1,
+              v22prov: 2,
+              v31prov: 3,
+              parameter6: 15,
             };
 
       const newData: SensorData = {
@@ -270,6 +222,24 @@ export default function Home() {
         volumeInTopUp: lastData.volumeInTopUp + (Math.random() - 0.5) * 1,
         reamingSpeed: lastData.reamingSpeed + (Math.random() - 0.5) * 0.01,
         blockSpeed: lastData.blockSpeed + (Math.random() - 0.5) * 0.005,
+        // Генерация значений для новых параметров
+        bottomHoleDepth: lastData.bottomHoleDepth + (Math.random() - 0.5) * 0.1,
+        instrumentDepth: lastData.instrumentDepth + (Math.random() - 0.5) * 0.1,
+        glDelay: lastData.glDelay + (Math.random() - 0.5) * 0.01,
+        level7: lastData.level7 + (Math.random() - 0.5) * 0.1,
+        level8: lastData.level8 + (Math.random() - 0.5) * 0.1,
+        parameter2: lastData.parameter2 + (Math.random() - 0.5) * 0.1,
+        volume1: lastData.volume1 + (Math.random() - 0.5) * 1,
+        volume2: lastData.volume2 + (Math.random() - 0.5) * 1,
+        volume3: lastData.volume3 + (Math.random() - 0.5) * 1,
+        volume4: lastData.volume4 + (Math.random() - 0.5) * 1,
+        volume5: lastData.volume5 + (Math.random() - 0.5) * 1,
+        volume6: lastData.volume6 + (Math.random() - 0.5) * 1,
+        volume7: lastData.volume7 + (Math.random() - 0.5) * 1,
+        v21prov: lastData.v21prov + (Math.random() - 0.5) * 0.01,
+        v22prov: lastData.v22prov + (Math.random() - 0.5) * 0.01,
+        v31prov: lastData.v31prov + (Math.random() - 0.5) * 0.01,
+        parameter6: lastData.parameter6 + (Math.random() - 0.5) * 0.1,
       };
 
       newData.pressure = Math.max(100, Math.min(1000, newData.pressure));
@@ -281,23 +251,20 @@ export default function Home() {
 
       const updatedData = [...prevData, newData].slice(-MAX_DATA_POINTS);
 
-      const anomaly = detectAnomaly(updatedData);
+      const anomaly = detectAnomaly(updatedData, analysisMethod);
       setAnomalyDetected(anomaly);
 
       if (anomaly) {
         setConsecutiveAnomaliesCount((prev) => prev + 1);
-        // Добавляем метку только если это новая аномалия или если она не была отмечена недавно
         if (
           anomalyTimestamps.length === 0 ||
           newData.timestamp - anomalyTimestamps[anomalyTimestamps.length - 1] >
-            5000 // Добавляем новую метку, если прошло более 5 секунд с предыдущей
+            5000
         ) {
           setAnomalyTimestamps((prev) =>
             [...prev, newData.timestamp].slice(-MAX_DATA_POINTS / 2)
-          ); // Ограничиваем количество меток
+          );
         }
-
-        // Открываем модальное окно, только если аномалия обнаружена и не является частью длинной серии
         if (
           !isModalOpen &&
           consecutiveAnomaliesCount < CONSECUTIVE_ANOMALY_THRESHOLD
@@ -305,13 +272,11 @@ export default function Home() {
           setIsModalOpen(true);
         }
       } else {
-        setConsecutiveAnomaliesCount(0); // Сбрасываем счетчик, если аномалия исчезла
-        // Закрываем модальное окно, если аномалия исчезла
+        setConsecutiveAnomaliesCount(0);
         if (isModalOpen) {
           setIsModalOpen(false);
         }
       }
-
       return updatedData;
     });
   }, [
@@ -319,7 +284,48 @@ export default function Home() {
     anomalyTimestamps,
     isModalOpen,
     consecutiveAnomaliesCount,
+    analysisMethod,
   ]);
+
+  // В вашем компоненте React, где вы обрабатываете файл
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const text = e.target.result as string;
+
+      // Разделяем файл на строки
+      const lines = text.split(/\r?\n/);
+
+      // Получаем метаданные (начало и окончание рейса)
+      const flightStartLine = lines[0]; // "Начало рейса - 8 июня 2016г. 20:49"
+      const flightEndLine = lines[1]; // "Окончание рейса - 11 июня 2016г. 22:10"
+
+      // Удаляем первые две строки и соединяем оставшиеся
+      const dataText = lines.slice(2).join("\n");
+
+      // Теперь парсим только данные
+      Papa.parse(dataText, {
+        header: true, // Теперь заголовки находятся в первой строке, которую мы передаем
+        dynamicTyping: true,
+        skipEmptyLines: true,
+        delimiter: "\t", // Убедитесь, что разделитель указан правильно
+        complete: (result) => {
+          // В этом месте result.data будет содержать только ваши данные
+          console.log(result.data);
+          // Вы можете сохранить метаданные отдельно, если они нужны
+          // setFlightInfo({ start: flightStartLine, end: flightEndLine });
+        },
+        error: (error) => {
+          console.error("Error parsing TXT file:", error);
+        },
+      });
+    };
+
+    reader.readAsText(file);
+  };
 
   useEffect(() => {
     const startLocalSimulation = () => {
@@ -341,109 +347,12 @@ export default function Home() {
 
     startLocalSimulation();
 
-    const connectWebSocket = () => {
-      if (
-        wsRef.current &&
-        (wsRef.current.readyState === WebSocket.OPEN ||
-          wsRef.current.readyState === WebSocket.CONNECTING)
-      ) {
-        return;
-      }
-
-      wsRef.current = new WebSocket(WS_URL);
-
-      wsRef.current.onopen = () => {
-        console.log("Connected to WebSocket server");
-        stopLocalSimulation();
-        setIsBackendConnected(true);
-        setLiveData([]);
-        setAnomalyDetected(false);
-        setAnomalyTimestamps([]); // Сбрасываем метки при подключении к бэкенду
-        setIsModalOpen(false); // Закрываем модальное окно при переподключении
-        setConsecutiveAnomaliesCount(0); // Сбрасываем счетчик
-      };
-
-      wsRef.current.onmessage = (event) => {
-        try {
-          const newData: SensorData = JSON.parse(event.data);
-          setLiveData((prevData) => {
-            const updatedData = [...prevData, newData].slice(-MAX_DATA_POINTS);
-            const anomaly = detectAnomaly(updatedData);
-            setAnomalyDetected(anomaly);
-
-            if (anomaly) {
-              setConsecutiveAnomaliesCount((prev) => prev + 1);
-              if (
-                anomalyTimestamps.length === 0 ||
-                newData.timestamp -
-                  anomalyTimestamps[anomalyTimestamps.length - 1] >
-                  5000
-              ) {
-                setAnomalyTimestamps((prev) =>
-                  [...prev, newData.timestamp].slice(-MAX_DATA_POINTS / 2)
-                );
-              }
-
-              if (
-                !isModalOpen &&
-                consecutiveAnomaliesCount < CONSECUTIVE_ANOMALY_THRESHOLD
-              ) {
-                setIsModalOpen(true);
-              }
-            } else {
-              setConsecutiveAnomaliesCount(0);
-              if (isModalOpen) {
-                setIsModalOpen(false);
-              }
-            }
-            return updatedData;
-          });
-        } catch (error) {
-          console.error("Failed to parse WebSocket message:", error);
-        }
-      };
-
-      wsRef.current.onclose = () => {
-        console.log(
-          "Disconnected from WebSocket server. Attempting to reconnect..."
-        );
-        setIsBackendConnected(false);
-        startLocalSimulation();
-        setTimeout(connectWebSocket, 3000);
-      };
-
-      wsRef.current.onerror = (error) => {
-        console.error("WebSocket error:", error);
-        if (wsRef.current) {
-          wsRef.current.close();
-        }
-      };
-    };
-
-    connectWebSocket();
-
     return () => {
       stopLocalSimulation();
-      if (wsRef.current) {
-        wsRef.current.close();
-      }
     };
-  }, [
-    simulateLocalData,
-    detectAnomaly,
-    anomalyTimestamps,
-    isModalOpen,
-    consecutiveAnomaliesCount,
-  ]); // Добавил isModalOpen и consecutiveAnomaliesCount в зависимости
+  }, [simulateLocalData]);
 
-  const timeStamps = liveData.map((d) =>
-    new Date(d.timestamp).toLocaleTimeString()
-  );
-
-  const getPlotData = (paramName: keyof SensorData) =>
-    liveData.map((d) => d[paramName]);
-
-  const handleVisibilityChange = (param: keyof typeof graphVisibility) => {
+  const handleVisibilityChange = (param: SensorParamKey) => {
     setGraphVisibility((prev) => ({
       ...prev,
       [param]: !prev[param],
@@ -452,259 +361,21 @@ export default function Home() {
 
   const handleShowAll = () => {
     setGraphVisibility(
-      Object.keys(graphVisibility).reduce((acc, key) => {
-        acc[key as keyof SensorData] = true;
+      plotConfigs.reduce((acc, config) => {
+        acc[config.key] = true;
         return acc;
-      }, {} as Record<keyof SensorData, boolean>)
+      }, {} as Record<SensorParamKey, boolean>)
     );
   };
 
   const handleHideAll = () => {
     setGraphVisibility(
-      Object.keys(graphVisibility).reduce((acc, key) => {
-        acc[key as keyof SensorData] = false;
+      plotConfigs.reduce((acc, config) => {
+        acc[config.key] = false;
         return acc;
-      }, {} as Record<keyof SensorData, boolean>)
+      }, {} as Record<SensorParamKey, boolean>)
     );
   };
-
-  // Метаданные для каждого графика, отсортированные по группам
-  const plotConfigs = [
-    // Основные параметры
-    {
-      key: "pressure",
-      title: "Давление (psi)",
-      name: "Давление",
-      color: "blue",
-    },
-    {
-      key: "temperature",
-      title: "Температура (°C)",
-      name: "Температура",
-      color: "orange",
-    },
-    { key: "rpm", title: "RPM", name: "RPM", color: "green" },
-    {
-      key: "torque",
-      title: "Крутящий Момент (ft-lb)",
-      name: "Крутящий Момент",
-      color: "purple",
-    },
-    {
-      key: "flowRate",
-      title: "Расход ПЖ на входе (gpm)",
-      name: "Расход (вход)",
-      color: "teal",
-    },
-    {
-      key: "flowRateOutlet",
-      title: "Расход ПЖ на выходе (gpm)",
-      name: "Расход (выход)",
-      color: "darkcyan",
-    },
-    { key: "depth", title: "Глубина (м)", name: "Глубина", color: "brown" },
-
-    // Параметры бурения
-    {
-      key: "weightOnHook",
-      title: "Вес на крюке (кг)",
-      name: "Вес на крюке",
-      color: "darkred",
-    },
-    {
-      key: "weightOnBit",
-      title: "Нагрузка на долото (кг)",
-      name: "Нагрузка на долото",
-      color: "indianred",
-    },
-    {
-      key: "drillStringVelocity",
-      title: "Скорость сло (м/с)",
-      name: "Скорость сло",
-      color: "forestgreen",
-    },
-    {
-      key: "mechanicalSpeed",
-      title: "Скорость механическая (м/ч)",
-      name: "Мех.скорость",
-      color: "goldenrod",
-    },
-    {
-      key: "drillingSpeed",
-      title: "Скорость бурения (м/ч)",
-      name: "Скорость бурения",
-      color: "crimson",
-    },
-    {
-      key: "reamingSpeed",
-      title: "Скорость проработки (м/ч)",
-      name: "Скорость проработки",
-      color: "darkmagenta",
-    },
-    {
-      key: "blockPosition",
-      title: "Положение тальблока (м)",
-      name: "Положение тальблока",
-      color: "olivedrab",
-    },
-    {
-      key: "blockSpeed",
-      title: "Скорость тальблока (м/с)",
-      name: "Скорость тальблока",
-      color: "cadetblue",
-    },
-    {
-      key: "totalStringWeight",
-      title: "Общий вес колонны (кг)",
-      name: "Общий вес колонны",
-      color: "sienna",
-    },
-    {
-      key: "stands",
-      title: "Свечей (шт)",
-      name: "Свечей",
-      color: "mediumturquoise",
-    },
-    {
-      key: "depthAboveBottom",
-      title: "Глубина над забоем (м)",
-      name: "Глубина над забоем",
-      color: "steelblue",
-    },
-
-    // Параметры насосов и уровней
-    {
-      key: "pumpStrokes1",
-      title: "Ходы насоса-1 (ход/мин)",
-      name: "Ходы насоса-1",
-      color: "darkgreen",
-    },
-    {
-      key: "pumpStrokes2",
-      title: "Ходы насоса-2 (ход/мин)",
-      name: "Ходы насоса-2",
-      color: "darkblue",
-    },
-    { key: "level1", title: "Уровень-1 (%)", name: "Уровень-1", color: "gray" },
-    {
-      key: "level2",
-      title: "Уровень-2 (%)",
-      name: "Уровень-2",
-      color: "lightgray",
-    },
-    {
-      key: "level3",
-      title: "Уровень-3 (%)",
-      name: "Уровень-3",
-      color: "black",
-    },
-    {
-      key: "level4",
-      title: "Уровень-4 (%)",
-      name: "Уровень-4",
-      color: "lightblue",
-    },
-    { key: "level5", title: "Уровень-5 (%)", name: "Уровень-5", color: "pink" },
-    { key: "level6", title: "Уровень-6 (%)", name: "Уровень-6", color: "cyan" },
-    {
-      key: "mudVolumeInTanks",
-      title: "Объем ПЖ в емкостях (л)",
-      name: "Объем ПЖ в емкостях",
-      color: "saddlebrown",
-    },
-    {
-      key: "mudVolumeInActiveTanks",
-      title: "Объем ПЖ в активн.ёмкостях (л)",
-      name: "Объем актив.ёмкостей",
-      color: "darkslateblue",
-    },
-    {
-      key: "totalMudVolume",
-      title: "Общий V раствора (л)",
-      name: "Общий V раствора",
-      color: "darkolivegreen",
-    },
-    {
-      key: "volumeInTopUp",
-      title: "Объем в доливе (л)",
-      name: "Объем в доливе",
-      color: "darkgoldenrod",
-    },
-
-    // Газовые параметры
-    {
-      key: "methaneAbs",
-      title: "Метан абс. (%)",
-      name: "Метан абс.",
-      color: "lime",
-    },
-    {
-      key: "propaneAbs",
-      title: "Пропан абс. (%)",
-      name: "Пропан абс.",
-      color: "darkorange",
-    },
-    {
-      key: "butaneAbs",
-      title: "Бутан абс. (%)",
-      name: "Бутан абс.",
-      color: "fuchsia",
-    },
-    {
-      key: "pentaneAbs",
-      title: "Пентан абс. (%)",
-      name: "Пентан абс.",
-      color: "gold",
-    },
-    {
-      key: "totalChromeGases",
-      title: "Сумма газов хром. (%)",
-      name: "Сумма газов",
-      color: "navy",
-    },
-    {
-      key: "methaneRel",
-      title: "Метан отн. (%)",
-      name: "Метан отн.",
-      color: "lightgreen",
-    },
-    {
-      key: "ethaneRel",
-      title: "Этан отн. (%)",
-      name: "Этан отн.",
-      color: "chocolate",
-    },
-    {
-      key: "propaneRel",
-      title: "Пропан отн. (%)",
-      name: "Пропан отн.",
-      color: "violet",
-    },
-    {
-      key: "butaneRel",
-      title: "Бутан отн. (%)",
-      name: "Бутан отн.",
-      color: "peru",
-    },
-    {
-      key: "pentaneRel",
-      title: "Пентан отн. (%)",
-      name: "Пентан отн.",
-      color: "khaki",
-    },
-    {
-      key: "integratedGasTotal",
-      title: "Встроенный газ, сум. (%)",
-      name: "Встроенный газ",
-      color: "indigo",
-    },
-    {
-      key: "maximumGas",
-      title: "Максимальный газ (%)",
-      name: "Максимальный газ",
-      color: "firebrick",
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -712,94 +383,59 @@ export default function Home() {
         WellPro: Мониторинг Буровых Данных
       </h1>
 
-      {/* Блок статуса аномалии */}
-      <div
-        className={`p-5 mb-8 rounded-xl shadow-lg text-center transition-all duration-300
-                     ${
-                       anomalyDetected
-                         ? "bg-red-100 text-red-800 border-l-4 border-red-500"
-                         : "bg-green-100 text-green-800 border-l-4 border-green-500"
-                     }`}
-      >
-        <h2 className="text-2xl font-bold flex items-center justify-center">
-          {anomalyDetected ? (
-            <FaExclamationTriangle className="mr-3 text-3xl" />
-          ) : null}
-          Статус:{" "}
-          {anomalyDetected ? "АНОМАЛИЯ ОБНАРУЖЕНА!" : "Нормальная работа"}
-        </h2>
-        {anomalyDetected && (
-          <p className="mt-3 text-lg">
-            Обнаружено аномальное значение! Требуется внимание.
-          </p>
-        )}
-      </div>
+      <StatusDisplay
+        anomalyDetected={anomalyDetected}
+        isBackendConnected={isBackendConnected}
+      />
 
-      {/* Блок статуса подключения к бэкенду/симуляции */}
-      <div
-        className={`p-4 mb-8 rounded-xl text-center font-medium shadow-sm transition-all duration-300
-                     ${
-                       isBackendConnected
-                         ? "bg-blue-50 text-blue-700 border border-blue-200"
-                         : "bg-yellow-50 text-yellow-700 border border-yellow-200"
-                     }`}
-      >
-        Режим данных:{" "}
-        <span className="font-bold">
-          {isBackendConnected
-            ? "Подключено к бэкенду (Real-time)"
-            : "Локальная симуляция"}
-        </span>
-      </div>
-
-      {/* Секция выбора параметров для отображения (чекбоксы) */}
-      <div className="bg-white p-6 rounded-xl shadow-lg mb-8">
-        <h3 className="text-2xl font-semibold mb-5 text-gray-800">
-          Выбрать параметры для отображения:
-        </h3>
-        <div className="flex gap-4 mb-6">
-          <button
-            onClick={handleShowAll}
-            className="px-6 py-2 bg-blue-600 text-white rounded-md shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 transition duration-200 ease-in-out"
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8 p-4 bg-white rounded-xl shadow-md">
+        <GraphControls
+          graphVisibility={graphVisibility}
+          onVisibilityChange={handleVisibilityChange}
+          onShowAll={handleShowAll}
+          onHideAll={handleHideAll}
+        />
+        <div className="flex items-center gap-3">
+          <label
+            htmlFor="analysis-method"
+            className="text-gray-700 font-medium whitespace-nowrap"
           >
-            Показать все графики
-          </button>
-          <button
-            onClick={handleHideAll}
-            className="px-6 py-2 bg-gray-400 text-white rounded-md shadow-md hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-opacity-75 transition duration-200 ease-in-out"
+            Метод анализа:
+          </label>
+          <select
+            id="analysis-method"
+            value={analysisMethod}
+            onChange={(e) =>
+              setAnalysisMethod(e.target.value as AnomalyDetectionMethod)
+            }
+            className="p-2 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            Скрыть все графики
-          </button>
+            <option value="FFT">FFT</option>
+            <option value="Z-score">Z-score</option>
+            <option value="LOF">LOF</option>
+          </select>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {plotConfigs.map((config) => (
-            <label
-              key={config.key}
-              className="inline-flex items-center cursor-pointer text-gray-700 hover:text-gray-900 transition duration-150 ease-in-out"
-            >
-              <input
-                type="checkbox"
-                className="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500"
-                checked={
-                  graphVisibility[config.key as keyof typeof graphVisibility]
-                }
-                onChange={() =>
-                  handleVisibilityChange(
-                    config.key as keyof typeof graphVisibility
-                  )
-                }
-              />
-              <span className="ml-2 font-medium">{config.title}</span>
-            </label>
-          ))}
+        <div className="flex items-center">
+          <label
+            htmlFor="file-upload"
+            className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-blue-700 cursor-pointer transition-colors"
+          >
+            Загрузить данные
+          </label>
+          <input
+            id="file-upload"
+            type="file"
+            accept=".txt"
+            onChange={handleFileChange}
+            className="hidden"
+          />
         </div>
       </div>
 
-      {/* Контейнер для динамического рендеринга графиков */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {plotConfigs.map(
           (config) =>
-            graphVisibility[config.key as keyof typeof graphVisibility] && (
+            graphVisibility[config.key] && (
               <div
                 key={config.key}
                 className="bg-white p-5 rounded-xl shadow-lg border border-gray-100"
@@ -810,83 +446,49 @@ export default function Home() {
                 <Plot
                   data={[
                     {
-                      x: timeStamps,
-                      y: getPlotData(config.key as keyof SensorData),
+                      x: liveData.map((d) => d[config.key]),
+                      y: liveData.map((d) => new Date(d.timestamp)),
                       type: "scatter",
                       mode: "lines",
-                      name: config.name as any,
+                      name: config.name,
                       line: { color: config.color },
                     },
-                    // Добавляем крестик аномалии как отдельный scatter-след для графика давления
-                    ...(config.key === "pressure"
-                      ? anomalyTimestamps.map((ts) => ({
-                          x: [new Date(ts).toLocaleTimeString()],
-                          y: [
-                            liveData.find((d) => d.timestamp === ts)?.pressure,
-                          ], // Координата Y для крестика
-                          mode: "markers",
-                          type: "scatter",
-                          marker: {
-                            symbol: "x", // Символ крестика
-                            color: "red",
-                            size: 10,
-                            line: {
+                    ...(config.key === "pressure" &&
+                    anomalyTimestamps.length > 0
+                      ? [
+                          {
+                            x: anomalyTimestamps
+                              .map((ts) => {
+                                const dataPoint = liveData.find(
+                                  (d) => d.timestamp === ts
+                                );
+                                return dataPoint ? dataPoint.pressure : null;
+                              })
+                              .filter((x) => x !== null),
+                            y: anomalyTimestamps.map((ts) => new Date(ts)),
+                            mode: "markers",
+                            type: "scatter",
+                            marker: {
+                              symbol: "triangle-up",
                               color: "red",
-                              width: 2,
+                              size: 15,
+                              line: { width: 2, color: "darkred" },
                             },
+                            name: "Аномалия",
+                            showlegend: true,
+                            hovertemplate:
+                              "<b>Аномалия</b><br>Время: %{y}<br>Давление: %{x}<extra></extra>",
                           },
-                          name: "Аномалия",
-                          showlegend: false, // Не показывать в легенде
-                        }))
+                        ]
                       : []),
                   ]}
                   layout={{
                     autosize: true,
-                    margin: { l: 40, r: 20, t: 30, b: 40 },
-                    xaxis: { title: "Время" },
-                    yaxis: { title: config.title },
+                    margin: { l: 70, r: 10, t: 20, b: 40 },
+                    xaxis: { title: config.title },
+                    yaxis: { title: "Время" },
                     height: 300,
-                    annotations:
-                      config.key === "pressure" && anomalyDetected
-                        ? [
-                            {
-                              x: timeStamps[timeStamps.length - 1], // Последняя точка
-                              xref: "x",
-                              y: 1, // Располагаем над графиком
-                              yref: "paper",
-                              text: "АНОМАЛИЯ!",
-                              showarrow: true,
-                              arrowhead: 7,
-                              ax: 0,
-                              ay: -40,
-                              font: {
-                                color: "red",
-                                size: 14,
-                                weight: "bold",
-                              },
-                            },
-                          ]
-                        : [],
-                    shapes:
-                      config.key === "pressure" && anomalyDetected
-                        ? [
-                            {
-                              type: "line",
-                              x0: timeStamps[timeStamps.length - 1],
-                              y0: 0,
-                              x1: timeStamps[timeStamps.length - 1],
-                              y1: 1,
-                              xref: "x",
-                              yref: "paper",
-                              line: {
-                                color: "red",
-                                width: 2,
-                                dash: "dashdot",
-                              },
-                            },
-                          ]
-                        : [],
-                    hovermode: "x unified", // Modern hover effect
+                    hovermode: "x unified",
                   }}
                   useResizeHandler={true}
                   style={{ width: "100%", height: "100%" }}
@@ -896,98 +498,7 @@ export default function Home() {
         )}
       </div>
 
-      {/* Модальное окно аномалии */}
-      <Modal
-        isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)} // Закрываем модальное окно и оно не откроется до новой аномалии
-        contentLabel="Anomaly Detected"
-        className="Modal"
-        overlayClassName="Overlay"
-      >
-        <div className="flex flex-col items-center justify-center p-8 bg-white rounded-xl shadow-2xl border-t-8 border-red-600 max-w-md mx-auto my-20 transform scale-100 transition-transform duration-300">
-          <FaExclamationTriangle className="text-red-600 text-7xl mb-5 animate-pulse" />
-          <h2 className="text-4xl font-bold text-red-800 mb-3">АНОМАЛИЯ!</h2>
-          <p className="text-xl text-gray-800 text-center mb-8 leading-relaxed">
-            Обнаружено критическое отклонение в данных давления. Требуется
-            немедленное вмешательство!
-          </p>
-          <button
-            onClick={() => setIsModalOpen(false)}
-            className="flex items-center bg-red-700 hover:bg-red-800 text-white font-bold py-3 px-8 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 shadow-lg"
-          >
-            <FaTimesCircle className="mr-3 text-xl" /> Закрыть и Проверить
-          </button>
-        </div>
-      </Modal>
-
-      {/* CSS для модального окна (можно вынести в отдельный .css файл) */}
-      <style jsx global>{`
-        .Modal {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          right: auto;
-          bottom: auto;
-          margin-right: -50%;
-          transform: translate(-50%, -50%);
-          background: white;
-          padding: 20px;
-          border-radius: 8px;
-          outline: none;
-          max-width: 500px;
-          width: 90%;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-          animation: modal-appear 0.3s ease-out forwards;
-        }
-
-        .Overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background-color: rgba(0, 0, 0, 0.75);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 1000;
-          animation: overlay-fade-in 0.3s ease-out forwards;
-        }
-
-        .animate-pulse {
-          animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-          0%,
-          100% {
-            opacity: 1;
-          }
-          50% {
-            opacity: 0.5;
-          }
-        }
-
-        @keyframes modal-appear {
-          from {
-            opacity: 0;
-            transform: translate(-50%, -50%) scale(0.9);
-          }
-          to {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-          }
-        }
-
-        @keyframes overlay-fade-in {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-      `}</style>
+      <AnomalyModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
     </div>
   );
 }
