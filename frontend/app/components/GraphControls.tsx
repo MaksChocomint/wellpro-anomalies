@@ -1,11 +1,14 @@
+"use client";
+
 import { useState } from "react";
-import { plotConfigs, SensorParamKey } from "./types";
+import { AnomalyDetectionMethod } from "./types";
 
 interface GraphControlsProps {
-  graphVisibility: Record<SensorParamKey, boolean>;
-  onVisibilityChange: (param: SensorParamKey) => void;
+  graphVisibility: Record<string, boolean>;
+  onVisibilityChange: (param: string) => void;
   onShowAll: () => void;
   onHideAll: () => void;
+  availableParameters: string[];
 }
 
 export function GraphControls({
@@ -13,6 +16,7 @@ export function GraphControls({
   onVisibilityChange,
   onShowAll,
   onHideAll,
+  availableParameters,
 }: GraphControlsProps) {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -51,18 +55,18 @@ export function GraphControls({
             </button>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-            {plotConfigs.map((config) => (
+            {availableParameters.map((paramKey) => (
               <label
-                key={config.key}
+                key={paramKey}
                 className="inline-flex items-center cursor-pointer text-gray-700 hover:text-gray-900 transition duration-150 ease-in-out"
               >
                 <input
                   type="checkbox"
                   className="form-checkbox h-4 w-4 text-blue-600 rounded focus:ring-blue-500"
-                  checked={graphVisibility[config.key]}
-                  onChange={() => onVisibilityChange(config.key)}
+                  checked={!!graphVisibility[paramKey]}
+                  onChange={() => onVisibilityChange(paramKey)}
                 />
-                <span className="ml-2 font-medium text-sm">{config.title}</span>
+                <span className="ml-2 font-medium text-sm">{paramKey}</span>
               </label>
             ))}
           </div>
