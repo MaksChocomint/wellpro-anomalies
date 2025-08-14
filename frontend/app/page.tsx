@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState, useEffect, useRef, useCallback, ChangeEvent } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Papa from "papaparse";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
@@ -11,7 +11,6 @@ import { GraphControls } from "./components/GraphControls";
 import { AnomalyDetectionMethod, AnomalyInfo } from "./components/types";
 
 const MAX_DATA_POINTS = 1000;
-const FFT_WINDOW_SIZE = 256;
 const CONSECUTIVE_ANOMALY_THRESHOLD = 5;
 
 // Динамический тип для данных, ключи берутся из файла
@@ -37,8 +36,12 @@ const GRAPH_COLORS = [
 //
 // ----------------------------------------------------------------------
 
-function zScore(data: number[]): boolean {
-  const WINDOW_SIZE = 50;
+function zScore(
+  data: number[],
+  threshold: number,
+  windowSize: number
+): boolean {
+  const WINDOW_SIZE = windowSize;
   if (data.length <= WINDOW_SIZE) {
     console.log(`[Z-score] Недостаточно данных: ${data.length}/${WINDOW_SIZE}`);
     return false;
@@ -61,7 +64,7 @@ function zScore(data: number[]): boolean {
   }
 
   const z = Math.abs((lastValue - mean) / stdDev);
-  const Z_SCORE_THRESHOLD = 3;
+  const Z_SCORE_THRESHOLD = threshold;
   const isAnomaly = z > Z_SCORE_THRESHOLD;
 
   console.log(
@@ -75,8 +78,8 @@ function zScore(data: number[]): boolean {
   return isAnomaly;
 }
 
-function lof(data: number[]): boolean {
-  const WINDOW_SIZE = 50;
+function lof(data: number[], threshold: number, windowSize: number): boolean {
+  const WINDOW_SIZE = windowSize;
   const K = 5;
   const EPS = 1e-6; // минимальное расстояние
   const MAX_DENSITY = 1e3; // ограничение максимальной плотности
@@ -123,7 +126,7 @@ function lof(data: number[]): boolean {
       0
     ) / neighbors.length;
 
-  const LOF_THRESHOLD = 25;
+  const LOF_THRESHOLD = threshold;
   const isAnomaly = lofScore > LOF_THRESHOLD;
 
   console.log(
@@ -135,8 +138,8 @@ function lof(data: number[]): boolean {
   return isAnomaly;
 }
 
-function fft(data: number[]): boolean {
-  const FFT_WINDOW_SIZE = 64; // степень двойки
+function fft(data: number[], threshold: number, windowSize: number): boolean {
+  const FFT_WINDOW_SIZE = windowSize; // степень двойки
   const EPS = 1e-12;
 
   if (data.length < FFT_WINDOW_SIZE) {
@@ -197,7 +200,7 @@ function fft(data: number[]): boolean {
   }
 
   const highFreqRatio = highFreqMagnitudeSum / totalMagnitude;
-  const HIGH_FREQ_THRESHOLD = 0.5;
+  const HIGH_FREQ_THRESHOLD = threshold;
   const isAnomaly = highFreqRatio > HIGH_FREQ_THRESHOLD;
 
   console.log(
@@ -224,7 +227,25 @@ const formatDate = (date: Date | null) => {
     year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
+    second: "2-digit",
   });
+};
+
+const excelSerialToJsDate = (serial: number | string): Date => {
+  const num =
+    typeof serial === "string" ? parseFloat(serial.replace(",", ".")) : serial;
+
+  const daysBefore1970 = 25569;
+  const msInDay = 86400000;
+  const unixMilliseconds = (num - daysBefore1970) * msInDay;
+
+  const date = new Date(unixMilliseconds);
+  date.setUTCDate(date.getUTCDate() + 1); // фикс бага Excel 1900
+
+  // Отнимаем 4 часа
+  date.setHours(date.getHours() - 4);
+
+  return date;
 };
 
 export default function Home() {
@@ -241,10 +262,36 @@ export default function Home() {
     Record<string, boolean>
   >({});
   const [flightStart, setFlightStart] = useState<Date | null>(null);
+  // Новое состояние для настраиваемых порогов и размеров окон
+  const [thresholds, setThresholds] = useState({
+    "Z-score": 3,
+    LOF: 25,
+    FFT: 0.5,
+    FFT_WINDOW_SIZE: 64, // Степень двойки для FFT
+    Z_SCORE_WINDOW_SIZE: 50,
+    LOF_WINDOW_SIZE: 50,
+  });
 
   const fullDataRef = useRef<DynamicSensorData[]>([]);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<Node.js.Timeout | null>(null);
   const dataIndexRef = useRef<number>(0);
+
+  // Обработчик для изменения значений порогов
+  const handleThresholdChange = useCallback(
+    (key: string, value: number | string) => {
+      // Парсим значение в число, если оно строковое
+      const numericValue =
+        typeof value === "string" ? parseFloat(value) : value;
+
+      if (!isNaN(numericValue) && numericValue >= 0) {
+        setThresholds((prev) => ({
+          ...prev,
+          [key]: numericValue,
+        }));
+      }
+    },
+    []
+  );
 
   // Логирование смены метода
   useEffect(() => {
@@ -257,22 +304,35 @@ export default function Home() {
       method: AnomalyDetectionMethod,
       paramKey: string
     ) => {
-      // КЛЮЧЕВОЕ ИЗМЕНЕНИЕ: Увеличен порог разогрева
-      const WARM_UP_THRESHOLD = FFT_WINDOW_SIZE * 2; // 256 * 2 = 512
+      let warmUpThreshold = 0;
+      switch (method) {
+        case "FFT":
+          // Для FFT окно должно быть не меньше размера, кратного двум.
+          // Увеличиваем порог для разогрева.
+          warmUpThreshold = (thresholds["FFT_WINDOW_SIZE"] as number) * 2;
+          break;
+        case "Z-score":
+          warmUpThreshold = thresholds["Z_SCORE_WINDOW_SIZE"] as number;
+          break;
+        case "LOF":
+        default:
+          warmUpThreshold = thresholds["LOF_WINDOW_SIZE"] as number;
+          break;
+      }
 
       console.log(
         `[Анализ] Проверка параметра "${paramKey}" с методом "${method}". Точек в выборке: ${data.length}`
       );
 
-      if (data.length < WARM_UP_THRESHOLD) {
+      if (data.length < warmUpThreshold) {
         console.log(
-          `[Анализ] Фаза разогрева. Текущих точек ${data.length}, требуется ${WARM_UP_THRESHOLD}. Обнаружение аномалий пропущено.`
+          `[Анализ] Фаза разогрева. Текущих точек ${data.length}, требуется ${warmUpThreshold}. Обнаружение аномалий пропущено.`
         );
         return false;
       }
 
       const values = data
-        .slice(-FFT_WINDOW_SIZE)
+        .slice(-warmUpThreshold)
         .map((d) => {
           const val = d[paramKey];
           return typeof val === "string"
@@ -294,14 +354,26 @@ export default function Home() {
       let isAnomaly = false;
       switch (method) {
         case "FFT":
-          isAnomaly = fft(values);
+          isAnomaly = fft(
+            values,
+            thresholds["FFT"] as number,
+            thresholds["FFT_WINDOW_SIZE"] as number
+          );
           break;
         case "Z-score":
-          isAnomaly = zScore(values);
+          isAnomaly = zScore(
+            values,
+            thresholds["Z-score"] as number,
+            thresholds["Z_SCORE_WINDOW_SIZE"] as number
+          );
           break;
         case "LOF":
         default:
-          isAnomaly = lof(values);
+          isAnomaly = lof(
+            values,
+            thresholds["LOF"] as number,
+            thresholds["LOF_WINDOW_SIZE"] as number
+          );
           break;
       }
 
@@ -317,7 +389,7 @@ export default function Home() {
 
       return isAnomaly;
     },
-    []
+    [thresholds]
   );
 
   const startDataSimulation = useCallback(() => {
@@ -327,7 +399,7 @@ export default function Home() {
     setLiveData([]);
     setAnomalyInfo([]);
     dataIndexRef.current = 0;
-    console.log("[Симуляция] Начинаем загрузку данных. Интервал: 10 мс.");
+    console.log("[Симуляция] Начинаем загрузку данных. Интервал: 1000 мс.");
 
     intervalRef.current = setInterval(() => {
       if (dataIndexRef.current < fullDataRef.current.length) {
@@ -361,15 +433,18 @@ export default function Home() {
     const reader = new FileReader();
     reader.onload = (e) => {
       const text = e.target.result as string;
+
       const lines = text.split(/\r?\n/);
 
       const flightStartLine = lines[0];
+      console.log(flightStartLine);
       const timeMatch = flightStartLine.match(
         /(\d{1,2}) (.*) (\d{4})г. (\d{1,2}):(\d{1,2})/
       );
       let startTime = null;
       if (timeMatch) {
         const [, day, monthStr, year, hour, minute] = timeMatch;
+        console.log(timeMatch);
         const monthIndex = [
           "января",
           "февраля",
@@ -567,6 +642,103 @@ export default function Home() {
             <option value="Z-score">Z-score</option>
             <option value="LOF">LOF</option>
           </select>
+
+          {/* Поля ввода для Z-score */}
+          {analysisMethod === "Z-score" && (
+            <>
+              <label className="text-gray-700 font-medium whitespace-nowrap">
+                Порог Z-score:
+              </label>
+              <input
+                type="number"
+                value={thresholds["Z-score"]}
+                onChange={(e) =>
+                  handleThresholdChange("Z-score", parseFloat(e.target.value))
+                }
+                className="p-2 border border-gray-300 rounded-md shadow-sm w-24 text-sm"
+                step="0.1"
+              />
+              <label className="text-gray-700 font-medium whitespace-nowrap">
+                Размер окна:
+              </label>
+              <input
+                type="number"
+                value={thresholds["Z_SCORE_WINDOW_SIZE"]}
+                onChange={(e) =>
+                  handleThresholdChange(
+                    "Z_SCORE_WINDOW_SIZE",
+                    parseInt(e.target.value)
+                  )
+                }
+                className="p-2 border border-gray-300 rounded-md shadow-sm w-24 text-sm"
+              />
+            </>
+          )}
+
+          {/* Поля ввода для LOF */}
+          {analysisMethod === "LOF" && (
+            <>
+              <label className="text-gray-700 font-medium whitespace-nowrap">
+                Порог LOF:
+              </label>
+              <input
+                type="number"
+                value={thresholds["LOF"]}
+                onChange={(e) =>
+                  handleThresholdChange("LOF", parseFloat(e.target.value))
+                }
+                className="p-2 border border-gray-300 rounded-md shadow-sm w-24 text-sm"
+                step="0.1"
+              />
+              <label className="text-gray-700 font-medium whitespace-nowrap">
+                Размер окна:
+              </label>
+              <input
+                type="number"
+                value={thresholds["LOF_WINDOW_SIZE"]}
+                onChange={(e) =>
+                  handleThresholdChange(
+                    "LOF_WINDOW_SIZE",
+                    parseInt(e.target.value)
+                  )
+                }
+                className="p-2 border border-gray-300 rounded-md shadow-sm w-24 text-sm"
+              />
+            </>
+          )}
+
+          {/* Поля ввода для FFT */}
+          {analysisMethod === "FFT" && (
+            <>
+              <label className="text-gray-700 font-medium whitespace-nowrap">
+                Порог FFT:
+              </label>
+              <input
+                type="number"
+                value={thresholds["FFT"]}
+                onChange={(e) =>
+                  handleThresholdChange("FFT", parseFloat(e.target.value))
+                }
+                className="p-2 border border-gray-300 rounded-md shadow-sm w-24 text-sm"
+                step="0.01"
+              />
+              <label className="text-gray-700 font-medium whitespace-nowrap">
+                Размер окна:
+              </label>
+              <input
+                type="number"
+                value={thresholds["FFT_WINDOW_SIZE"]}
+                onChange={(e) =>
+                  handleThresholdChange(
+                    "FFT_WINDOW_SIZE",
+                    parseInt(e.target.value)
+                  )
+                }
+                className="p-2 border border-gray-300 rounded-md shadow-sm w-24 text-sm"
+                step="16"
+              />
+            </>
+          )}
         </div>
         <div className="flex items-center">
           <label
@@ -605,12 +777,7 @@ export default function Home() {
                           ? parseFloat(val.replace(",", "."))
                           : val;
                       }),
-                      y: liveData.map((d) => {
-                        const time = d["Время"];
-                        return typeof time === "string"
-                          ? parseFloat(time.replace(",", "."))
-                          : time;
-                      }),
+                      y: liveData.map((d) => excelSerialToJsDate(d["Время"])),
                       type: "scatter",
                       mode: "lines",
                       name: paramKey,
@@ -632,18 +799,13 @@ export default function Home() {
                         }),
                       y: anomalyInfo
                         .filter((info) => info.param === paramKey)
-                        .map((info) => {
-                          const time = info.timestamp;
-                          return typeof time === "string"
-                            ? parseFloat(time.replace(",", "."))
-                            : time;
-                        }),
+                        .map((info) => excelSerialToJsDate(info.timestamp)),
                       mode: "markers",
                       type: "scatter",
                       name: "Аномалия",
                       marker: {
                         color: "red",
-                        symbol: "triangle-up",
+                        symbol: "triangle-right",
                         size: 10,
                       },
                     },
@@ -652,9 +814,14 @@ export default function Home() {
                     autosize: true,
                     margin: { l: 70, r: 10, t: 20, b: 40 },
                     xaxis: { title: paramKey },
-                    yaxis: { title: "Время" },
+                    yaxis: {
+                      title: "Время",
+                      type: "date", // важно — говорит Plotly, что это временная ось
+                      autorange: "reversed",
+                      tickformat: "%H:%M:%S", // только время
+                    },
                     height: 300,
-                    hovermode: "x unified",
+                    hovermode: "y unified",
                   }}
                   useResizeHandler={true}
                   style={{ width: "100%", height: "100%" }}
@@ -663,7 +830,6 @@ export default function Home() {
             )
         )}
       </div>
-
       {/* <AnomalyModal
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
