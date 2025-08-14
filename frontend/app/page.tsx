@@ -39,31 +39,29 @@ const GRAPH_COLORS = [
 
 function zScore(data: number[]): boolean {
   const WINDOW_SIZE = 50;
-  if (data.length < WINDOW_SIZE) {
-    console.log(
-      `[Z-score] Недостаточно данных для анализа: ${data.length}/${WINDOW_SIZE}`
-    );
+  if (data.length <= WINDOW_SIZE) {
+    console.log(`[Z-score] Недостаточно данных: ${data.length}/${WINDOW_SIZE}`);
     return false;
   }
 
-  const window = data.slice(-WINDOW_SIZE);
+  const window = data.slice(-WINDOW_SIZE - 1, -1);
+  const lastValue = data[data.length - 1];
+
   const mean = window.reduce((sum, val) => sum + val, 0) / window.length;
   const variance =
-    window.map((val) => (val - mean) ** 2).reduce((sum, val) => sum + val, 0) /
-    window.length;
+    window.reduce((sum, val) => sum + (val - mean) ** 2, 0) /
+    (window.length - 1);
   const stdDev = Math.sqrt(variance);
 
   if (stdDev === 0) {
     console.log(
-      `[Z-score] Стандартное отклонение равно 0. Невозможно вычислить Z-score.`
+      "[Z-score] Стандартное отклонение равно 0. Невозможно вычислить Z-score."
     );
     return false;
   }
 
-  const lastValue = window[window.length - 1];
   const z = Math.abs((lastValue - mean) / stdDev);
-
-  const Z_SCORE_THRESHOLD = 5;
+  const Z_SCORE_THRESHOLD = 3;
   const isAnomaly = z > Z_SCORE_THRESHOLD;
 
   console.log(
@@ -78,51 +76,75 @@ function zScore(data: number[]): boolean {
 }
 
 function lof(data: number[]): boolean {
-  const WINDOW_SIZE = 10;
-  if (data.length < WINDOW_SIZE) {
-    console.log(
-      `[LOF] Недостаточно данных для анализа: ${data.length}/${WINDOW_SIZE}`
-    );
+  const WINDOW_SIZE = 50;
+  const K = 5;
+  const EPS = 1e-6; // минимальное расстояние
+  const MAX_DENSITY = 1e3; // ограничение максимальной плотности
+
+  if (data.length <= WINDOW_SIZE) {
+    console.log(`[LOF] Недостаточно данных: ${data.length}/${WINDOW_SIZE}`);
     return false;
   }
 
-  const window = data.slice(-WINDOW_SIZE);
-  const lastValue = window[window.length - 1];
-  const avg = window.reduce((sum, val) => sum + val, 0) / window.length;
+  const window = data.slice(-WINDOW_SIZE - 1, -1);
+  const lastValue = data[data.length - 1];
 
-  const LOF_THRESHOLD = 1.0;
-  if (Math.abs(avg) < 1e-6) {
-    const isAnomaly = Math.abs(lastValue) > 1e-6;
-    console.log(
-      `[LOF] Среднее значение в окне почти 0. Последнее значение: ${lastValue}. ${
-        isAnomaly ? "АНОМАЛИЯ" : "Норма"
-      }`
-    );
-    return isAnomaly;
+  // Проверка на "все точки почти одинаковые"
+  const allSame =
+    window.every((v) => Math.abs(v - window[0]) < EPS) &&
+    Math.abs(lastValue - window[0]) < EPS;
+  if (allSame) {
+    console.log(`[LOF] Все значения почти одинаковые. LOF = 1. Норма.`);
+    return false;
   }
 
-  const deviationRatio = Math.abs(lastValue - avg) / Math.abs(avg);
-  const isAnomaly = deviationRatio > LOF_THRESHOLD;
+  const distance = (a: number, b: number) => Math.abs(a - b);
+
+  const kNearest = (point: number, arr: number[], k: number) =>
+    arr
+      .map((val) => ({ val, dist: distance(point, val) }))
+      .sort((a, b) => a.dist - b.dist)
+      .slice(0, k);
+
+  const localReachDensity = (point: number, arr: number[]) => {
+    const neighbors = kNearest(point, arr, K);
+    const meanDist =
+      neighbors.reduce((sum, n) => sum + n.dist, 0) / neighbors.length;
+    const density = 1 / Math.max(meanDist, EPS);
+    return Math.min(density, MAX_DENSITY); // ограничиваем плотность
+  };
+
+  const lrdLast = localReachDensity(lastValue, window);
+
+  const neighbors = kNearest(lastValue, window, K);
+  const lofScore =
+    neighbors.reduce(
+      (sum, n) => sum + localReachDensity(n.val, window) / lrdLast,
+      0
+    ) / neighbors.length;
+
+  const LOF_THRESHOLD = 25;
+  const isAnomaly = lofScore > LOF_THRESHOLD;
 
   console.log(
-    `[LOF] Значение: ${lastValue.toFixed(2)}, Среднее в окне: ${avg.toFixed(
-      2
-    )}, Отклонение: ${deviationRatio.toFixed(2)}. Порог: ${LOF_THRESHOLD}. ${
-      isAnomaly ? "АНОМАЛИЯ" : "Норма"
-    }`
+    `[LOF] Значение: ${lastValue.toFixed(2)}, LOF-оценка: ${lofScore.toFixed(
+      4
+    )}, Порог: ${LOF_THRESHOLD}. ${isAnomaly ? "АНОМАЛИЯ" : "Норма"}`
   );
 
   return isAnomaly;
 }
 
 function fft(data: number[]): boolean {
-  const N = FFT_WINDOW_SIZE;
-  if (data.length < N) {
-    console.log(`[FFT] Недостаточно данных для анализа: ${data.length}/${N}`);
+  const FFT_WINDOW_SIZE = 64; // степень двойки
+  const EPS = 1e-12;
+
+  if (data.length < FFT_WINDOW_SIZE) {
+    console.log(`[FFT] Недостаточно данных: ${data.length}/${FFT_WINDOW_SIZE}`);
     return false;
   }
 
-  const window = data.slice(-N);
+  const window = data.slice(-FFT_WINDOW_SIZE);
   const complexData: [number, number][] = window.map((val) => [val, 0]);
 
   function _fftRecursive(arr: [number, number][]): [number, number][] {
@@ -132,6 +154,7 @@ function fft(data: number[]): boolean {
     const half = n / 2;
     const even: [number, number][] = [];
     const odd: [number, number][] = [];
+
     for (let i = 0; i < half; i++) {
       even.push(arr[i * 2]);
       odd.push(arr[i * 2 + 1]);
@@ -143,7 +166,7 @@ function fft(data: number[]): boolean {
 
     for (let k = 0; k < half; k++) {
       const angle = (-2 * Math.PI * k) / n;
-      const t = [
+      const t: [number, number] = [
         oddFft[k][0] * Math.cos(angle) - oddFft[k][1] * Math.sin(angle),
         oddFft[k][0] * Math.sin(angle) + oddFft[k][1] * Math.cos(angle),
       ];
@@ -154,18 +177,21 @@ function fft(data: number[]): boolean {
   }
 
   const fftResult = _fftRecursive(complexData);
-  const magnitudes = fftResult.map((c) => Math.sqrt(c[0] ** 2 + c[1] ** 2));
+  const magnitudes = fftResult.map(([re, im]) => Math.sqrt(re ** 2 + im ** 2));
 
-  const highFreqMagnitudes = magnitudes.slice(N / 4, N / 2);
+  const highFreqMagnitudes = magnitudes.slice(
+    FFT_WINDOW_SIZE / 4,
+    FFT_WINDOW_SIZE / 2
+  );
   const totalMagnitude = magnitudes.reduce((sum, val) => sum + val, 0);
   const highFreqMagnitudeSum = highFreqMagnitudes.reduce(
     (sum, val) => sum + val,
     0
   );
 
-  if (totalMagnitude === 0) {
+  if (totalMagnitude < EPS) {
     console.log(
-      "[FFT] Общая магнитуда равна 0. Невозможно вычислить отношение."
+      "[FFT] Общая магнитуда слишком мала. Невозможно вычислить отношение."
     );
     return false;
   }
@@ -182,6 +208,7 @@ function fft(data: number[]): boolean {
 
   return isAnomaly;
 }
+
 // ----------------------------------------------------------------------
 //
 // КОНЕЦ ФУНКЦИЙ
@@ -320,7 +347,7 @@ export default function Home() {
           );
         }
       }
-    }, 10);
+    }, 1000);
   }, []);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
