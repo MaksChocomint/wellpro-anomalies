@@ -689,6 +689,13 @@ export default function Home() {
                       line: {
                         color: GRAPH_COLORS[index % GRAPH_COLORS.length],
                       },
+                      hovertemplate:
+                        `<b>${paramKey}</b>: %{x:.2f}<br>` +
+                        `<b>Время</b>: %{customdata}<br>` +
+                        `<extra></extra>`,
+                      customdata: liveData.map((d) =>
+                        formatDate(excelSerialToJsDate(d["время"] as number))
+                      ),
                     },
                     {
                       x: anomalyInfo
