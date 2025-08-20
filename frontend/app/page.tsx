@@ -3,222 +3,31 @@
 import dynamic from "next/dynamic";
 import { useState, useEffect, useRef, useCallback } from "react";
 import Papa from "papaparse";
+import axios from "axios";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
 import AnomalyModal from "./components/AnomalyModal";
 import { StatusDisplay } from "./components/StatusDisplay";
 import { GraphControls } from "./components/GraphControls";
+import { LoadingOverlay } from "./components/LoadingOverlay";
 import { AnomalyDetectionMethod, AnomalyInfo } from "./components/types";
 
 const MAX_DATA_POINTS = 1000;
-const CONSECUTIVE_ANOMALY_THRESHOLD = 5;
+type DynamicSensorData = Record<string, number | string | [number, boolean]>;
 
-// Динамический тип для данных, ключи берутся из файла
-type DynamicSensorData = Record<string, number | string>;
-
-// Массив цветов для графиков
 const GRAPH_COLORS = [
-  "#1f77b4", // синий
-  "#ff7f0e", // оранжевый
-  "#2ca02c", // зеленый
-  "#d62728", // красный
-  "#9467bd", // фиолетовый
-  "#8c564b", // коричневый
-  "#e377c2", // розовый
-  "#7f7f7f", // серый
-  "#bcbd22", // оливковый
-  "#17becf", // бирюзовый
+  "#1f77b4",
+  "#ff7f0e",
+  "#2ca02c",
+  "#d62728",
+  "#9467bd",
+  "#8c564b",
+  "#e377c2",
+  "#7f7f7f",
+  "#bcbd22",
+  "#17becf",
 ];
 
-// ----------------------------------------------------------------------
-//
-// ФУНКЦИИ ДЛЯ ОБНАРУЖЕНИЯ АНОМАЛИЙ
-//
-// ----------------------------------------------------------------------
-
-function zScore(
-  data: number[],
-  threshold: number,
-  windowSize: number
-): boolean {
-  const WINDOW_SIZE = windowSize;
-  if (data.length <= WINDOW_SIZE) {
-    console.log(`[Z-score] Недостаточно данных: ${data.length}/${WINDOW_SIZE}`);
-    return false;
-  }
-
-  const window = data.slice(-WINDOW_SIZE - 1, -1);
-  const lastValue = data[data.length - 1];
-
-  const mean = window.reduce((sum, val) => sum + val, 0) / window.length;
-  const variance =
-    window.reduce((sum, val) => sum + (val - mean) ** 2, 0) /
-    (window.length - 1);
-  const stdDev = Math.sqrt(variance);
-
-  if (stdDev === 0) {
-    console.log(
-      "[Z-score] Стандартное отклонение равно 0. Невозможно вычислить Z-score."
-    );
-    return false;
-  }
-
-  const z = Math.abs((lastValue - mean) / stdDev);
-  const Z_SCORE_THRESHOLD = threshold;
-  const isAnomaly = z > Z_SCORE_THRESHOLD;
-
-  console.log(
-    `[Z-score] Значение: ${lastValue.toFixed(2)}, Среднее: ${mean.toFixed(
-      2
-    )}, Ст.откл: ${stdDev.toFixed(2)}, Z-score: ${z.toFixed(
-      2
-    )}. Порог: ${Z_SCORE_THRESHOLD}. ${isAnomaly ? "АНОМАЛИЯ" : "Норма"}`
-  );
-
-  return isAnomaly;
-}
-
-function lof(data: number[], threshold: number, windowSize: number): boolean {
-  const WINDOW_SIZE = windowSize;
-  const K = 5;
-  const EPS = 1e-6; // минимальное расстояние
-  const MAX_DENSITY = 1e3; // ограничение максимальной плотности
-
-  if (data.length <= WINDOW_SIZE) {
-    console.log(`[LOF] Недостаточно данных: ${data.length}/${WINDOW_SIZE}`);
-    return false;
-  }
-
-  const window = data.slice(-WINDOW_SIZE - 1, -1);
-  const lastValue = data[data.length - 1];
-
-  // Проверка на "все точки почти одинаковые"
-  const allSame =
-    window.every((v) => Math.abs(v - window[0]) < EPS) &&
-    Math.abs(lastValue - window[0]) < EPS;
-  if (allSame) {
-    console.log(`[LOF] Все значения почти одинаковые. LOF = 1. Норма.`);
-    return false;
-  }
-
-  const distance = (a: number, b: number) => Math.abs(a - b);
-
-  const kNearest = (point: number, arr: number[], k: number) =>
-    arr
-      .map((val) => ({ val, dist: distance(point, val) }))
-      .sort((a, b) => a.dist - b.dist)
-      .slice(0, k);
-
-  const localReachDensity = (point: number, arr: number[]) => {
-    const neighbors = kNearest(point, arr, K);
-    const meanDist =
-      neighbors.reduce((sum, n) => sum + n.dist, 0) / neighbors.length;
-    const density = 1 / Math.max(meanDist, EPS);
-    return Math.min(density, MAX_DENSITY); // ограничиваем плотность
-  };
-
-  const lrdLast = localReachDensity(lastValue, window);
-
-  const neighbors = kNearest(lastValue, window, K);
-  const lofScore =
-    neighbors.reduce(
-      (sum, n) => sum + localReachDensity(n.val, window) / lrdLast,
-      0
-    ) / neighbors.length;
-
-  const LOF_THRESHOLD = threshold;
-  const isAnomaly = lofScore > LOF_THRESHOLD;
-
-  console.log(
-    `[LOF] Значение: ${lastValue.toFixed(2)}, LOF-оценка: ${lofScore.toFixed(
-      4
-    )}, Порог: ${LOF_THRESHOLD}. ${isAnomaly ? "АНОМАЛИЯ" : "Норма"}`
-  );
-
-  return isAnomaly;
-}
-
-function fft(data: number[], threshold: number, windowSize: number): boolean {
-  const FFT_WINDOW_SIZE = windowSize; // степень двойки
-  const EPS = 1e-12;
-
-  if (data.length < FFT_WINDOW_SIZE) {
-    console.log(`[FFT] Недостаточно данных: ${data.length}/${FFT_WINDOW_SIZE}`);
-    return false;
-  }
-
-  const window = data.slice(-FFT_WINDOW_SIZE);
-  const complexData: [number, number][] = window.map((val) => [val, 0]);
-
-  function _fftRecursive(arr: [number, number][]): [number, number][] {
-    const n = arr.length;
-    if (n <= 1) return arr;
-
-    const half = n / 2;
-    const even: [number, number][] = [];
-    const odd: [number, number][] = [];
-
-    for (let i = 0; i < half; i++) {
-      even.push(arr[i * 2]);
-      odd.push(arr[i * 2 + 1]);
-    }
-
-    const evenFft = _fftRecursive(even);
-    const oddFft = _fftRecursive(odd);
-    const result: [number, number][] = new Array(n);
-
-    for (let k = 0; k < half; k++) {
-      const angle = (-2 * Math.PI * k) / n;
-      const t: [number, number] = [
-        oddFft[k][0] * Math.cos(angle) - oddFft[k][1] * Math.sin(angle),
-        oddFft[k][0] * Math.sin(angle) + oddFft[k][1] * Math.cos(angle),
-      ];
-      result[k] = [evenFft[k][0] + t[0], evenFft[k][1] + t[1]];
-      result[k + half] = [evenFft[k][0] - t[0], evenFft[k][1] - t[1]];
-    }
-    return result;
-  }
-
-  const fftResult = _fftRecursive(complexData);
-  const magnitudes = fftResult.map(([re, im]) => Math.sqrt(re ** 2 + im ** 2));
-
-  const highFreqMagnitudes = magnitudes.slice(
-    FFT_WINDOW_SIZE / 4,
-    FFT_WINDOW_SIZE / 2
-  );
-  const totalMagnitude = magnitudes.reduce((sum, val) => sum + val, 0);
-  const highFreqMagnitudeSum = highFreqMagnitudes.reduce(
-    (sum, val) => sum + val,
-    0
-  );
-
-  if (totalMagnitude < EPS) {
-    console.log(
-      "[FFT] Общая магнитуда слишком мала. Невозможно вычислить отношение."
-    );
-    return false;
-  }
-
-  const highFreqRatio = highFreqMagnitudeSum / totalMagnitude;
-  const HIGH_FREQ_THRESHOLD = threshold;
-  const isAnomaly = highFreqRatio > HIGH_FREQ_THRESHOLD;
-
-  console.log(
-    `[FFT] Отношение высокочастотной энергии к общей: ${highFreqRatio.toFixed(
-      2
-    )}. Порог: ${HIGH_FREQ_THRESHOLD}. ${isAnomaly ? "АНОМАЛИЯ" : "Норма"}`
-  );
-
-  return isAnomaly;
-}
-
-// ----------------------------------------------------------------------
-//
-// КОНЕЦ ФУНКЦИЙ
-//
-// ----------------------------------------------------------------------
-
-// Утилитарная функция для форматирования даты
 const formatDate = (date: Date | null) => {
   if (!date) return "N/A";
   return date.toLocaleString("ru-RU", {
@@ -227,25 +36,75 @@ const formatDate = (date: Date | null) => {
     year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
-    second: "2-digit",
   });
 };
 
 const excelSerialToJsDate = (serial: number | string): Date => {
   const num =
     typeof serial === "string" ? parseFloat(serial.replace(",", ".")) : serial;
-
   const daysBefore1970 = 25569;
   const msInDay = 86400000;
   const unixMilliseconds = (num - daysBefore1970) * msInDay;
-
   const date = new Date(unixMilliseconds);
-  date.setUTCDate(date.getUTCDate() + 1); // фикс бага Excel 1900
-
-  // Отнимаем 4 часа
-  date.setHours(date.getHours() - 4);
+  date.setDate(date.getDate() + 1);
 
   return date;
+};
+
+// 💡 Новая функция для выборки меток времени
+const getSparseTimeTicks = (
+  data: DynamicSensorData[],
+  count: number
+): [number[], string[]] => {
+  if (data.length === 0) return [[], []];
+
+  const tickValues = [];
+  const tickTexts = [];
+  const step = Math.max(1, Math.floor(data.length / count));
+
+  for (let i = 0; i < data.length; i += step) {
+    const d = data[i];
+    const excelSerial = d["время"] as number;
+    const jsDate = excelSerialToJsDate(excelSerial);
+    tickValues.push(excelSerial);
+    tickTexts.push(jsDate.toLocaleTimeString("ru-RU"));
+  }
+
+  // Убедитесь, что последняя точка всегда включена
+  if (
+    tickValues.length === 0 ||
+    tickValues[tickValues.length - 1] !== data[data.length - 1]["время"]
+  ) {
+    const lastDataPoint = data[data.length - 1];
+    tickValues.push(lastDataPoint["время"] as number);
+    tickTexts.push(
+      excelSerialToJsDate(lastDataPoint["время"] as number).toLocaleTimeString(
+        "ru-RU"
+      )
+    );
+  }
+
+  // Ограничиваем количество меток до 'count'
+  if (tickValues.length > count) {
+    const newTickValues = [];
+    const newTickTexts = [];
+    const newStep = Math.max(1, Math.floor(tickValues.length / count));
+    for (let i = 0; i < tickValues.length; i += newStep) {
+      newTickValues.push(tickValues[i]);
+      newTickTexts.push(tickTexts[i]);
+    }
+    // Убедимся, что последняя метка всегда есть
+    if (
+      newTickValues[newTickValues.length - 1] !==
+      tickValues[tickValues.length - 1]
+    ) {
+      newTickValues.push(tickValues[tickValues.length - 1]);
+      newTickTexts.push(tickTexts[tickTexts.length - 1]);
+    }
+    return [newTickValues, newTickTexts];
+  }
+
+  return [tickValues, tickTexts];
 };
 
 export default function Home() {
@@ -262,27 +121,26 @@ export default function Home() {
     Record<string, boolean>
   >({});
   const [flightStart, setFlightStart] = useState<Date | null>(null);
-  // Новое состояние для настраиваемых порогов и размеров окон
-  const [thresholds, setThresholds] = useState({
-    "Z-score": 3,
-    LOF: 25,
-    FFT: 0.5,
-    FFT_WINDOW_SIZE: 64, // Степень двойки для FFT
-    Z_SCORE_WINDOW_SIZE: 50,
-    LOF_WINDOW_SIZE: 50,
-  });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const wsRef = useRef<WebSocket | null>(null);
 
   const fullDataRef = useRef<DynamicSensorData[]>([]);
   const intervalRef = useRef<Node.js.Timeout | null>(null);
   const dataIndexRef = useRef<number>(0);
 
-  // Обработчик для изменения значений порогов
+  const [thresholds, setThresholds] = useState({
+    Z_score: 3,
+    LOF: 25,
+    FFT: 0.5,
+    FFT_WINDOW_SIZE: 64,
+    Z_SCORE_WINDOW_SIZE: 50,
+    LOF_WINDOW_SIZE: 50,
+  });
+
   const handleThresholdChange = useCallback(
     (key: string, value: number | string) => {
-      // Парсим значение в число, если оно строковое
       const numericValue =
         typeof value === "string" ? parseFloat(value) : value;
-
       if (!isNaN(numericValue) && numericValue >= 0) {
         setThresholds((prev) => ({
           ...prev,
@@ -291,105 +149,6 @@ export default function Home() {
       }
     },
     []
-  );
-
-  // Логирование смены метода
-  useEffect(() => {
-    console.log(`[Смена метода] Выбран новый метод анализа: ${analysisMethod}`);
-  }, [analysisMethod]);
-
-  const detectAnomaly = useCallback(
-    (
-      data: DynamicSensorData[],
-      method: AnomalyDetectionMethod,
-      paramKey: string
-    ) => {
-      let warmUpThreshold = 0;
-      switch (method) {
-        case "FFT":
-          // Для FFT окно должно быть не меньше размера, кратного двум.
-          // Увеличиваем порог для разогрева.
-          warmUpThreshold = (thresholds["FFT_WINDOW_SIZE"] as number) * 2;
-          break;
-        case "Z-score":
-          warmUpThreshold = thresholds["Z_SCORE_WINDOW_SIZE"] as number;
-          break;
-        case "LOF":
-        default:
-          warmUpThreshold = thresholds["LOF_WINDOW_SIZE"] as number;
-          break;
-      }
-
-      console.log(
-        `[Анализ] Проверка параметра "${paramKey}" с методом "${method}". Точек в выборке: ${data.length}`
-      );
-
-      if (data.length < warmUpThreshold) {
-        console.log(
-          `[Анализ] Фаза разогрева. Текущих точек ${data.length}, требуется ${warmUpThreshold}. Обнаружение аномалий пропущено.`
-        );
-        return false;
-      }
-
-      const values = data
-        .slice(-warmUpThreshold)
-        .map((d) => {
-          const val = d[paramKey];
-          return typeof val === "string"
-            ? parseFloat(val.replace(",", "."))
-            : val;
-        })
-        .filter((v) => typeof v === "number" && !isNaN(v)) as number[];
-
-      if (values.length === 0) {
-        console.log(
-          `[Анализ] Некорректные данные для параметра "${paramKey}". Пропуск.`
-        );
-        return false;
-      }
-
-      console.log(
-        `[Анализ] Запуск алгоритма "${method}" на ${values.length} последних точках.`
-      );
-      let isAnomaly = false;
-      switch (method) {
-        case "FFT":
-          isAnomaly = fft(
-            values,
-            thresholds["FFT"] as number,
-            thresholds["FFT_WINDOW_SIZE"] as number
-          );
-          break;
-        case "Z-score":
-          isAnomaly = zScore(
-            values,
-            thresholds["Z-score"] as number,
-            thresholds["Z_SCORE_WINDOW_SIZE"] as number
-          );
-          break;
-        case "LOF":
-        default:
-          isAnomaly = lof(
-            values,
-            thresholds["LOF"] as number,
-            thresholds["LOF_WINDOW_SIZE"] as number
-          );
-          break;
-      }
-
-      if (isAnomaly) {
-        console.warn(
-          `[!!! АНОМАЛИЯ !!!] Обнаружена аномалия для параметра "${paramKey}" с методом "${method}"`
-        );
-      } else {
-        console.log(
-          `[Анализ] Для параметра "${paramKey}" аномалии не найдено.`
-        );
-      }
-
-      return isAnomaly;
-    },
-    [thresholds]
   );
 
   const startDataSimulation = useCallback(() => {
@@ -422,151 +181,311 @@ export default function Home() {
     }, 1000);
   }, []);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const connectWebSocket = useCallback(
+    async (file?: File) => {
+      if (wsRef.current) {
+        console.log("[WebSocket] Closing existing connection.");
+        wsRef.current.close();
+      }
+      setLiveData([]);
+      setAnomalyInfo([]);
+      setIsBackendConnected(false);
+
+      const ws = new WebSocket("ws://127.0.0.1:8000/api/v1/ws");
+      wsRef.current = ws;
+
+      ws.onopen = async () => {
+        console.log("[WebSocket] Connection established.");
+        setIsBackendConnected(true);
+
+        const message = {
+          method: analysisMethod,
+          window_size:
+            analysisMethod === "FFT"
+              ? thresholds.FFT_WINDOW_SIZE
+              : analysisMethod === "Z_score"
+              ? thresholds.Z_SCORE_WINDOW_SIZE
+              : thresholds.LOF_WINDOW_SIZE,
+          score_threshold:
+            analysisMethod === "FFT"
+              ? thresholds.FFT
+              : analysisMethod === "Z_score"
+              ? thresholds["Z_score"]
+              : thresholds.LOF,
+        };
+
+        console.log("[WebSocket] Sending initial parameters:", message);
+        ws.send(JSON.stringify(message));
+      };
+
+      ws.onmessage = (event) => {
+        const incomingMessage = JSON.parse(event.data);
+        const data = incomingMessage.data;
+
+        if (!data) {
+          console.warn(
+            "[WebSocket] Received message with no 'data' key. Skipping."
+          );
+          return;
+        }
+
+        console.log("[WebSocket] Data received:", data);
+
+        setLiveData((prevData) => {
+          const newDataPoint: DynamicSensorData = {};
+          let isFirstData = prevData.length === 0;
+          let anomalyFoundInThisPoint = false;
+
+          for (const key in data) {
+            if (key === "время") {
+              newDataPoint[key] = data[key];
+              continue;
+            }
+
+            const value = data[key];
+
+            if (Array.isArray(value) && value.length === 2) {
+              const [paramValue, isAnomaly] = value;
+              newDataPoint[key] = [paramValue, isAnomaly];
+
+              if (isAnomaly) {
+                anomalyFoundInThisPoint = true;
+                const newAnomaly = {
+                  id: `${Date.now()}-${key}`,
+                  timestamp: data["время"] as string,
+                  param: key,
+                  message: `Аномалия обнаружена в ${key}: ${paramValue.toFixed(
+                    2
+                  )}`,
+                };
+                setAnomalyInfo((prevInfo) => [...prevInfo, newAnomaly]);
+              }
+            } else {
+              const paramValue = parseFloat(value);
+              if (!isNaN(paramValue)) {
+                newDataPoint[key] = [paramValue, false];
+              } else {
+                console.warn(
+                  `[WebSocket] Skipping invalid data for key '${key}':`,
+                  value
+                );
+                continue;
+              }
+            }
+          }
+
+          if (anomalyFoundInThisPoint) {
+            setConsecutiveAnomaliesCount((prev) => prev + 1);
+          } else {
+            setConsecutiveAnomaliesCount(0);
+          }
+
+          if (isFirstData) {
+            const params = Object.keys(newDataPoint).filter(
+              (k) =>
+                k !== "время" &&
+                !isNaN((newDataPoint[k] as [number, boolean])[0])
+            );
+            setAvailableParameters(params);
+            setGraphVisibility(
+              params.reduce((acc, param) => ({ ...acc, [param]: true }), {})
+            );
+            setFlightStart(
+              excelSerialToJsDate(newDataPoint["время"] as number)
+            );
+          }
+
+          const updatedData = [...prevData, newDataPoint];
+          return updatedData;
+        });
+      };
+      ws.onclose = (event) => {
+        console.log("[WebSocket] Connection closed.", event.code, event.reason);
+        setIsBackendConnected(false);
+      };
+
+      ws.onerror = (error) => {
+        console.error("[WebSocket] Error:", error);
+        setIsBackendConnected(false);
+      };
+    },
+    [analysisMethod, thresholds]
+  );
+
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
+    if (wsRef.current) {
+      wsRef.current.close();
     }
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const text = e.target.result as string;
+    setIsLoading(true);
 
-      const lines = text.split(/\r?\n/);
+    const formData = new FormData();
+    formData.append("file", file);
 
-      const flightStartLine = lines[0];
-      console.log(flightStartLine);
-      const timeMatch = flightStartLine.match(
-        /(\d{1,2}) (.*) (\d{4})г. (\d{1,2}):(\d{1,2})/
-      );
-      let startTime = null;
-      if (timeMatch) {
-        const [, day, monthStr, year, hour, minute] = timeMatch;
-        console.log(timeMatch);
-        const monthIndex = [
-          "января",
-          "февраля",
-          "марта",
-          "апреля",
-          "мая",
-          "июня",
-          "июля",
-          "августа",
-          "сентября",
-          "октября",
-          "ноября",
-          "декабря",
-        ].indexOf(monthStr);
-        if (monthIndex !== -1) {
-          startTime = new Date(
-            parseInt(year),
-            monthIndex,
-            parseInt(day),
-            parseInt(hour),
-            parseInt(minute)
-          );
-        }
-      }
-      setFlightStart(startTime);
-      console.log(`[Загрузка файла] Начало бурения: ${formatDate(startTime)}`);
+    const score_threshold =
+      analysisMethod === "FFT"
+        ? thresholds.FFT
+        : analysisMethod === "Z_score"
+        ? thresholds["Z_score"]
+        : thresholds.LOF;
 
-      const dataText = lines.slice(2).join("\n");
+    const window_size =
+      analysisMethod === "FFT"
+        ? thresholds.FFT_WINDOW_SIZE
+        : analysisMethod === "Z_score"
+        ? thresholds.Z_SCORE_WINDOW_SIZE
+        : thresholds.LOF_WINDOW_SIZE;
 
-      Papa.parse(dataText, {
-        header: true,
-        dynamicTyping: true,
-        skipEmptyLines: true,
-        delimiter: "\t",
-        complete: (result) => {
-          const parsedData = result.data as DynamicSensorData[];
+    const url = `http://127.0.0.1:8000/api/v1/analyze/file?method=${analysisMethod}&window_size=${window_size}&score_threshold=${score_threshold}`;
 
-          if (parsedData.length > 0) {
-            const keys = Object.keys(parsedData[0]);
-            const filteredKeys = keys.filter(
-              (key) => key && key.toLowerCase() !== "время"
-            );
-            setAvailableParameters(filteredKeys);
-            console.log(
-              `[Загрузка файла] Обнаружены параметры: ${filteredKeys.join(
-                ", "
-              )}`
-            );
-
-            const initialVisibility = filteredKeys.reduce((acc, key) => {
-              acc[key] = false;
-              return acc;
-            }, {} as Record<string, boolean>);
-            setGraphVisibility(initialVisibility);
-          }
-
-          fullDataRef.current = parsedData;
-          startDataSimulation();
-        },
-        error: (error) => {
-          console.error("Error parsing TXT file:", error);
+    try {
+      const response = await axios.post(url, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
         },
       });
-    };
 
-    reader.readAsText(file);
+      const parsedData = response.data.data;
+      console.log("[File Upload] Data received:", parsedData);
+
+      setLiveData([]);
+      setAnomalyInfo([]);
+      setConsecutiveAnomaliesCount(0);
+
+      if (parsedData.length > 0) {
+        const keys = Object.keys(parsedData[0]);
+        const filteredKeys = keys.filter(
+          (key) => key.toLowerCase() !== "время"
+        );
+        setAvailableParameters(filteredKeys);
+
+        const initialVisibility = filteredKeys.reduce((acc, key) => {
+          acc[key] = false;
+          return acc;
+        }, {} as Record<string, boolean>);
+        setGraphVisibility(initialVisibility);
+      }
+
+      let index = 0;
+      const intervalId = setInterval(() => {
+        if (index < parsedData.length) {
+          const newDataPoint = parsedData[index];
+
+          setLiveData((prevData) => {
+            const newData = [...prevData, newDataPoint];
+            const MAX_DISPLAY_POINTS = 1000;
+            return newData.slice(-MAX_DISPLAY_POINTS);
+          });
+
+          const newAnomalies: AnomalyInfo[] = [];
+          Object.keys(newDataPoint).forEach((paramKey) => {
+            if (paramKey.toLowerCase() === "время") return;
+
+            const paramValue = newDataPoint[paramKey] as [number, boolean];
+            const isAnomaly = paramValue[1];
+
+            if (isAnomaly) {
+              newAnomalies.push({
+                param: paramKey,
+                timestamp: newDataPoint["время"] as number,
+              });
+            }
+          });
+
+          if (newAnomalies.length > 0) {
+            setAnomalyInfo((prevAnomalies) => {
+              const currentAnomalies = [...prevAnomalies, ...newAnomalies];
+              const uniqueAnomalies = Array.from(
+                new Set(currentAnomalies.map((a) => JSON.stringify(a)))
+              ).map((s) => JSON.parse(s));
+              return uniqueAnomalies;
+            });
+            setConsecutiveAnomaliesCount((prev) => prev + 1);
+          } else {
+            setConsecutiveAnomaliesCount(0);
+          }
+
+          const CONSECUTIVE_ANOMALY_THRESHOLD = 5;
+          if (
+            !isModalOpen &&
+            consecutiveAnomaliesCount >= CONSECUTIVE_ANOMALY_THRESHOLD
+          ) {
+            setIsModalOpen(true);
+          }
+
+          index++;
+        } else {
+          clearInterval(intervalId);
+          setIsLoading(false);
+        }
+      }, 1000);
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target?.result as string;
+        const lines = text.split(/\r?\n/);
+        const flightStartLine = lines[0];
+        const timeMatch = flightStartLine.match(
+          /(\d{1,2}) (.*) (\d{4})г. (\d{1,2}):(\d{1,2})/
+        );
+        let startTime = null;
+        if (timeMatch) {
+          const [, day, monthStr, year, hour, minute] = timeMatch;
+          const monthIndex = [
+            "января",
+            "февраля",
+            "марта",
+            "апреля",
+            "мая",
+            "июня",
+            "июля",
+            "августа",
+            "сентября",
+            "октября",
+            "ноября",
+            "декабря",
+          ].indexOf(monthStr);
+          if (monthIndex !== -1) {
+            startTime = new Date(
+              parseInt(year),
+              monthIndex,
+              parseInt(day),
+              parseInt(hour),
+              parseInt(minute)
+            );
+          }
+        }
+        setFlightStart(startTime);
+      };
+      reader.readAsText(file);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error("Axios error analyzing file:", error.message);
+        if (error.response) {
+          console.error("Response data:", error.response.data);
+          console.error("Response status:", error.response.status);
+        }
+      } else {
+        console.error("Error analyzing file:", error);
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
-    if (liveData.length > 0 && availableParameters.length > 0) {
-      const newAnomalies: AnomalyInfo[] = [];
-      const lastDataPoint = liveData[liveData.length - 1];
-
-      availableParameters.forEach((paramKey) => {
-        if (graphVisibility[paramKey]) {
-          const anomaly = detectAnomaly(liveData, analysisMethod, paramKey);
-          if (anomaly) {
-            newAnomalies.push({
-              param: paramKey,
-              timestamp: lastDataPoint["Время"] as number | string,
-            });
-          }
-        }
-      });
-
-      setAnomalyInfo((prevAnomalies) => {
-        const currentAnomalies = [...prevAnomalies, ...newAnomalies];
-        const uniqueAnomalies = Array.from(
-          new Set(currentAnomalies.map((a) => JSON.stringify(a)))
-        ).map((s) => JSON.parse(s));
-        return uniqueAnomalies;
-      });
-
-      if (newAnomalies.length > 0) {
-        setConsecutiveAnomaliesCount((prev) => prev + 1);
-        if (
-          !isModalOpen &&
-          consecutiveAnomaliesCount >= CONSECUTIVE_ANOMALY_THRESHOLD
-        ) {
-          setIsModalOpen(true);
-          console.warn(
-            `[!!! Тревога !!!] Обнаружено ${
-              consecutiveAnomaliesCount + 1
-            } аномалий подряд. Открываем модальное окно.`
-          );
-        }
-      } else {
-        if (consecutiveAnomaliesCount > 0) {
-          console.log(`[Сброс] Последовательность аномалий прервана.`);
-        }
-        setConsecutiveAnomaliesCount(0);
+    connectWebSocket();
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close();
       }
-    }
-  }, [
-    liveData,
-    availableParameters,
-    detectAnomaly,
-    isModalOpen,
-    consecutiveAnomaliesCount,
-    analysisMethod,
-    graphVisibility,
-  ]);
+    };
+  }, [connectWebSocket]);
 
   const handleVisibilityChange = (param: string) => {
     setGraphVisibility((prev) => ({
@@ -591,16 +510,8 @@ export default function Home() {
     setGraphVisibility(newVisibility);
   };
 
-  useEffect(() => {
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, []);
-
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 p-6 relative">
       <h1 className="text-4xl font-extrabold text-center mb-2 text-gray-900">
         WellPro: Мониторинг Буровых Данных
       </h1>
@@ -639,21 +550,20 @@ export default function Home() {
             className="p-2 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="FFT">FFT</option>
-            <option value="Z-score">Z-score</option>
+            <option value="Z_score">Z-score</option>
             <option value="LOF">LOF</option>
           </select>
 
-          {/* Поля ввода для Z-score */}
-          {analysisMethod === "Z-score" && (
+          {analysisMethod === "Z_score" && (
             <>
               <label className="text-gray-700 font-medium whitespace-nowrap">
                 Порог Z-score:
               </label>
               <input
                 type="number"
-                value={thresholds["Z-score"]}
+                value={thresholds["Z_score"]}
                 onChange={(e) =>
-                  handleThresholdChange("Z-score", parseFloat(e.target.value))
+                  handleThresholdChange("Z_score", parseFloat(e.target.value))
                 }
                 className="p-2 border border-gray-300 rounded-md shadow-sm w-24 text-sm"
                 step="0.1"
@@ -675,7 +585,6 @@ export default function Home() {
             </>
           )}
 
-          {/* Поля ввода для LOF */}
           {analysisMethod === "LOF" && (
             <>
               <label className="text-gray-700 font-medium whitespace-nowrap">
@@ -707,7 +616,6 @@ export default function Home() {
             </>
           )}
 
-          {/* Поля ввода для FFT */}
           {analysisMethod === "FFT" && (
             <>
               <label className="text-gray-700 font-medium whitespace-nowrap">
@@ -771,13 +679,10 @@ export default function Home() {
                 <Plot
                   data={[
                     {
-                      x: liveData.map((d) => {
-                        const val = d[paramKey];
-                        return typeof val === "string"
-                          ? parseFloat(val.replace(",", "."))
-                          : val;
-                      }),
-                      y: liveData.map((d) => excelSerialToJsDate(d["Время"])),
+                      x: liveData.map(
+                        (d) => (d[paramKey] as [number, boolean])[0]
+                      ),
+                      y: liveData.map((d) => d["время"]),
                       type: "scatter",
                       mode: "lines",
                       name: paramKey,
@@ -790,22 +695,21 @@ export default function Home() {
                         .filter((info) => info.param === paramKey)
                         .map((info) => {
                           const dataPoint = liveData.find(
-                            (d) => d["Время"] === info.timestamp
+                            (d) => d["время"] === info.timestamp
                           );
-                          const val = dataPoint?.[paramKey];
-                          return typeof val === "string"
-                            ? parseFloat(val.replace(",", "."))
-                            : val;
+                          return dataPoint
+                            ? (dataPoint[paramKey] as [number, boolean])[0]
+                            : null;
                         }),
                       y: anomalyInfo
                         .filter((info) => info.param === paramKey)
-                        .map((info) => excelSerialToJsDate(info.timestamp)),
+                        .map((info) => info.timestamp),
                       mode: "markers",
                       type: "scatter",
                       name: "Аномалия",
                       marker: {
                         color: "red",
-                        symbol: "triangle-right",
+                        symbol: "x",
                         size: 10,
                       },
                     },
@@ -813,12 +717,22 @@ export default function Home() {
                   layout={{
                     autosize: true,
                     margin: { l: 70, r: 10, t: 20, b: 40 },
-                    xaxis: { title: paramKey },
+                    xaxis: {
+                      title: "Значение",
+                    },
                     yaxis: {
                       title: "Время",
-                      type: "date", // важно — говорит Plotly, что это временная ось
                       autorange: "reversed",
-                      tickformat: "%H:%M:%S", // только время
+                      ...(() => {
+                        const [tickValues, tickTexts] = getSparseTimeTicks(
+                          liveData,
+                          5
+                        );
+                        return {
+                          tickvals: tickValues,
+                          ticktext: tickTexts,
+                        };
+                      })(),
                     },
                     height: 300,
                     hovermode: "y unified",
@@ -830,11 +744,13 @@ export default function Home() {
             )
         )}
       </div>
-      {/* <AnomalyModal
+      <AnomalyModal
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
         anomalyInfo={anomalyInfo}
-      /> */}
+      />
+
+      <LoadingOverlay isLoading={isLoading} />
     </div>
   );
 }

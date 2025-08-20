@@ -12,6 +12,7 @@
     "@types/papaparse": "^5.3.16",
     "@types/react-modal": "^3.16.3",
     "@types/react-plotly.js": "^2.6.3",
+    "axios": "^1.11.0",
     "fft-js": "^0.0.12",
     "next": "15.4.5",
     "papaparse": "^5.5.3",
