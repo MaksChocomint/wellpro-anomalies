@@ -51,6 +51,40 @@ const excelSerialToJsDate = (serial: number | string): Date => {
   return date;
 };
 
+export const formatParamName = (name: string): string => {
+  // Regex для поиска чисел в конце строки
+  const numberMatch = name.match(/(\d+)$/);
+
+  let formattedName = name;
+  let numberPart = "";
+
+  if (numberMatch) {
+    // Если число найдено, отделяем его
+    numberPart = numberMatch[0];
+    formattedName = name.slice(0, -numberPart.length);
+  }
+
+  // Разбиваем оставшуюся часть строки по символу "_"
+  const parts = formattedName.split("_");
+
+  // Форматируем слова: первое с заглавной, остальные с маленькой буквы
+  const formattedWords = parts
+    .map((part, index) => {
+      if (index === 0) {
+        return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
+      }
+      return part.toLowerCase();
+    })
+    .join(" ");
+
+  // Если была найдена цифра, добавляем ее через пробел
+  if (numberPart) {
+    return formattedWords + " " + numberPart;
+  }
+
+  return formattedWords;
+};
+
 // 💡 Новая функция для выборки меток времени
 const getSparseTimeTicks = (
   data: DynamicSensorData[],
@@ -68,9 +102,8 @@ const getSparseTimeTicks = (
     const jsDate = excelSerialToJsDate(excelSerial);
     tickValues.push(excelSerial);
     tickTexts.push(jsDate.toLocaleTimeString("ru-RU"));
-  }
+  } // Убедитесь, что последняя точка всегда включена
 
-  // Убедитесь, что последняя точка всегда включена
   if (
     tickValues.length === 0 ||
     tickValues[tickValues.length - 1] !== data[data.length - 1]["время"]
@@ -82,9 +115,8 @@ const getSparseTimeTicks = (
         "ru-RU"
       )
     );
-  }
+  } // Ограничиваем количество меток до 'count'
 
-  // Ограничиваем количество меток до 'count'
   if (tickValues.length > count) {
     const newTickValues = [];
     const newTickTexts = [];
@@ -92,8 +124,7 @@ const getSparseTimeTicks = (
     for (let i = 0; i < tickValues.length; i += newStep) {
       newTickValues.push(tickValues[i]);
       newTickTexts.push(tickTexts[i]);
-    }
-    // Убедимся, что последняя метка всегда есть
+    } // Убедимся, что последняя метка всегда есть
     if (
       newTickValues[newTickValues.length - 1] !==
       tickValues[tickValues.length - 1]
@@ -112,6 +143,7 @@ export default function Home() {
   const [anomalyInfo, setAnomalyInfo] = useState<AnomalyInfo[]>([]);
   const [isBackendConnected, setIsBackendConnected] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [doNotShowAgain, setDoNotShowAgain] = useState<boolean>(false);
   const [consecutiveAnomaliesCount, setConsecutiveAnomaliesCount] =
     useState<number>(0);
   const [analysisMethod, setAnalysisMethod] =
@@ -123,10 +155,12 @@ export default function Home() {
   const [flightStart, setFlightStart] = useState<Date | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const wsRef = useRef<WebSocket | null>(null);
-
+  const [isAnomalyDismissed, setIsAnomalyDismissed] = useState(false);
   const fullDataRef = useRef<DynamicSensorData[]>([]);
-  const intervalRef = useRef<Node.js.Timeout | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const dataIndexRef = useRef<number>(0);
+
+  const showAnomalyStatus = anomalyInfo.length > 0 && !isAnomalyDismissed;
 
   const [thresholds, setThresholds] = useState({
     Z_score: 3,
@@ -150,6 +184,14 @@ export default function Home() {
     },
     []
   );
+  const handleDoNotShowAgain = () => {
+    setDoNotShowAgain(true);
+    setIsModalOpen(false);
+  };
+
+  const handleDismissAnomaly = () => {
+    setIsAnomalyDismissed(true);
+  };
 
   const startDataSimulation = useCallback(() => {
     if (intervalRef.current) {
@@ -190,6 +232,8 @@ export default function Home() {
       setLiveData([]);
       setAnomalyInfo([]);
       setIsBackendConnected(false);
+      setConsecutiveAnomaliesCount(0); // Сброс счетчика
+      setIsModalOpen(false); // Сброс модального окна
 
       const ws = new WebSocket("ws://127.0.0.1:8000/api/v1/ws");
       wsRef.current = ws;
@@ -235,6 +279,7 @@ export default function Home() {
           const newDataPoint: DynamicSensorData = {};
           let isFirstData = prevData.length === 0;
           let anomalyFoundInThisPoint = false;
+          const newAnomaliesThisPoint: AnomalyInfo[] = [];
 
           for (const key in data) {
             if (key === "время") {
@@ -249,16 +294,16 @@ export default function Home() {
               newDataPoint[key] = [paramValue, isAnomaly];
 
               if (isAnomaly) {
+                setIsModalOpen(true);
                 anomalyFoundInThisPoint = true;
-                const newAnomaly = {
+                newAnomaliesThisPoint.push({
                   id: `${Date.now()}-${key}`,
-                  timestamp: data["время"] as string,
+                  timestamp: data["время"] as number,
                   param: key,
-                  message: `Аномалия обнаружена в ${key}: ${paramValue.toFixed(
-                    2
-                  )}`,
-                };
-                setAnomalyInfo((prevInfo) => [...prevInfo, newAnomaly]);
+                  message: `Аномалия обнаружена в ${formatParamName(
+                    key
+                  )}: ${paramValue.toFixed(2)}`,
+                });
               }
             } else {
               const paramValue = parseFloat(value);
@@ -272,19 +317,12 @@ export default function Home() {
                 continue;
               }
             }
-          }
-
-          if (anomalyFoundInThisPoint) {
-            setConsecutiveAnomaliesCount((prev) => prev + 1);
-          } else {
-            setConsecutiveAnomaliesCount(0);
-          }
+          } // Обновляем состояние аномалий
+          setAnomalyInfo((prevInfo) => [...prevInfo, ...newAnomaliesThisPoint]); // Проверяем и обновляем счетчик последовательных аномалий
 
           if (isFirstData) {
             const params = Object.keys(newDataPoint).filter(
-              (k) =>
-                k !== "время" &&
-                !isNaN((newDataPoint[k] as [number, boolean])[0])
+              (k) => k !== "время" && Array.isArray(newDataPoint[k])
             );
             setAvailableParameters(params);
             setGraphVisibility(
@@ -296,7 +334,7 @@ export default function Home() {
           }
 
           const updatedData = [...prevData, newDataPoint];
-          return updatedData;
+          return updatedData.slice(-MAX_DATA_POINTS);
         });
       };
       ws.onclose = (event) => {
@@ -316,10 +354,15 @@ export default function Home() {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
-    if (!file) return;
+    if (!file) return; // Закрываем текущее WebSocket-соединение
 
     if (wsRef.current) {
       wsRef.current.close();
+      wsRef.current = null; // Очищаем ссылку
+    } // Останавливаем симуляцию, если она была активна
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
     }
 
     setIsLoading(true);
@@ -356,6 +399,8 @@ export default function Home() {
       setLiveData([]);
       setAnomalyInfo([]);
       setConsecutiveAnomaliesCount(0);
+      setFlightStart(null); // Сбрасываем дату начала, если она не в файле
+      setIsModalOpen(false);
 
       if (parsedData.length > 0) {
         const keys = Object.keys(parsedData[0]);
@@ -365,13 +410,14 @@ export default function Home() {
         setAvailableParameters(filteredKeys);
 
         const initialVisibility = filteredKeys.reduce((acc, key) => {
-          acc[key] = false;
+          acc[key] = true; // Изменено на true для автоматического отображения
           return acc;
         }, {} as Record<string, boolean>);
         setGraphVisibility(initialVisibility);
       }
 
       let index = 0;
+
       const intervalId = setInterval(() => {
         if (index < parsedData.length) {
           const newDataPoint = parsedData[index];
@@ -383,6 +429,7 @@ export default function Home() {
           });
 
           const newAnomalies: AnomalyInfo[] = [];
+          let anomalyFoundInThisPoint = false;
           Object.keys(newDataPoint).forEach((paramKey) => {
             if (paramKey.toLowerCase() === "время") return;
 
@@ -390,9 +437,14 @@ export default function Home() {
             const isAnomaly = paramValue[1];
 
             if (isAnomaly) {
+              setIsModalOpen(true);
+              anomalyFoundInThisPoint = true;
               newAnomalies.push({
                 param: paramKey,
                 timestamp: newDataPoint["время"] as number,
+                message: `Аномалия обнаружена в ${formatParamName(
+                  paramKey
+                )}: ${paramValue[0].toFixed(2)}`,
               });
             }
           });
@@ -405,18 +457,7 @@ export default function Home() {
               ).map((s) => JSON.parse(s));
               return uniqueAnomalies;
             });
-            setConsecutiveAnomaliesCount((prev) => prev + 1);
-          } else {
-            setConsecutiveAnomaliesCount(0);
-          }
-
-          const CONSECUTIVE_ANOMALY_THRESHOLD = 5;
-          if (
-            !isModalOpen &&
-            consecutiveAnomaliesCount >= CONSECUTIVE_ANOMALY_THRESHOLD
-          ) {
-            setIsModalOpen(true);
-          }
+          } // Обновляем локальный счетчик и открываем модальное окно
 
           index++;
         } else {
@@ -424,6 +465,7 @@ export default function Home() {
           setIsLoading(false);
         }
       }, 1000);
+      intervalRef.current = intervalId;
 
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -478,6 +520,20 @@ export default function Home() {
     }
   };
 
+  const handleSwitchToRealTime = useCallback(() => {
+    // Останавливаем симуляцию, если она была активна
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+      console.log("[Симуляция] Симуляция остановлена.");
+    } // Сбрасываем все состояния
+    setLiveData([]);
+    setAnomalyInfo([]);
+    setConsecutiveAnomaliesCount(0);
+    setFlightStart(null); // Перезапускаем WebSocket-соединение
+    connectWebSocket();
+  }, [connectWebSocket]);
+
   useEffect(() => {
     connectWebSocket();
     return () => {
@@ -515,15 +571,17 @@ export default function Home() {
       <h1 className="text-4xl font-extrabold text-center mb-2 text-gray-900">
         WellPro: Мониторинг Буровых Данных
       </h1>
+
       {flightStart && (
         <p className="text-center text-gray-600 mb-8">
           Начало бурения: {formatDate(flightStart)}
         </p>
       )}
 
-      <StatusDisplay
-        anomalyDetected={anomalyInfo.length > 0}
-        isBackendConnected={isBackendConnected}
+      <StatusDisplay // 3. Обновляем пропс, передавая новую логику
+        anomalyDetected={showAnomalyStatus}
+        isBackendConnected={isBackendConnected} // 4. Передаем функцию для сброса состояния
+        onDismissAnomaly={handleDismissAnomaly}
       />
 
       <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8 p-4 bg-white rounded-xl shadow-md">
@@ -534,6 +592,7 @@ export default function Home() {
           onHideAll={handleHideAll}
           availableParameters={availableParameters}
         />
+
         <div className="flex items-center gap-3">
           <label
             htmlFor="analysis-method"
@@ -541,6 +600,7 @@ export default function Home() {
           >
             Метод анализа:
           </label>
+
           <select
             id="analysis-method"
             value={analysisMethod}
@@ -559,6 +619,7 @@ export default function Home() {
               <label className="text-gray-700 font-medium whitespace-nowrap">
                 Порог Z-score:
               </label>
+
               <input
                 type="number"
                 value={thresholds["Z_score"]}
@@ -568,9 +629,11 @@ export default function Home() {
                 className="p-2 border border-gray-300 rounded-md shadow-sm w-24 text-sm"
                 step="0.1"
               />
+
               <label className="text-gray-700 font-medium whitespace-nowrap">
                 Размер окна:
               </label>
+
               <input
                 type="number"
                 value={thresholds["Z_SCORE_WINDOW_SIZE"]}
@@ -590,6 +653,7 @@ export default function Home() {
               <label className="text-gray-700 font-medium whitespace-nowrap">
                 Порог LOF:
               </label>
+
               <input
                 type="number"
                 value={thresholds["LOF"]}
@@ -599,9 +663,11 @@ export default function Home() {
                 className="p-2 border border-gray-300 rounded-md shadow-sm w-24 text-sm"
                 step="0.1"
               />
+
               <label className="text-gray-700 font-medium whitespace-nowrap">
                 Размер окна:
               </label>
+
               <input
                 type="number"
                 value={thresholds["LOF_WINDOW_SIZE"]}
@@ -621,6 +687,7 @@ export default function Home() {
               <label className="text-gray-700 font-medium whitespace-nowrap">
                 Порог FFT:
               </label>
+
               <input
                 type="number"
                 value={thresholds["FFT"]}
@@ -630,9 +697,11 @@ export default function Home() {
                 className="p-2 border border-gray-300 rounded-md shadow-sm w-24 text-sm"
                 step="0.01"
               />
+
               <label className="text-gray-700 font-medium whitespace-nowrap">
                 Размер окна:
               </label>
+
               <input
                 type="number"
                 value={thresholds["FFT_WINDOW_SIZE"]}
@@ -648,6 +717,7 @@ export default function Home() {
             </>
           )}
         </div>
+
         <div className="flex items-center">
           <label
             htmlFor="file-upload"
@@ -655,6 +725,7 @@ export default function Home() {
           >
             Загрузить данные
           </label>
+
           <input
             id="file-upload"
             type="file"
@@ -662,6 +733,13 @@ export default function Home() {
             onChange={handleFileChange}
             className="hidden"
           />
+
+          <button
+            onClick={handleSwitchToRealTime}
+            className="px-4 py-2 ml-3 bg-green-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-green-700 transition-colors"
+          >
+            Режим Real-time
+          </button>
         </div>
       </div>
 
@@ -674,30 +752,33 @@ export default function Home() {
                 className="bg-white p-5 rounded-xl shadow-lg border border-gray-100"
               >
                 <h3 className="text-xl font-semibold mb-3 text-gray-800">
-                  {paramKey}
+                  {formatParamName(paramKey)}
                 </h3>
+
                 <Plot
                   data={[
                     {
+                      // Значение теперь на оси X
                       x: liveData.map(
                         (d) => (d[paramKey] as [number, boolean])[0]
-                      ),
+                      ), // Время теперь на оси Y
                       y: liveData.map((d) => d["время"]),
                       type: "scatter",
                       mode: "lines",
-                      name: paramKey,
+                      name: formatParamName(paramKey),
                       line: {
                         color: GRAPH_COLORS[index % GRAPH_COLORS.length],
                       },
                       hovertemplate:
-                        `<b>${paramKey}</b>: %{x:.2f}<br>` +
-                        `<b>Время</b>: %{customdata}<br>` +
+                        `<b>${formatParamName(paramKey)}</b>: %{x:.2f}<br>` + // Обновлено
+                        `<b>Время</b>: %{customdata}<br>` + // Обновлено
                         `<extra></extra>`,
                       customdata: liveData.map((d) =>
                         formatDate(excelSerialToJsDate(d["время"] as number))
                       ),
                     },
                     {
+                      // Координаты для аномалий также поменяны
                       x: anomalyInfo
                         .filter((info) => info.param === paramKey)
                         .map((info) => {
@@ -723,23 +804,23 @@ export default function Home() {
                   ]}
                   layout={{
                     autosize: true,
-                    margin: { l: 70, r: 10, t: 20, b: 40 },
-                    xaxis: {
-                      title: "Значение",
-                    },
+                    margin: { l: 70, r: 10, t: 20, b: 40 }, // Конфигурация оси Y
                     yaxis: {
-                      title: "Время",
-                      autorange: "reversed",
+                      title: "Время", // Новое название
+                      autorange: "reversed", // Перевернута, как и раньше для времени // Логика для меток времени перенесена на ось Y
                       ...(() => {
                         const [tickValues, tickTexts] = getSparseTimeTicks(
                           liveData,
-                          5
+                          3
                         );
                         return {
                           tickvals: tickValues,
                           ticktext: tickTexts,
                         };
                       })(),
+                    }, // Конфигурация оси X
+                    xaxis: {
+                      title: "Значение", // Новое название // autorange: "reversed", // Это больше не нужно // Логика для меток времени удалена с оси X
                     },
                     height: 300,
                     hovermode: "y unified",
@@ -751,12 +832,15 @@ export default function Home() {
             )
         )}
       </div>
-      <AnomalyModal
-        isModalOpen={isModalOpen}
-        setIsModalOpen={setIsModalOpen}
-        anomalyInfo={anomalyInfo}
-      />
 
+      {isModalOpen && !doNotShowAgain && (
+        <AnomalyModal
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+          anomalyInfo={anomalyInfo}
+          onDoNotShowAgain={handleDoNotShowAgain}
+        />
+      )}
       <LoadingOverlay isLoading={isLoading} />
     </div>
   );

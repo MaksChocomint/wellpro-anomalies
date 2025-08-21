@@ -1,7 +1,6 @@
-"use client";
-
 import { useState } from "react";
 import { AnomalyDetectionMethod } from "./types";
+import { formatParamName } from "../page";
 
 interface GraphControlsProps {
   graphVisibility: Record<string, boolean>;
@@ -30,11 +29,12 @@ export function GraphControls({
         <h3 className="text-2xl font-semibold text-gray-800">
           Выбрать параметры для отображения
         </h3>
+
         <button
           onClick={toggleVisibility}
           className="px-4 py-2 bg-gray-200 text-gray-700 text-sm rounded-md shadow-md hover:bg-gray-300 transition duration-200 ease-in-out"
         >
-          {isVisible ? "Скрыть параметры" : "Показать параметры"}
+          {isVisible ? "Скрыть параметры" : "Показать параметры"} 
         </button>
       </div>
 
@@ -47,6 +47,7 @@ export function GraphControls({
             >
               Показать все графики
             </button>
+
             <button
               onClick={onHideAll}
               className="px-4 py-2 bg-gray-400 text-white text-sm rounded-md shadow-md hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-opacity-75 transition duration-200 ease-in-out"
@@ -54,6 +55,7 @@ export function GraphControls({
               Скрыть все графики
             </button>
           </div>
+
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
             {availableParameters.map((paramKey) => (
               <label
@@ -66,7 +68,10 @@ export function GraphControls({
                   checked={!!graphVisibility[paramKey]}
                   onChange={() => onVisibilityChange(paramKey)}
                 />
-                <span className="ml-2 font-medium text-sm">{paramKey}</span>
+
+                <span className="ml-2 font-medium text-sm">
+                  {formatParamName(paramKey)}
+                </span>
               </label>
             ))}
           </div>
