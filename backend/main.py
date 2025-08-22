@@ -6,12 +6,13 @@ from io import StringIO
 
 import pandas as pd
 from fastapi import FastAPI, APIRouter, UploadFile, File, WebSocket, Query
-from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
-from methods import METHODS
+from methods import METHODS, FFT_WINDOW_SIZE, LOF_WINDOW_SIZE, Z_SCORE_WINDOW_SIZE
 
 DEFAULT_FILENAME = "default.TXT"
+DEFAULT_WINDOWS_SIZE = max(FFT_WINDOW_SIZE, LOF_WINDOW_SIZE, Z_SCORE_WINDOW_SIZE)
 router = APIRouter()
 
 
@@ -43,9 +44,9 @@ async def analyze_file(
     if method not in METHODS:
         return JSONResponse(content={"error": f"Incorrect method. Choose from {list(METHODS.keys())}"}, status_code=400)
     method_params = {}
-    if window_size:
+    if window_size and window_size >= 0:
         method_params["window_size"] = window_size
-    if score_threshold:
+    if score_threshold and score_threshold >= 0:
         method_params["score_threshold"] = score_threshold
     text = await file.read()
     parsed_data = await parse_data(text)
@@ -53,7 +54,8 @@ async def analyze_file(
         return JSONResponse(content={"error": 'Column "Время" is compulsory in file'}, status_code=400)
 
     data = [{} for _ in range(len(parsed_data))]
-    prev = defaultdict(lambda: deque(maxlen=100))
+    deque_length = (window_size if window_size and window_size >= 0 else DEFAULT_WINDOWS_SIZE) + 1
+    prev = defaultdict(lambda: deque(maxlen=deque_length))
 
     for i, record in enumerate(parsed_data):
         tasks = []
@@ -75,11 +77,13 @@ async def websocket_endpoint(ws: WebSocket):
     try:
         message = await ws.receive_json()
         method = message.get("method", "").lower()
+        window_size = message.get("window_size")
+        score_threshold = message.get("score_threshold")
         method_params = {}
-        if "window_size" in message:
-            method_params["window_size"] = message["window_size"]
-        if "score_threshold" in message:
-            method_params["score_threshold"] = message["score_threshold"]
+        if window_size and window_size >= 0:
+            method_params["window_size"] = window_size
+        if score_threshold and score_threshold >= 0:
+            method_params["score_threshold"] = score_threshold
 
         if method not in METHODS:
             reason = f"Skipped or wrong method. Choose from {list(METHODS.keys())}"
@@ -89,7 +93,8 @@ async def websocket_endpoint(ws: WebSocket):
         parsed_data = app.state.default_data
 
         while True:
-            prev = defaultdict(lambda: deque(maxlen=method_params.get("window_size", 100)))
+            deque_length = (window_size if window_size and window_size >= 0 else DEFAULT_WINDOWS_SIZE) + 1
+            prev = defaultdict(lambda: deque(maxlen=deque_length))
             for record in parsed_data:
                 data = {}
                 for key, value in record.items():
