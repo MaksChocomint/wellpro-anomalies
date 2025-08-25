@@ -8,7 +8,12 @@ import {
   FaArrowRight,
   FaEyeSlash, // Добавляем иконку для новой кнопки
 } from "react-icons/fa";
-import { AnomalyInfo } from "./types";
+import { AnomalyInfo } from "@/types/types";
+import {
+  excelSerialToJsDate,
+  formatDate,
+  formatParamName,
+} from "@/utils/utils";
 
 interface AnomalyModalProps {
   isModalOpen: boolean;
@@ -63,7 +68,8 @@ const AnomalyModal: React.FC<AnomalyModalProps> = ({
         <ul className="list-disc list-inside text-lg text-red-700 font-semibold mb-2">
           {displayedAnomalies.map((info, index) => (
             <li key={index}>
-              {info.param} (Время: {info.timestamp})
+              {formatParamName(info.param)} (Время:{" "}
+              {formatDate(excelSerialToJsDate(info.timestamp as number))})
             </li>
           ))}
         </ul>
@@ -98,7 +104,7 @@ const AnomalyModal: React.FC<AnomalyModalProps> = ({
             onClick={() => setIsModalOpen(false)}
             className="flex-1 flex items-center justify-center bg-red-700 hover:bg-red-800 text-white font-bold py-3 px-8 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 shadow-lg"
           >
-            <FaTimesCircle className="mr-3 text-xl" /> Закрыть и Проверить
+            <FaTimesCircle className="mr-3 text-xl" /> Закрыть и проверить
           </button>
           {/* Новая кнопка "Больше не показывать" */}
           <button

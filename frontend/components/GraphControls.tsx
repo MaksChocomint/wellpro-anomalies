@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { AnomalyDetectionMethod } from "./types";
-import { formatParamName } from "../page";
+import { AnomalyDetectionMethod } from "@/types/types";
+import { formatParamName } from "@/utils/utils";
 
 interface GraphControlsProps {
   graphVisibility: Record<string, boolean>;

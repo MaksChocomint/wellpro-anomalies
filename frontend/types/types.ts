@@ -1,3 +1,8 @@
+export type DynamicSensorData = Record<
+  string,
+  number | string | [number, boolean]
+>;
+
 // components/types.ts
 
 // Anomaly Detection Methods

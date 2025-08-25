@@ -6,14 +6,20 @@ import Papa from "papaparse";
 import axios from "axios";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
-import AnomalyModal from "./components/AnomalyModal";
-import { StatusDisplay } from "./components/StatusDisplay";
-import { GraphControls } from "./components/GraphControls";
-import { LoadingOverlay } from "./components/LoadingOverlay";
-import { AnomalyDetectionMethod, AnomalyInfo } from "./components/types";
+import AnomalyModal from "@/components/AnomalyModal";
+import { StatusDisplay } from "@/components/StatusDisplay";
+import { GraphControls } from "@/components/GraphControls";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
+import { AnomalyDetectionMethod, AnomalyInfo } from "@/types/types";
+import { DynamicSensorData } from "@/types/types";
+import {
+  excelSerialToJsDate,
+  formatDate,
+  formatParamName,
+  getSparseTimeTicks,
+} from "@/utils/utils";
 
 const MAX_DATA_POINTS = 1000;
-type DynamicSensorData = Record<string, number | string | [number, boolean]>;
 
 const GRAPH_COLORS = [
   "#1f77b4",
@@ -27,116 +33,6 @@ const GRAPH_COLORS = [
   "#bcbd22",
   "#17becf",
 ];
-
-const formatDate = (date: Date | null) => {
-  if (!date) return "N/A";
-  return date.toLocaleString("ru-RU", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-};
-
-const excelSerialToJsDate = (serial: number | string): Date => {
-  const num =
-    typeof serial === "string" ? parseFloat(serial.replace(",", ".")) : serial;
-  const daysBefore1970 = 25569;
-  const msInDay = 86400000;
-  const unixMilliseconds = (num - daysBefore1970) * msInDay;
-  const date = new Date(unixMilliseconds);
-  date.setDate(date.getDate() + 1);
-
-  return date;
-};
-
-export const formatParamName = (name: string): string => {
-  // Regex для поиска чисел в конце строки
-  const numberMatch = name.match(/(\d+)$/);
-
-  let formattedName = name;
-  let numberPart = "";
-
-  if (numberMatch) {
-    // Если число найдено, отделяем его
-    numberPart = numberMatch[0];
-    formattedName = name.slice(0, -numberPart.length);
-  }
-
-  // Разбиваем оставшуюся часть строки по символу "_"
-  const parts = formattedName.split("_");
-
-  // Форматируем слова: первое с заглавной, остальные с маленькой буквы
-  const formattedWords = parts
-    .map((part, index) => {
-      if (index === 0) {
-        return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
-      }
-      return part.toLowerCase();
-    })
-    .join(" ");
-
-  // Если была найдена цифра, добавляем ее через пробел
-  if (numberPart) {
-    return formattedWords + " " + numberPart;
-  }
-
-  return formattedWords;
-};
-
-// 💡 Новая функция для выборки меток времени
-const getSparseTimeTicks = (
-  data: DynamicSensorData[],
-  count: number
-): [number[], string[]] => {
-  if (data.length === 0) return [[], []];
-
-  const tickValues = [];
-  const tickTexts = [];
-  const step = Math.max(1, Math.floor(data.length / count));
-
-  for (let i = 0; i < data.length; i += step) {
-    const d = data[i];
-    const excelSerial = d["время"] as number;
-    const jsDate = excelSerialToJsDate(excelSerial);
-    tickValues.push(excelSerial);
-    tickTexts.push(jsDate.toLocaleTimeString("ru-RU"));
-  } // Убедитесь, что последняя точка всегда включена
-
-  if (
-    tickValues.length === 0 ||
-    tickValues[tickValues.length - 1] !== data[data.length - 1]["время"]
-  ) {
-    const lastDataPoint = data[data.length - 1];
-    tickValues.push(lastDataPoint["время"] as number);
-    tickTexts.push(
-      excelSerialToJsDate(lastDataPoint["время"] as number).toLocaleTimeString(
-        "ru-RU"
-      )
-    );
-  } // Ограничиваем количество меток до 'count'
-
-  if (tickValues.length > count) {
-    const newTickValues = [];
-    const newTickTexts = [];
-    const newStep = Math.max(1, Math.floor(tickValues.length / count));
-    for (let i = 0; i < tickValues.length; i += newStep) {
-      newTickValues.push(tickValues[i]);
-      newTickTexts.push(tickTexts[i]);
-    } // Убедимся, что последняя метка всегда есть
-    if (
-      newTickValues[newTickValues.length - 1] !==
-      tickValues[tickValues.length - 1]
-    ) {
-      newTickValues.push(tickValues[tickValues.length - 1]);
-      newTickTexts.push(tickTexts[tickTexts.length - 1]);
-    }
-    return [newTickValues, newTickTexts];
-  }
-
-  return [tickValues, tickTexts];
-};
 
 export default function Home() {
   const [liveData, setLiveData] = useState<DynamicSensorData[]>([]);
@@ -155,12 +51,11 @@ export default function Home() {
   const [flightStart, setFlightStart] = useState<Date | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const wsRef = useRef<WebSocket | null>(null);
-  const [isAnomalyDismissed, setIsAnomalyDismissed] = useState(false);
   const fullDataRef = useRef<DynamicSensorData[]>([]);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const dataIndexRef = useRef<number>(0);
 
-  const showAnomalyStatus = anomalyInfo.length > 0 && !isAnomalyDismissed;
+  const showAnomalyStatus = anomalyInfo.length > 0;
 
   const [thresholds, setThresholds] = useState({
     Z_score: 3,
@@ -190,7 +85,7 @@ export default function Home() {
   };
 
   const handleDismissAnomaly = () => {
-    setIsAnomalyDismissed(true);
+    setAnomalyInfo([]);
   };
 
   const startDataSimulation = useCallback(() => {
@@ -607,6 +502,7 @@ export default function Home() {
             onChange={(e) =>
               setAnalysisMethod(e.target.value as AnomalyDetectionMethod)
             }
+            disabled={!isBackendConnected}
             className="p-2 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="FFT">FFT</option>
@@ -628,6 +524,7 @@ export default function Home() {
                 }
                 className="p-2 border border-gray-300 rounded-md shadow-sm w-24 text-sm"
                 step="0.1"
+                disabled={!isBackendConnected}
               />
 
               <label className="text-gray-700 font-medium whitespace-nowrap">
@@ -644,6 +541,7 @@ export default function Home() {
                   )
                 }
                 className="p-2 border border-gray-300 rounded-md shadow-sm w-24 text-sm"
+                disabled={!isBackendConnected}
               />
             </>
           )}
@@ -662,6 +560,7 @@ export default function Home() {
                 }
                 className="p-2 border border-gray-300 rounded-md shadow-sm w-24 text-sm"
                 step="0.1"
+                disabled={!isBackendConnected}
               />
 
               <label className="text-gray-700 font-medium whitespace-nowrap">
@@ -678,6 +577,7 @@ export default function Home() {
                   )
                 }
                 className="p-2 border border-gray-300 rounded-md shadow-sm w-24 text-sm"
+                disabled={!isBackendConnected}
               />
             </>
           )}
@@ -696,6 +596,7 @@ export default function Home() {
                 }
                 className="p-2 border border-gray-300 rounded-md shadow-sm w-24 text-sm"
                 step="0.01"
+                disabled={!isBackendConnected}
               />
 
               <label className="text-gray-700 font-medium whitespace-nowrap">
@@ -713,6 +614,7 @@ export default function Home() {
                 }
                 className="p-2 border border-gray-300 rounded-md shadow-sm w-24 text-sm"
                 step="16"
+                disabled={!isBackendConnected}
               />
             </>
           )}
