@@ -50,10 +50,22 @@ export default function Home() {
   >({});
   const [flightStart, setFlightStart] = useState<Date | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isSimulationActive, setIsSimulationActive] = useState<boolean>(false);
   const wsRef = useRef<WebSocket | null>(null);
   const fullDataRef = useRef<DynamicSensorData[]>([]);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const dataIndexRef = useRef<number>(0);
+
+  // Используем ref для актуальных значений
+  const analysisMethodRef = useRef<AnomalyDetectionMethod>("FFT");
+  const thresholdsRef = useRef({
+    Z_score: 3,
+    LOF: 25,
+    FFT: 0.5,
+    FFT_WINDOW_SIZE: 64,
+    Z_SCORE_WINDOW_SIZE: 50,
+    LOF_WINDOW_SIZE: 50,
+  });
 
   const showAnomalyStatus = anomalyInfo.length > 0;
 
@@ -66,6 +78,52 @@ export default function Home() {
     LOF_WINDOW_SIZE: 50,
   });
 
+  // Обновляем ref при изменении состояния
+  useEffect(() => {
+    analysisMethodRef.current = analysisMethod;
+  }, [analysisMethod]);
+
+  useEffect(() => {
+    thresholdsRef.current = thresholds;
+  }, [thresholds]);
+
+  // Функция для отправки параметров на сервер
+  const sendParametersToServer = useCallback(() => {
+    if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
+      console.warn(
+        "[WebSocket] Connection is not open, cannot send parameters"
+      );
+      return;
+    }
+
+    // Используем актуальные значения из ref
+    const currentMethod = analysisMethodRef.current;
+    const currentThresholds = thresholdsRef.current;
+
+    // Создаем сообщение с учетом текущего метода
+    const message: any = {
+      method: currentMethod,
+    };
+
+    // Добавляем специфичные параметры в зависимости от метода
+    if (currentMethod === "FFT") {
+      message.window_size = currentThresholds.FFT_WINDOW_SIZE;
+      message.score_threshold = currentThresholds.FFT;
+      message.FFT = currentThresholds.FFT; // Добавляем для совместимости
+    } else if (currentMethod === "Z_score") {
+      message.window_size = currentThresholds.Z_SCORE_WINDOW_SIZE;
+      message.score_threshold = currentThresholds["Z_score"];
+      message.Z_score = currentThresholds["Z_score"];
+    } else if (currentMethod === "LOF") {
+      message.window_size = currentThresholds.LOF_WINDOW_SIZE;
+      message.score_threshold = currentThresholds.LOF;
+      message.LOF = currentThresholds.LOF;
+    }
+
+    console.log("[WebSocket] Sending updated parameters:", message);
+    wsRef.current.send(JSON.stringify(message));
+  }, []); // Нет зависимостей, используем ref
+
   const handleThresholdChange = useCallback(
     (key: string, value: number | string) => {
       const numericValue =
@@ -75,10 +133,19 @@ export default function Home() {
           ...prev,
           [key]: numericValue,
         }));
+
+        // Если WebSocket подключен, отправляем обновленные параметры
+        if (isBackendConnected) {
+          // Используем setTimeout для асинхронного обновления
+          setTimeout(() => {
+            sendParametersToServer();
+          }, 100);
+        }
       }
     },
-    []
+    [isBackendConnected, sendParametersToServer]
   );
+
   const handleDoNotShowAgain = () => {
     setDoNotShowAgain(true);
     setIsModalOpen(false);
@@ -88,6 +155,16 @@ export default function Home() {
     setAnomalyInfo([]);
   };
 
+  // Функция остановки симуляции
+  const stopSimulation = useCallback(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+      setIsSimulationActive(false);
+      console.log("[Симуляция] Симуляция остановлена.");
+    }
+  }, []);
+
   const startDataSimulation = useCallback(() => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
@@ -96,6 +173,8 @@ export default function Home() {
     setAnomalyInfo([]);
     dataIndexRef.current = 0;
     console.log("[Симуляция] Начинаем загрузку данных. Интервал: 1000 мс.");
+
+    setIsSimulationActive(true);
 
     intervalRef.current = setInterval(() => {
       if (dataIndexRef.current < fullDataRef.current.length) {
@@ -110,6 +189,8 @@ export default function Home() {
       } else {
         if (intervalRef.current) {
           clearInterval(intervalRef.current);
+          intervalRef.current = null;
+          setIsSimulationActive(false);
           console.log(
             "[Симуляция] Данные из файла закончились. Симуляция остановлена."
           );
@@ -118,46 +199,37 @@ export default function Home() {
     }, 1000);
   }, []);
 
-  const connectWebSocket = useCallback(
-    async (file?: File) => {
-      if (wsRef.current) {
-        console.log("[WebSocket] Closing existing connection.");
-        wsRef.current.close();
-      }
-      setLiveData([]);
-      setAnomalyInfo([]);
-      setIsBackendConnected(false);
-      setConsecutiveAnomaliesCount(0); // Сброс счетчика
-      setIsModalOpen(false); // Сброс модального окна
+  const connectWebSocket = useCallback(() => {
+    // Останавливаем симуляцию, если она активна
+    stopSimulation();
 
-      const ws = new WebSocket("ws://127.0.0.1:8000/api/v1/ws");
-      wsRef.current = ws;
+    if (wsRef.current) {
+      console.log("[WebSocket] Closing existing connection.");
+      wsRef.current.close();
+    }
 
-      ws.onopen = async () => {
-        console.log("[WebSocket] Connection established.");
-        setIsBackendConnected(true);
+    setLiveData([]);
+    setAnomalyInfo([]);
+    setIsBackendConnected(false);
+    setConsecutiveAnomaliesCount(0);
+    setIsModalOpen(false);
+    setIsSimulationActive(false);
 
-        const message = {
-          method: analysisMethod,
-          window_size:
-            analysisMethod === "FFT"
-              ? thresholds.FFT_WINDOW_SIZE
-              : analysisMethod === "Z_score"
-              ? thresholds.Z_SCORE_WINDOW_SIZE
-              : thresholds.LOF_WINDOW_SIZE,
-          score_threshold:
-            analysisMethod === "FFT"
-              ? thresholds.FFT
-              : analysisMethod === "Z_score"
-              ? thresholds["Z_score"]
-              : thresholds.LOF,
-        };
+    const ws = new WebSocket("ws://127.0.0.1:8000/api/v1/ws");
+    wsRef.current = ws;
 
-        console.log("[WebSocket] Sending initial parameters:", message);
-        ws.send(JSON.stringify(message));
-      };
+    ws.onopen = () => {
+      console.log("[WebSocket] Connection established.");
+      setIsBackendConnected(true);
 
-      ws.onmessage = (event) => {
+      // Отправляем начальные параметры
+      setTimeout(() => {
+        sendParametersToServer();
+      }, 500); // Небольшая задержка для стабилизации соединения
+    };
+
+    ws.onmessage = (event) => {
+      try {
         const incomingMessage = JSON.parse(event.data);
         const data = incomingMessage.data;
 
@@ -173,7 +245,6 @@ export default function Home() {
         setLiveData((prevData) => {
           const newDataPoint: DynamicSensorData = {};
           let isFirstData = prevData.length === 0;
-          let anomalyFoundInThisPoint = false;
           const newAnomaliesThisPoint: AnomalyInfo[] = [];
 
           for (const key in data) {
@@ -190,7 +261,6 @@ export default function Home() {
 
               if (isAnomaly) {
                 setIsModalOpen(true);
-                anomalyFoundInThisPoint = true;
                 newAnomaliesThisPoint.push({
                   id: `${Date.now()}-${key}`,
                   timestamp: data["время"] as number,
@@ -212,8 +282,14 @@ export default function Home() {
                 continue;
               }
             }
-          } // Обновляем состояние аномалий
-          setAnomalyInfo((prevInfo) => [...prevInfo, ...newAnomaliesThisPoint]); // Проверяем и обновляем счетчик последовательных аномалий
+          }
+
+          if (newAnomaliesThisPoint.length > 0) {
+            setAnomalyInfo((prevInfo) => [
+              ...prevInfo,
+              ...newAnomaliesThisPoint,
+            ]);
+          }
 
           if (isFirstData) {
             const params = Object.keys(newDataPoint).filter(
@@ -231,55 +307,78 @@ export default function Home() {
           const updatedData = [...prevData, newDataPoint];
           return updatedData.slice(-MAX_DATA_POINTS);
         });
-      };
-      ws.onclose = (event) => {
-        console.log("[WebSocket] Connection closed.", event.code, event.reason);
-        setIsBackendConnected(false);
-      };
+      } catch (error) {
+        console.error("[WebSocket] Error parsing message:", error);
+      }
+    };
 
-      ws.onerror = (error) => {
-        console.error("[WebSocket] Error:", error);
-        setIsBackendConnected(false);
-      };
-    },
-    [analysisMethod, thresholds]
-  );
+    ws.onclose = (event) => {
+      console.log("[WebSocket] Connection closed.", event.code, event.reason);
+      setIsBackendConnected(false);
+    };
+
+    ws.onerror = (error) => {
+      console.error("[WebSocket] Error:", error);
+      setIsBackendConnected(false);
+    };
+  }, [stopSimulation, sendParametersToServer]);
+
+  const handleAnalysisMethodChange = (method: AnomalyDetectionMethod) => {
+    // Если активна симуляция, останавливаем ее
+    if (isSimulationActive) {
+      stopSimulation();
+    }
+
+    setAnalysisMethod(method);
+
+    // Если WebSocket подключен, отправляем новые параметры
+    if (isBackendConnected) {
+      // Небольшая задержка для того чтобы состояние обновилось
+      setTimeout(() => {
+        sendParametersToServer();
+      }, 100);
+    }
+  };
 
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
-    if (!file) return; // Закрываем текущее WebSocket-соединение
+    if (!file) return;
 
+    // Останавливаем WebSocket соединение
     if (wsRef.current) {
       wsRef.current.close();
-      wsRef.current = null; // Очищаем ссылку
-    } // Останавливаем симуляцию, если она была активна
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
+      wsRef.current = null;
     }
+
+    // Останавливаем симуляцию, если она была активна
+    stopSimulation();
 
     setIsLoading(true);
 
     const formData = new FormData();
     formData.append("file", file);
 
+    // Используем актуальные значения из ref
+    const currentMethod = analysisMethodRef.current;
+    const currentThresholds = thresholdsRef.current;
+
     const score_threshold =
-      analysisMethod === "FFT"
-        ? thresholds.FFT
-        : analysisMethod === "Z_score"
-        ? thresholds["Z_score"]
-        : thresholds.LOF;
+      currentMethod === "FFT"
+        ? currentThresholds.FFT
+        : currentMethod === "Z_score"
+        ? currentThresholds["Z_score"]
+        : currentThresholds.LOF;
 
     const window_size =
-      analysisMethod === "FFT"
-        ? thresholds.FFT_WINDOW_SIZE
-        : analysisMethod === "Z_score"
-        ? thresholds.Z_SCORE_WINDOW_SIZE
-        : thresholds.LOF_WINDOW_SIZE;
+      currentMethod === "FFT"
+        ? currentThresholds.FFT_WINDOW_SIZE
+        : currentMethod === "Z_score"
+        ? currentThresholds.Z_SCORE_WINDOW_SIZE
+        : currentThresholds.LOF_WINDOW_SIZE;
 
-    const url = `http://127.0.0.1:8000/api/v1/analyze/file?method=${analysisMethod}&window_size=${window_size}&score_threshold=${score_threshold}`;
+    const url = `http://127.0.0.1:8000/api/v1/analyze/file?method=${currentMethod}&window_size=${window_size}&score_threshold=${score_threshold}`;
 
     try {
       const response = await axios.post(url, formData, {
@@ -291,10 +390,13 @@ export default function Home() {
       const parsedData = response.data.data;
       console.log("[File Upload] Data received:", parsedData);
 
+      // Сохраняем данные для симуляции
+      fullDataRef.current = parsedData;
+
       setLiveData([]);
       setAnomalyInfo([]);
       setConsecutiveAnomaliesCount(0);
-      setFlightStart(null); // Сбрасываем дату начала, если она не в файле
+      setFlightStart(null);
       setIsModalOpen(false);
 
       if (parsedData.length > 0) {
@@ -305,62 +407,14 @@ export default function Home() {
         setAvailableParameters(filteredKeys);
 
         const initialVisibility = filteredKeys.reduce((acc, key) => {
-          acc[key] = true; // Изменено на true для автоматического отображения
+          acc[key] = true;
           return acc;
         }, {} as Record<string, boolean>);
         setGraphVisibility(initialVisibility);
       }
 
-      let index = 0;
-
-      const intervalId = setInterval(() => {
-        if (index < parsedData.length) {
-          const newDataPoint = parsedData[index];
-
-          setLiveData((prevData) => {
-            const newData = [...prevData, newDataPoint];
-            const MAX_DISPLAY_POINTS = 1000;
-            return newData.slice(-MAX_DISPLAY_POINTS);
-          });
-
-          const newAnomalies: AnomalyInfo[] = [];
-          let anomalyFoundInThisPoint = false;
-          Object.keys(newDataPoint).forEach((paramKey) => {
-            if (paramKey.toLowerCase() === "время") return;
-
-            const paramValue = newDataPoint[paramKey] as [number, boolean];
-            const isAnomaly = paramValue[1];
-
-            if (isAnomaly) {
-              setIsModalOpen(true);
-              anomalyFoundInThisPoint = true;
-              newAnomalies.push({
-                param: paramKey,
-                timestamp: newDataPoint["время"] as number,
-                message: `Аномалия обнаружена в ${formatParamName(
-                  paramKey
-                )}: ${paramValue[0].toFixed(2)}`,
-              });
-            }
-          });
-
-          if (newAnomalies.length > 0) {
-            setAnomalyInfo((prevAnomalies) => {
-              const currentAnomalies = [...prevAnomalies, ...newAnomalies];
-              const uniqueAnomalies = Array.from(
-                new Set(currentAnomalies.map((a) => JSON.stringify(a)))
-              ).map((s) => JSON.parse(s));
-              return uniqueAnomalies;
-            });
-          } // Обновляем локальный счетчик и открываем модальное окно
-
-          index++;
-        } else {
-          clearInterval(intervalId);
-          setIsLoading(false);
-        }
-      }, 1000);
-      intervalRef.current = intervalId;
+      // Запускаем симуляцию с загруженными данными
+      startDataSimulation();
 
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -416,27 +470,33 @@ export default function Home() {
   };
 
   const handleSwitchToRealTime = useCallback(() => {
-    // Останавливаем симуляцию, если она была активна
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-      console.log("[Симуляция] Симуляция остановлена.");
-    } // Сбрасываем все состояния
+    // Останавливаем симуляцию
+    stopSimulation();
+
+    // Сбрасываем данные симуляции
+    fullDataRef.current = [];
+    dataIndexRef.current = 0;
+
+    // Сбрасываем состояния
     setLiveData([]);
     setAnomalyInfo([]);
     setConsecutiveAnomaliesCount(0);
-    setFlightStart(null); // Перезапускаем WebSocket-соединение
+    setFlightStart(null);
+
+    // Подключаемся к WebSocket
     connectWebSocket();
-  }, [connectWebSocket]);
+  }, [connectWebSocket, stopSimulation]);
 
   useEffect(() => {
     connectWebSocket();
+
     return () => {
       if (wsRef.current) {
         wsRef.current.close();
       }
+      stopSimulation();
     };
-  }, [connectWebSocket]);
+  }, []); // Убраны зависимости, чтобы не переподключаться при каждом изменении
 
   const handleVisibilityChange = (param: string) => {
     setGraphVisibility((prev) => ({
@@ -473,9 +533,9 @@ export default function Home() {
         </p>
       )}
 
-      <StatusDisplay // 3. Обновляем пропс, передавая новую логику
+      <StatusDisplay
         anomalyDetected={showAnomalyStatus}
-        isBackendConnected={isBackendConnected} // 4. Передаем функцию для сброса состояния
+        isBackendConnected={isBackendConnected && !isSimulationActive}
         onDismissAnomaly={handleDismissAnomaly}
       />
 
@@ -500,9 +560,11 @@ export default function Home() {
             id="analysis-method"
             value={analysisMethod}
             onChange={(e) =>
-              setAnalysisMethod(e.target.value as AnomalyDetectionMethod)
+              handleAnalysisMethodChange(
+                e.target.value as AnomalyDetectionMethod
+              )
             }
-            disabled={!isBackendConnected}
+            disabled={!isBackendConnected || isSimulationActive}
             className="p-2 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="FFT">FFT</option>
@@ -524,7 +586,7 @@ export default function Home() {
                 }
                 className="p-2 border border-gray-300 rounded-md shadow-sm w-24 text-sm"
                 step="0.1"
-                disabled={!isBackendConnected}
+                disabled={!isBackendConnected || isSimulationActive}
               />
 
               <label className="text-gray-700 font-medium whitespace-nowrap">
@@ -541,7 +603,7 @@ export default function Home() {
                   )
                 }
                 className="p-2 border border-gray-300 rounded-md shadow-sm w-24 text-sm"
-                disabled={!isBackendConnected}
+                disabled={!isBackendConnected || isSimulationActive}
               />
             </>
           )}
@@ -560,7 +622,7 @@ export default function Home() {
                 }
                 className="p-2 border border-gray-300 rounded-md shadow-sm w-24 text-sm"
                 step="0.1"
-                disabled={!isBackendConnected}
+                disabled={!isBackendConnected || isSimulationActive}
               />
 
               <label className="text-gray-700 font-medium whitespace-nowrap">
@@ -577,7 +639,7 @@ export default function Home() {
                   )
                 }
                 className="p-2 border border-gray-300 rounded-md shadow-sm w-24 text-sm"
-                disabled={!isBackendConnected}
+                disabled={!isBackendConnected || isSimulationActive}
               />
             </>
           )}
@@ -596,7 +658,7 @@ export default function Home() {
                 }
                 className="p-2 border border-gray-300 rounded-md shadow-sm w-24 text-sm"
                 step="0.01"
-                disabled={!isBackendConnected}
+                disabled={!isBackendConnected || isSimulationActive}
               />
 
               <label className="text-gray-700 font-medium whitespace-nowrap">
@@ -614,13 +676,13 @@ export default function Home() {
                 }
                 className="p-2 border border-gray-300 rounded-md shadow-sm w-24 text-sm"
                 step="16"
-                disabled={!isBackendConnected}
+                disabled={!isBackendConnected || isSimulationActive}
               />
             </>
           )}
         </div>
 
-        <div className="flex items-center">
+        <div className="flex items-center gap-3">
           <label
             htmlFor="file-upload"
             className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-blue-700 cursor-pointer transition-colors"
@@ -636,9 +698,34 @@ export default function Home() {
             className="hidden"
           />
 
+          {/* Кнопка остановки симуляции */}
+          {isSimulationActive && (
+            <button
+              onClick={stopSimulation}
+              className="px-4 py-2 bg-red-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-red-700 transition-colors"
+            >
+              Остановить симуляцию
+            </button>
+          )}
+
+          {/* Кнопка запуска симуляции (если данные уже загружены, но симуляция остановлена) */}
+          {fullDataRef.current.length > 0 && !isSimulationActive && (
+            <button
+              onClick={startDataSimulation}
+              className="px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-green-700 transition-colors"
+            >
+              Запустить симуляцию
+            </button>
+          )}
+
           <button
             onClick={handleSwitchToRealTime}
-            className="px-4 py-2 ml-3 bg-green-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-green-700 transition-colors"
+            disabled={isSimulationActive}
+            className={`px-4 py-2 text-white text-sm font-semibold rounded-lg shadow-md transition-colors ${
+              isSimulationActive
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-purple-600 hover:bg-purple-700"
+            }`}
           >
             Режим Real-time
           </button>
@@ -660,10 +747,9 @@ export default function Home() {
                 <Plot
                   data={[
                     {
-                      // Значение теперь на оси X
                       x: liveData.map(
                         (d) => (d[paramKey] as [number, boolean])[0]
-                      ), // Время теперь на оси Y
+                      ),
                       y: liveData.map((d) => d["время"]),
                       type: "scatter",
                       mode: "lines",
@@ -672,15 +758,14 @@ export default function Home() {
                         color: GRAPH_COLORS[index % GRAPH_COLORS.length],
                       },
                       hovertemplate:
-                        `<b>${formatParamName(paramKey)}</b>: %{x:.2f}<br>` + // Обновлено
-                        `<b>Время</b>: %{customdata}<br>` + // Обновлено
+                        `<b>${formatParamName(paramKey)}</b>: %{x:.2f}<br>` +
+                        `<b>Время</b>: %{customdata}<br>` +
                         `<extra></extra>`,
                       customdata: liveData.map((d) =>
                         formatDate(excelSerialToJsDate(d["время"] as number))
                       ),
                     },
                     {
-                      // Координаты для аномалий также поменяны
                       x: anomalyInfo
                         .filter((info) => info.param === paramKey)
                         .map((info) => {
@@ -706,10 +791,10 @@ export default function Home() {
                   ]}
                   layout={{
                     autosize: true,
-                    margin: { l: 70, r: 10, t: 20, b: 40 }, // Конфигурация оси Y
+                    margin: { l: 70, r: 10, t: 20, b: 40 },
                     yaxis: {
-                      title: "Время", // Новое название
-                      autorange: "reversed", // Перевернута, как и раньше для времени // Логика для меток времени перенесена на ось Y
+                      title: "Время",
+                      autorange: "reversed",
                       ...(() => {
                         const [tickValues, tickTexts] = getSparseTimeTicks(
                           liveData,
@@ -720,9 +805,9 @@ export default function Home() {
                           ticktext: tickTexts,
                         };
                       })(),
-                    }, // Конфигурация оси X
+                    },
                     xaxis: {
-                      title: "Значение", // Новое название // autorange: "reversed", // Это больше не нужно // Логика для меток времени удалена с оси X
+                      title: "Значение",
                     },
                     height: 300,
                     hovermode: "y unified",

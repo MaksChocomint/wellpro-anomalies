@@ -1,10 +1,9 @@
-// components/StatusDisplay.tsx
 import { FaExclamationTriangle, FaCheckCircle } from "react-icons/fa";
 
 interface StatusDisplayProps {
   anomalyDetected: boolean;
   isBackendConnected: boolean;
-  onDismissAnomaly: () => void; // Добавляем новый пропс
+  onDismissAnomaly: () => void;
 }
 
 export function StatusDisplay({
@@ -16,7 +15,7 @@ export function StatusDisplay({
     <>
       {/* Блок статуса аномалии */}
       <div
-        className={`p-5 mb-8 rounded-xl shadow-lg text-center transition-all duration-300
+        className={`p-5 mb-4 rounded-xl shadow-lg text-center transition-all duration-300
 ${
   anomalyDetected
     ? "bg-red-100 text-red-800 border-l-4 border-red-500"
@@ -49,7 +48,7 @@ ${
 
       {/* Блок статуса подключения к бэкенду/симуляции */}
       <div
-        className={`p-4 mb-8 rounded-xl text-center font-medium shadow-sm transition-all duration-300
+        className={`p-4 mb-6 rounded-xl text-center font-medium shadow-sm transition-all duration-300
 ${
   isBackendConnected
     ? "bg-blue-50 text-blue-700 border border-blue-200"

@@ -3,6 +3,8 @@ import random
 from collections import defaultdict, deque
 from contextlib import asynccontextmanager
 from io import StringIO
+import json
+from typing import Dict
 
 import pandas as pd
 from fastapi import FastAPI, APIRouter, UploadFile, File, WebSocket, Query
@@ -74,43 +76,142 @@ async def analyze_file(
 @router.websocket("/ws")
 async def websocket_endpoint(ws: WebSocket):
     await ws.accept()
+
+    # Начальные параметры
+    current_method = "fft"
+    current_window_size = DEFAULT_WINDOWS_SIZE
+    current_score_threshold = 0.5
+    method_params = {
+        "window_size": current_window_size,
+        "score_threshold": current_score_threshold
+    }
+
+    # Создаем буферы данных для каждого параметра
+    data_buffers: Dict[str, deque] = defaultdict(lambda: deque(maxlen=current_window_size + 1))
+
     try:
-        message = await ws.receive_json()
-        method = message.get("method", "").lower()
-        window_size = message.get("window_size")
-        score_threshold = message.get("score_threshold")
-        method_params = {}
-        if window_size and window_size >= 0:
-            method_params["window_size"] = window_size
-        if score_threshold and score_threshold >= 0:
-            method_params["score_threshold"] = score_threshold
-
-        if method not in METHODS:
-            reason = f"Skipped or wrong method. Choose from {list(METHODS.keys())}"
-            await ws.close(code=1011, reason=reason)
-            return
-
         parsed_data = app.state.default_data
 
+        # Индекс текущей записи
+        record_index = 0
+
         while True:
-            deque_length = (window_size if window_size and window_size >= 0 else DEFAULT_WINDOWS_SIZE) + 1
-            prev = defaultdict(lambda: deque(maxlen=deque_length))
-            for record in parsed_data:
+            try:
+                # Проверяем наличие новых сообщений от клиента
+                message_data = await asyncio.wait_for(ws.receive_text(), timeout=0.01)
+                try:
+                    message = json.loads(message_data)
+
+                    print(f"[WebSocket] Received message: {message}")
+
+                    # Обновляем параметры анализа
+                    if "method" in message:
+                        method = message["method"].lower()
+                        if method in METHODS:
+                            current_method = method
+                            print(f"[WebSocket] Method changed to: {current_method}")
+                            # Очищаем буферы при смене метода
+                            data_buffers.clear()
+                            data_buffers = defaultdict(lambda: deque(maxlen=current_window_size + 1))
+
+                    if "window_size" in message:
+                        window_size = message["window_size"]
+                        if window_size and window_size >= 0:
+                            current_window_size = window_size
+                            method_params["window_size"] = window_size
+                            print(f"[WebSocket] Window size changed to: {current_window_size}")
+                            # Обновляем размер буферов
+                            for key in data_buffers:
+                                data_buffers[key] = deque(data_buffers[key], maxlen=current_window_size + 1)
+
+                    if "score_threshold" in message:
+                        score_threshold = message["score_threshold"]
+                        if score_threshold and score_threshold >= 0:
+                            current_score_threshold = score_threshold
+                            method_params["score_threshold"] = score_threshold
+                            print(f"[WebSocket] Score threshold changed to: {current_score_threshold}")
+
+                    # Обновляем специфичные параметры метода
+                    # Эти параметры уже переданы через score_threshold, но оставим для обратной совместимости
+                    if current_method == "fft" and "FFT" in message:
+                        method_params["score_threshold"] = message["FFT"]
+                    elif current_method == "z_score" and "Z_score" in message:
+                        method_params["score_threshold"] = message["Z_score"]
+                    elif current_method == "lof" and "LOF" in message:
+                        method_params["score_threshold"] = message["LOF"]
+
+                except json.JSONDecodeError:
+                    print(f"[WebSocket] Invalid JSON received: {message_data}")
+
+            except asyncio.TimeoutError:
+                # Таймаут - нет новых сообщений, продолжаем отправку данных
+                pass
+            except Exception as e:
+                print(f"[WebSocket] Error receiving message: {e}")
+
+            # Обрабатываем текущую запись данных
+            if record_index < len(parsed_data):
+                record = parsed_data[record_index]
                 data = {}
+
                 for key, value in record.items():
                     if key.lower() == "время":
                         data[key] = value
                         continue
 
-                    prev[key].append(value)
-                    is_anomaly = await METHODS[method](list(prev[key]), **method_params)
-                    data[key] = [value, is_anomaly]
+                    # Добавляем значение в буфер
+                    data_buffers[key].append(value)
 
-                await ws.send_json({"data": data})
-                await asyncio.sleep(random.randint(1, 5))
+                    # Применяем текущий метод с текущими параметрами
+                    if len(data_buffers[key]) >= 2:  # Нужно как минимум 2 точки для анализа
+                        try:
+                            # Создаем копию параметров для текущего метода
+                            current_method_params = method_params.copy()
+
+                            # Удаляем лишние параметры в зависимости от метода
+                            if current_method == "fft":
+                                # У FFT обычно есть специфичные параметры
+                                pass
+                            elif current_method == "z_score":
+                                # Для z-score можем передать дополнительный параметр
+                                if "Z_score" in method_params:
+                                    current_method_params["z_threshold"] = method_params.get("Z_score", 3.0)
+                            elif current_method == "lof":
+                                # Для LOF можем передать дополнительный параметр
+                                if "LOF" in method_params:
+                                    current_method_params["lof_threshold"] = method_params.get("LOF", 25.0)
+
+                            is_anomaly = await METHODS[current_method](
+                                list(data_buffers[key]),
+                                **current_method_params
+                            )
+                            data[key] = [value, is_anomaly]
+                        except Exception as e:
+                            print(f"[WebSocket] Error in {current_method} method: {e}")
+                            print(f"Method params: {method_params}")
+                            print(f"Buffer length: {len(data_buffers[key])}")
+                            data[key] = [value, False]
+                    else:
+                        data[key] = [value, False]
+
+                try:
+                    await ws.send_json({"data": data})
+                    record_index += 1
+                    await asyncio.sleep(random.uniform(1, 3))  # Случайная задержка
+                except Exception as e:
+                    print(f"[WebSocket] Error sending data: {e}")
+                    break
+            else:
+                # Достигли конца данных, начинаем заново
+                record_index = 0
+                # Очищаем буферы при перезапуске цикла
+                data_buffers.clear()
+                data_buffers = defaultdict(lambda: deque(maxlen=current_window_size + 1))
 
     except Exception as e:
-        print(e)
+        print(f"[WebSocket] Connection error: {e}")
+    finally:
+        print("[WebSocket] Connection closed")
 
 
 @asynccontextmanager
