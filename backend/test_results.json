@@ -1,0 +1,317 @@
+{
+  "timestamp": "2026-01-15T01:22:07.092608",
+  "tested_parameters": [
+    "глубина",
+    "обороты_ротора",
+    "дмк",
+    "момент_ротора",
+    "давление_на_входе",
+    "температура_на_выходе",
+    "нагрузка",
+    "скорость_бурения",
+    "расход_на_входе",
+    "уровень_в_емкости",
+    "скорость_спо",
+    "вес_на_крюке"
+  ],
+  "test_configuration": {
+    "z_score": {
+      "window_size": 30,
+      "threshold": 3.0
+    },
+    "lof": {
+      "window_size": 60,
+      "threshold": 18.0
+    },
+    "fft": {
+      "window_size": 64,
+      "threshold": 0.18
+    },
+    "ammad": {
+      "window_size": 40,
+      "threshold": 0.85
+    }
+  },
+  "methods": {
+    "Z-score": {
+      "anomalies_count": 9051,
+      "total_processed": 316500,
+      "anomaly_percentage": 2.859715639810427,
+      "window_size": 30,
+      "threshold": 3.0,
+      "results_by_param": {
+        "глубина": {
+          "anomalies": 514,
+          "total": 26375,
+          "percentage": 1.9488151658767772
+        },
+        "обороты_ротора": {
+          "anomalies": 850,
+          "total": 26375,
+          "percentage": 3.2227488151658767
+        },
+        "дмк": {
+          "anomalies": 666,
+          "total": 26375,
+          "percentage": 2.525118483412322
+        },
+        "момент_ротора": {
+          "anomalies": 692,
+          "total": 26375,
+          "percentage": 2.623696682464455
+        },
+        "давление_на_входе": {
+          "anomalies": 956,
+          "total": 26375,
+          "percentage": 3.6246445497630333
+        },
+        "температура_на_выходе": {
+          "anomalies": 1225,
+          "total": 26375,
+          "percentage": 4.644549763033176
+        },
+        "нагрузка": {
+          "anomalies": 932,
+          "total": 26375,
+          "percentage": 3.533649289099526
+        },
+        "скорость_бурения": {
+          "anomalies": 402,
+          "total": 26375,
+          "percentage": 1.524170616113744
+        },
+        "расход_на_входе": {
+          "anomalies": 385,
+          "total": 26375,
+          "percentage": 1.4597156398104265
+        },
+        "уровень_в_емкости": {
+          "anomalies": 793,
+          "total": 26375,
+          "percentage": 3.0066350710900474
+        },
+        "скорость_спо": {
+          "anomalies": 379,
+          "total": 26375,
+          "percentage": 1.4369668246445497
+        },
+        "вес_на_крюке": {
+          "anomalies": 1257,
+          "total": 26375,
+          "percentage": 4.765876777251185
+        }
+      }
+    },
+    "LOF": {
+      "anomalies_count": 28,
+      "total_processed": 316140,
+      "anomaly_percentage": 0.008856835579173784,
+      "window_size": 60,
+      "threshold": 18.0,
+      "results_by_param": {
+        "глубина": {
+          "anomalies": 0,
+          "total": 507,
+          "percentage": 0.0
+        },
+        "обороты_ротора": {
+          "anomalies": 13,
+          "total": 507,
+          "percentage": 2.564102564102564
+        },
+        "дмк": {
+          "anomalies": 3,
+          "total": 507,
+          "percentage": 0.591715976331361
+        },
+        "момент_ротора": {
+          "anomalies": 1,
+          "total": 507,
+          "percentage": 0.19723865877712032
+        },
+        "давление_на_входе": {
+          "anomalies": 1,
+          "total": 507,
+          "percentage": 0.19723865877712032
+        },
+        "температура_на_выходе": {
+          "anomalies": 1,
+          "total": 507,
+          "percentage": 0.19723865877712032
+        },
+        "нагрузка": {
+          "anomalies": 2,
+          "total": 507,
+          "percentage": 0.39447731755424065
+        },
+        "скорость_бурения": {
+          "anomalies": 1,
+          "total": 507,
+          "percentage": 0.19723865877712032
+        },
+        "расход_на_входе": {
+          "anomalies": 3,
+          "total": 507,
+          "percentage": 0.591715976331361
+        },
+        "уровень_в_емкости": {
+          "anomalies": 1,
+          "total": 507,
+          "percentage": 0.19723865877712032
+        },
+        "скорость_спо": {
+          "anomalies": 0,
+          "total": 507,
+          "percentage": 0.0
+        },
+        "вес_на_крюке": {
+          "anomalies": 2,
+          "total": 507,
+          "percentage": 0.39447731755424065
+        }
+      }
+    },
+    "FFT": {
+      "anomalies_count": 32,
+      "total_processed": 316092,
+      "anomaly_percentage": 0.010123634891107652,
+      "window_size": 64,
+      "threshold": 0.18,
+      "results_by_param": {
+        "глубина": {
+          "anomalies": 0,
+          "total": 200,
+          "percentage": 0.0
+        },
+        "обороты_ротора": {
+          "anomalies": 0,
+          "total": 200,
+          "percentage": 0.0
+        },
+        "дмк": {
+          "anomalies": 1,
+          "total": 200,
+          "percentage": 0.5
+        },
+        "момент_ротора": {
+          "anomalies": 22,
+          "total": 200,
+          "percentage": 11.0
+        },
+        "давление_на_входе": {
+          "anomalies": 1,
+          "total": 200,
+          "percentage": 0.5
+        },
+        "температура_на_выходе": {
+          "anomalies": 0,
+          "total": 200,
+          "percentage": 0.0
+        },
+        "нагрузка": {
+          "anomalies": 2,
+          "total": 200,
+          "percentage": 1.0
+        },
+        "скорость_бурения": {
+          "anomalies": 0,
+          "total": 200,
+          "percentage": 0.0
+        },
+        "расход_на_входе": {
+          "anomalies": 1,
+          "total": 200,
+          "percentage": 0.5
+        },
+        "уровень_в_емкости": {
+          "anomalies": 0,
+          "total": 200,
+          "percentage": 0.0
+        },
+        "скорость_спо": {
+          "anomalies": 5,
+          "total": 200,
+          "percentage": 2.5
+        },
+        "вес_на_крюке": {
+          "anomalies": 0,
+          "total": 200,
+          "percentage": 0.0
+        }
+      }
+    },
+    "AMMAD": {
+      "anomalies_count": 1170,
+      "total_processed": 316380,
+      "anomaly_percentage": 0.3698084581831974,
+      "window_size": 40,
+      "threshold": 0.85,
+      "results_by_param": {
+        "глубина": {
+          "anomalies": 161,
+          "total": 200,
+          "percentage": 80.5
+        },
+        "обороты_ротора": {
+          "anomalies": 85,
+          "total": 200,
+          "percentage": 42.5
+        },
+        "дмк": {
+          "anomalies": 63,
+          "total": 200,
+          "percentage": 31.5
+        },
+        "момент_ротора": {
+          "anomalies": 83,
+          "total": 200,
+          "percentage": 41.5
+        },
+        "давление_на_входе": {
+          "anomalies": 158,
+          "total": 200,
+          "percentage": 79.0
+        },
+        "температура_на_выходе": {
+          "anomalies": 160,
+          "total": 200,
+          "percentage": 80.0
+        },
+        "нагрузка": {
+          "anomalies": 143,
+          "total": 200,
+          "percentage": 71.5
+        },
+        "скорость_бурения": {
+          "anomalies": 54,
+          "total": 200,
+          "percentage": 27.0
+        },
+        "расход_на_входе": {
+          "anomalies": 131,
+          "total": 200,
+          "percentage": 65.5
+        },
+        "уровень_в_емкости": {
+          "anomalies": 65,
+          "total": 200,
+          "percentage": 32.5
+        },
+        "скорость_спо": {
+          "anomalies": 14,
+          "total": 200,
+          "percentage": 7.000000000000001
+        },
+        "вес_на_крюке": {
+          "anomalies": 53,
+          "total": 200,
+          "percentage": 26.5
+        }
+      }
+    }
+  },
+  "statistics_summary": {
+    "total_parameters_tested": 12,
+    "average_records_per_param": 26405.0
+  }
+}

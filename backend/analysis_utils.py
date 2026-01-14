@@ -6,7 +6,6 @@ Handles WebSocket communication, parameter management, and data buffering.
 import json
 from collections import defaultdict, deque
 from typing import Dict, Optional, Callable
-from fastapi import WebSocket
 
 from methods import METHODS
 
@@ -15,7 +14,7 @@ class AnalysisState:
     """Manages analysis parameters and state for WebSocket connection."""
     
     def __init__(self, default_window_size: int = 50):
-        self.method = "fft"
+        self.method = "fft"  # Метод по умолчанию
         self.window_size = default_window_size
         self.score_threshold = 0.5
         self.data_buffers: Dict[str, deque] = defaultdict(
@@ -31,7 +30,7 @@ class AnalysisState:
         Update analysis method.
         
         Args:
-            method: Method name ("fft", "z_score", "lof")
+            method: Method name ("fft", "z_score", "lof", "ammad")
         
         Returns:
             True if method changed, False if invalid
@@ -47,6 +46,11 @@ class AnalysisState:
             self.data_buffers = defaultdict(
                 lambda: deque(maxlen=self.window_size + 1)
             )
+            
+            # Для AMMAD метода сбрасываем порог
+            if method == "ammad":
+                self.score_threshold = 0.7  # Более высокий порог для AMMAD
+                self.method_params["score_threshold"] = 0.7
         
         return True
     
@@ -146,6 +150,8 @@ async def handle_websocket_message(
             analysis_state.update_score_threshold(data["Z_score"])
         elif "LOF" in data and analysis_state.method == "lof":
             analysis_state.update_score_threshold(data["LOF"])
+        elif "AMMAD" in data and analysis_state.method == "ammad":
+            analysis_state.update_score_threshold(data["AMMAD"])
         
         return True
     
@@ -187,6 +193,10 @@ async def apply_analysis_method(
         return False
     
     try:
+        # Для AMMAD метода передаем имя параметра
+        if method == "ammad":
+            method_params["param_name"] = param_name
+            
         is_anomaly = await METHODS[method](
             list(data_buffer),
             **method_params

@@ -1,19 +1,10 @@
-import { AnomalyDetectionMethod } from "@/types/types";
-
-interface Thresholds {
-  Z_score: number;
-  LOF: number;
-  FFT: number;
-  FFT_WINDOW_SIZE: number;
-  Z_SCORE_WINDOW_SIZE: number;
-  LOF_WINDOW_SIZE: number;
-}
+import { AnomalyDetectionMethod, Thresholds } from "@/types/types";
 
 export function buildParametersMessage(
   method: AnomalyDetectionMethod,
   thresholds: Thresholds
 ): any {
-  const message: any = { method };
+  const message: any = { method: method.toLowerCase() };
 
   if (method === "FFT") {
     message.window_size = thresholds.FFT_WINDOW_SIZE;
@@ -27,6 +18,10 @@ export function buildParametersMessage(
     message.window_size = thresholds.LOF_WINDOW_SIZE;
     message.score_threshold = thresholds.LOF;
     message.LOF = thresholds.LOF;
+  } else if (method === "AMMAD") {
+    message.window_size = thresholds.AMMAD_WINDOW_SIZE;
+    message.score_threshold = thresholds.AMMAD;
+    message.AMMAD = thresholds.AMMAD;
   }
 
   return message;
@@ -35,14 +30,18 @@ export function buildParametersMessage(
 export function getThresholdKeysForMethod(
   method: AnomalyDetectionMethod
 ): string[] {
-  if (method === "FFT") {
-    return ["FFT", "FFT_WINDOW_SIZE"];
-  } else if (method === "Z_score") {
-    return ["Z_score", "Z_SCORE_WINDOW_SIZE"];
-  } else if (method === "LOF") {
-    return ["LOF", "LOF_WINDOW_SIZE"];
+  switch (method) {
+    case "FFT":
+      return ["FFT", "FFT_WINDOW_SIZE"];
+    case "Z_score":
+      return ["Z_score", "Z_SCORE_WINDOW_SIZE"];
+    case "LOF":
+      return ["LOF", "LOF_WINDOW_SIZE"];
+    case "AMMAD":
+      return ["AMMAD", "AMMAD_WINDOW_SIZE"];
+    default:
+      return [];
   }
-  return [];
 }
 
 export function getThresholdLabel(key: string): string {
@@ -50,9 +49,11 @@ export function getThresholdLabel(key: string): string {
     Z_score: "Порог Z-score:",
     LOF: "Порог LOF:",
     FFT: "Порог FFT:",
+    AMMAD: "Порог уверенности AMMAD:",
     Z_SCORE_WINDOW_SIZE: "Размер окна:",
     LOF_WINDOW_SIZE: "Размер окна:",
     FFT_WINDOW_SIZE: "Размер окна:",
+    AMMAD_WINDOW_SIZE: "Размер окна анализа:",
   };
   return labels[key] || key;
 }

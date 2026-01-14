@@ -8,7 +8,7 @@ import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { AnalysisMethodSelector } from "@/components/AnalysisMethodSelector";
 import { GraphGrid } from "@/components/GraphGrid";
 import { ControlButtons } from "@/components/ControlButtons";
-import { AnomalyDetectionMethod, AnomalyInfo } from "@/types/types";
+import { AnomalyDetectionMethod, AnomalyInfo, Thresholds } from "@/types/types";
 import { DynamicSensorData } from "@/types/types";
 import {
   formatDate,
@@ -21,6 +21,10 @@ import { analyzeFile, extractFlightStartTimeFromFile } from "@/utils/fileUtils";
 import { buildParametersMessage } from "@/utils/thresholdUtils";
 
 const MAX_DATA_POINTS = 1000;
+
+// Константы по умолчанию для AMMAD
+const DEFAULT_AMMAD_THRESHOLD = 0.7;
+const DEFAULT_AMMAD_WINDOW_SIZE = 32;
 
 export default function Home() {
   // ===== State =====
@@ -40,13 +44,15 @@ export default function Home() {
   const [flightStart, setFlightStart] = useState<Date | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSimulationActive, setIsSimulationActive] = useState<boolean>(false);
-  const [thresholds, setThresholds] = useState({
+  const [thresholds, setThresholds] = useState<Thresholds>({
     Z_score: 3,
-    LOF: 25,
-    FFT: 0.5,
+    LOF: 35,
+    FFT: 0.2,
     FFT_WINDOW_SIZE: 64,
-    Z_SCORE_WINDOW_SIZE: 50,
+    Z_SCORE_WINDOW_SIZE: 30,
     LOF_WINDOW_SIZE: 50,
+    AMMAD: DEFAULT_AMMAD_THRESHOLD,
+    AMMAD_WINDOW_SIZE: DEFAULT_AMMAD_WINDOW_SIZE,
   });
 
   // ===== Refs =====
@@ -85,9 +91,10 @@ export default function Home() {
 
   // Threshold handler
   const handleThresholdChange = useCallback(
-    (key: string, value: number | string) => {
+    (key: keyof Thresholds, value: number | string) => {
       const numericValue =
         typeof value === "string" ? parseFloat(value) : value;
+
       if (!isNaN(numericValue) && numericValue >= 0) {
         setThresholds((prev) => ({
           ...prev,
@@ -143,6 +150,15 @@ export default function Home() {
 
     setAnalysisMethod(method);
 
+    // Автоматически устанавливаем разумные значения для AMMAD
+    if (method === "AMMAD") {
+      setThresholds((prev) => ({
+        ...prev,
+        AMMAD: prev.AMMAD || DEFAULT_AMMAD_THRESHOLD,
+        AMMAD_WINDOW_SIZE: prev.AMMAD_WINDOW_SIZE || DEFAULT_AMMAD_WINDOW_SIZE,
+      }));
+    }
+
     if (isBackendConnected) {
       setTimeout(() => {
         sendParametersToServer();
@@ -166,20 +182,26 @@ export default function Home() {
     setIsLoading(true);
 
     try {
+      const method = analysisMethodRef.current;
       const analysisParams = {
-        method: analysisMethodRef.current,
+        method: method,
         window_size:
-          analysisMethodRef.current === "FFT"
+          method === "FFT"
             ? thresholdsRef.current.FFT_WINDOW_SIZE
-            : analysisMethodRef.current === "Z_score"
+            : method === "Z_score"
             ? thresholdsRef.current.Z_SCORE_WINDOW_SIZE
-            : thresholdsRef.current.LOF_WINDOW_SIZE,
+            : method === "LOF"
+            ? thresholdsRef.current.LOF_WINDOW_SIZE
+            : thresholdsRef.current.AMMAD_WINDOW_SIZE ||
+              DEFAULT_AMMAD_WINDOW_SIZE,
         score_threshold:
-          analysisMethodRef.current === "FFT"
+          method === "FFT"
             ? thresholdsRef.current.FFT
-            : analysisMethodRef.current === "Z_score"
+            : method === "Z_score"
             ? thresholdsRef.current.Z_score
-            : thresholdsRef.current.LOF,
+            : method === "LOF"
+            ? thresholdsRef.current.LOF
+            : thresholdsRef.current.AMMAD || DEFAULT_AMMAD_THRESHOLD,
       };
 
       const parsedData = await analyzeFile(file, analysisParams);
@@ -291,6 +313,9 @@ export default function Home() {
           <p className="text-lg text-slate-600 font-medium">
             Интеллектуальный мониторинг буровых данных
           </p>
+          <p className="text-sm text-slate-500 mt-1">
+            Теперь с адаптивным методом AMMAD
+          </p>
         </div>
 
         {flightStart && (
@@ -367,12 +392,52 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Информация о методе AMMAD */}
+        {analysisMethod === "AMMAD" && (
+          <div className="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200 p-5 shadow-sm">
+            <div className="flex items-start">
+              <div className="flex-shrink-0 p-2 bg-blue-100 rounded-lg mr-4">
+                <span className="text-blue-600 font-bold">⚡</span>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-blue-800 mb-1">
+                  Адаптивный метод AMMAD (Adaptive Multi-Method Anomaly
+                  Detection)
+                </h3>
+                <p className="text-blue-700 mb-2">
+                  Комбинирует три метода анализа с адаптивными весами для
+                  каждого параметра бурения
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+                  <div className="bg-white/70 p-3 rounded-lg">
+                    <span className="font-medium text-blue-600">Z-score: </span>
+                    <span>обнаружение статистических выбросов</span>
+                  </div>
+                  <div className="bg-white/70 p-3 rounded-lg">
+                    <span className="font-medium text-blue-600">LOF: </span>
+                    <span>анализ локальной плотности данных</span>
+                  </div>
+                  <div className="bg-white/70 p-3 rounded-lg">
+                    <span className="font-medium text-blue-600">FFT: </span>
+                    <span>частотный анализ сигналов</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Graphs Section */}
         <div className="mb-8">
           <div className="flex items-center mb-6">
             <span className="w-1 h-8 bg-gradient-to-b from-blue-500 to-blue-600 rounded-full mr-3"></span>
             <h2 className="text-2xl font-bold text-slate-900">
               Анализ параметров
+              {analysisMethod === "AMMAD" && (
+                <span className="ml-2 text-sm font-normal text-blue-600 bg-blue-50 px-2 py-1 rounded">
+                  адаптивный режим
+                </span>
+              )}
             </h2>
           </div>
           <GraphGrid

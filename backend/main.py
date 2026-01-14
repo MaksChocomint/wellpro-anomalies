@@ -25,11 +25,11 @@ async def analyze_file(
         score_threshold: float = Query(None),
         file: UploadFile = File(...),
 ):
-    """Analyze uploaded file for anomalies."""
+    """Анализ загруженного файла на аномалии."""
     method = method.lower()
     if method not in METHODS:
         return JSONResponse(
-            content={"error": f"Incorrect method. Choose from {list(METHODS.keys())}"},
+            content={"error": f"Неверный метод. Выберите из {list(METHODS.keys())}"},
             status_code=400
         )
     
@@ -44,11 +44,11 @@ async def analyze_file(
     
     if parsed_data is None:
         return JSONResponse(
-            content={"error": 'Column "Время" is compulsory in file'},
+            content={"error": 'Столбец "Время" обязателен в файле'},
             status_code=400
         )
     
-    # Filter to keep only 12 required parameters
+    # Фильтруем только 12 требуемых параметров
     parsed_data = filter_required_parameters(parsed_data)
 
     data = [{} for _ in range(len(parsed_data))]
@@ -60,7 +60,13 @@ async def analyze_file(
         time = record.pop("время")
         for key, value in record.items():
             prev[key].append(value)
+            
+            # Для AMMAD метода передаем имя параметра
+            if method == "ammad":
+                method_params["param_name"] = key
+                
             tasks.append(METHODS[method](data=prev[key], **method_params))
+            
         results = await asyncio.gather(*tasks)
         for j, (key, value) in enumerate(record.items()):
             data[i][key] = [value, results[j]]
@@ -71,10 +77,10 @@ async def analyze_file(
 
 @router.websocket("/ws")
 async def websocket_endpoint(ws: WebSocket):
-    """WebSocket endpoint for real-time anomaly detection."""
+    """WebSocket endpoint для обнаружения аномалий в реальном времени."""
     await ws.accept()
     
-    # Initialize analysis state
+    # Инициализация состояния анализа
     analysis_state = AnalysisState(default_window_size=DEFAULT_WINDOWS_SIZE)
     
     try:
@@ -83,17 +89,17 @@ async def websocket_endpoint(ws: WebSocket):
 
         while True:
             try:
-                # Check for new messages from client (non-blocking)
+                # Проверка новых сообщений от клиента (неблокирующая)
                 message_data = await asyncio.wait_for(ws.receive_text(), timeout=0.01)
                 await handle_websocket_message(message_data, analysis_state)
 
             except asyncio.TimeoutError:
-                # No new messages, continue sending data
+                # Нет новых сообщений, продолжаем отправку данных
                 pass
             except Exception as e:
-                print(f"[WebSocket] Error receiving message: {e}")
+                print(f"[WebSocket] Ошибка при получении сообщения: {e}")
 
-            # Process current data record
+            # Обработка текущей записи данных
             if record_index < len(parsed_data):
                 record = parsed_data[record_index]
                 data = {}
@@ -103,16 +109,21 @@ async def websocket_endpoint(ws: WebSocket):
                         data[key] = value
                         continue
 
-                    # Add value to buffer
+                    # Добавляем значение в буфер
                     analysis_state.data_buffers[key].append(value)
 
-                    # Apply analysis method
+                    # Применяем метод анализа
                     if len(analysis_state.data_buffers[key]) >= 2:
+                        # Для AMMAD метода передаем имя параметра
+                        method_params = analysis_state.get_method_params()
+                        if analysis_state.method == "ammad":
+                            method_params["param_name"] = key
+                            
                         is_anomaly = await apply_analysis_method(
                             key,
                             analysis_state.data_buffers[key],
                             analysis_state.method,
-                            analysis_state.get_method_params()
+                            method_params
                         )
                         data[key] = [value, is_anomaly]
                     else:
@@ -123,25 +134,25 @@ async def websocket_endpoint(ws: WebSocket):
                     record_index += 1
                     await asyncio.sleep(random.uniform(1, 3))
                 except Exception as e:
-                    print(f"[WebSocket] Error sending data: {e}")
+                    print(f"[WebSocket] Ошибка отправки данных: {e}")
                     break
             else:
-                # Reached end of data, restart
+                # Достигнут конец данных, начинаем заново
                 record_index = 0
                 analysis_state.data_buffers.clear()
 
     except Exception as e:
-        print(f"[WebSocket] Connection error: {e}")
+        print(f"[WebSocket] Ошибка соединения: {e}")
     finally:
-        print("[WebSocket] Connection closed")
+        print("[WebSocket] Соединение закрыто")
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     raw_data = await parse_data()
-    # Filter to keep only 12 required parameters
+    # Фильтруем только 12 требуемых параметров
     app.state.default_data = filter_required_parameters(raw_data) if raw_data else []
-    print(f"[StartUp] Loaded {len(app.state.default_data)} records with 12 required parameters")
+    print(f"[StartUp] Загружено {len(app.state.default_data)} записей с 12 требуемыми параметрами")
     yield
 
 

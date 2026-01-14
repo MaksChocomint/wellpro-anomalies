@@ -1,0 +1,266 @@
+{
+  "глубина": {
+    "Z-score": {
+      "anomalies": 514,
+      "total": 26375,
+      "percentage": 1.9488151658767772
+    },
+    "LOF": {
+      "anomalies": 0,
+      "total": 507,
+      "percentage": 0.0
+    },
+    "FFT": {
+      "anomalies": 0,
+      "total": 200,
+      "percentage": 0.0
+    },
+    "AMMAD": {
+      "anomalies": 161,
+      "total": 200,
+      "percentage": 80.5
+    }
+  },
+  "обороты_ротора": {
+    "Z-score": {
+      "anomalies": 850,
+      "total": 26375,
+      "percentage": 3.2227488151658767
+    },
+    "LOF": {
+      "anomalies": 13,
+      "total": 507,
+      "percentage": 2.564102564102564
+    },
+    "FFT": {
+      "anomalies": 0,
+      "total": 200,
+      "percentage": 0.0
+    },
+    "AMMAD": {
+      "anomalies": 85,
+      "total": 200,
+      "percentage": 42.5
+    }
+  },
+  "дмк": {
+    "Z-score": {
+      "anomalies": 666,
+      "total": 26375,
+      "percentage": 2.525118483412322
+    },
+    "LOF": {
+      "anomalies": 3,
+      "total": 507,
+      "percentage": 0.591715976331361
+    },
+    "FFT": {
+      "anomalies": 1,
+      "total": 200,
+      "percentage": 0.5
+    },
+    "AMMAD": {
+      "anomalies": 63,
+      "total": 200,
+      "percentage": 31.5
+    }
+  },
+  "момент_ротора": {
+    "Z-score": {
+      "anomalies": 692,
+      "total": 26375,
+      "percentage": 2.623696682464455
+    },
+    "LOF": {
+      "anomalies": 1,
+      "total": 507,
+      "percentage": 0.19723865877712032
+    },
+    "FFT": {
+      "anomalies": 22,
+      "total": 200,
+      "percentage": 11.0
+    },
+    "AMMAD": {
+      "anomalies": 83,
+      "total": 200,
+      "percentage": 41.5
+    }
+  },
+  "давление_на_входе": {
+    "Z-score": {
+      "anomalies": 956,
+      "total": 26375,
+      "percentage": 3.6246445497630333
+    },
+    "LOF": {
+      "anomalies": 1,
+      "total": 507,
+      "percentage": 0.19723865877712032
+    },
+    "FFT": {
+      "anomalies": 1,
+      "total": 200,
+      "percentage": 0.5
+    },
+    "AMMAD": {
+      "anomalies": 158,
+      "total": 200,
+      "percentage": 79.0
+    }
+  },
+  "температура_на_выходе": {
+    "Z-score": {
+      "anomalies": 1225,
+      "total": 26375,
+      "percentage": 4.644549763033176
+    },
+    "LOF": {
+      "anomalies": 1,
+      "total": 507,
+      "percentage": 0.19723865877712032
+    },
+    "FFT": {
+      "anomalies": 0,
+      "total": 200,
+      "percentage": 0.0
+    },
+    "AMMAD": {
+      "anomalies": 160,
+      "total": 200,
+      "percentage": 80.0
+    }
+  },
+  "нагрузка": {
+    "Z-score": {
+      "anomalies": 932,
+      "total": 26375,
+      "percentage": 3.533649289099526
+    },
+    "LOF": {
+      "anomalies": 2,
+      "total": 507,
+      "percentage": 0.39447731755424065
+    },
+    "FFT": {
+      "anomalies": 2,
+      "total": 200,
+      "percentage": 1.0
+    },
+    "AMMAD": {
+      "anomalies": 143,
+      "total": 200,
+      "percentage": 71.5
+    }
+  },
+  "скорость_бурения": {
+    "Z-score": {
+      "anomalies": 402,
+      "total": 26375,
+      "percentage": 1.524170616113744
+    },
+    "LOF": {
+      "anomalies": 1,
+      "total": 507,
+      "percentage": 0.19723865877712032
+    },
+    "FFT": {
+      "anomalies": 0,
+      "total": 200,
+      "percentage": 0.0
+    },
+    "AMMAD": {
+      "anomalies": 54,
+      "total": 200,
+      "percentage": 27.0
+    }
+  },
+  "расход_на_входе": {
+    "Z-score": {
+      "anomalies": 385,
+      "total": 26375,
+      "percentage": 1.4597156398104265
+    },
+    "LOF": {
+      "anomalies": 3,
+      "total": 507,
+      "percentage": 0.591715976331361
+    },
+    "FFT": {
+      "anomalies": 1,
+      "total": 200,
+      "percentage": 0.5
+    },
+    "AMMAD": {
+      "anomalies": 131,
+      "total": 200,
+      "percentage": 65.5
+    }
+  },
+  "уровень_в_емкости": {
+    "Z-score": {
+      "anomalies": 793,
+      "total": 26375,
+      "percentage": 3.0066350710900474
+    },
+    "LOF": {
+      "anomalies": 1,
+      "total": 507,
+      "percentage": 0.19723865877712032
+    },
+    "FFT": {
+      "anomalies": 0,
+      "total": 200,
+      "percentage": 0.0
+    },
+    "AMMAD": {
+      "anomalies": 65,
+      "total": 200,
+      "percentage": 32.5
+    }
+  },
+  "скорость_спо": {
+    "Z-score": {
+      "anomalies": 379,
+      "total": 26375,
+      "percentage": 1.4369668246445497
+    },
+    "LOF": {
+      "anomalies": 0,
+      "total": 507,
+      "percentage": 0.0
+    },
+    "FFT": {
+      "anomalies": 5,
+      "total": 200,
+      "percentage": 2.5
+    },
+    "AMMAD": {
+      "anomalies": 14,
+      "total": 200,
+      "percentage": 7.000000000000001
+    }
+  },
+  "вес_на_крюке": {
+    "Z-score": {
+      "anomalies": 1257,
+      "total": 26375,
+      "percentage": 4.765876777251185
+    },
+    "LOF": {
+      "anomalies": 2,
+      "total": 507,
+      "percentage": 0.39447731755424065
+    },
+    "FFT": {
+      "anomalies": 0,
+      "total": 200,
+      "percentage": 0.0
+    },
+    "AMMAD": {
+      "anomalies": 53,
+      "total": 200,
+      "percentage": 26.5
+    }
+  }
+}
