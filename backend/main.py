@@ -2,37 +2,20 @@ import asyncio
 import random
 from collections import defaultdict, deque
 from contextlib import asynccontextmanager
-from io import StringIO
 import json
 from typing import Dict
 
-import pandas as pd
 from fastapi import FastAPI, APIRouter, UploadFile, File, WebSocket, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from methods import METHODS, FFT_WINDOW_SIZE, LOF_WINDOW_SIZE, Z_SCORE_WINDOW_SIZE
+from data_utils import parse_data, filter_required_parameters
+from analysis_utils import AnalysisState, handle_websocket_message, apply_analysis_method
 
 DEFAULT_FILENAME = "default.TXT"
 DEFAULT_WINDOWS_SIZE = max(FFT_WINDOW_SIZE, LOF_WINDOW_SIZE, Z_SCORE_WINDOW_SIZE)
 router = APIRouter()
-
-
-async def parse_data(text=None):
-    if text is None:
-        with open(DEFAULT_FILENAME, 'rb') as file:
-            text = file.read()
-    df = pd.read_csv(
-        StringIO(text.decode("utf-8")),
-        sep='\t',
-        header=0,
-        decimal=',',
-        skiprows=2
-    )
-    df.columns = df.columns.str.lower()
-    if 'время' not in df.columns:
-        return None
-    return df.to_dict(orient="records")
 
 
 @router.post("/analyze/file")
@@ -42,18 +25,31 @@ async def analyze_file(
         score_threshold: float = Query(None),
         file: UploadFile = File(...),
 ):
+    """Analyze uploaded file for anomalies."""
     method = method.lower()
     if method not in METHODS:
-        return JSONResponse(content={"error": f"Incorrect method. Choose from {list(METHODS.keys())}"}, status_code=400)
+        return JSONResponse(
+            content={"error": f"Incorrect method. Choose from {list(METHODS.keys())}"},
+            status_code=400
+        )
+    
     method_params = {}
     if window_size and window_size >= 0:
         method_params["window_size"] = window_size
     if score_threshold and score_threshold >= 0:
         method_params["score_threshold"] = score_threshold
+    
     text = await file.read()
-    parsed_data = await parse_data(text)
+    parsed_data = await parse_data(text, DEFAULT_FILENAME)
+    
     if parsed_data is None:
-        return JSONResponse(content={"error": 'Column "Время" is compulsory in file'}, status_code=400)
+        return JSONResponse(
+            content={"error": 'Column "Время" is compulsory in file'},
+            status_code=400
+        )
+    
+    # Filter to keep only 12 required parameters
+    parsed_data = filter_required_parameters(parsed_data)
 
     data = [{} for _ in range(len(parsed_data))]
     deque_length = (window_size if window_size and window_size >= 0 else DEFAULT_WINDOWS_SIZE) + 1
@@ -75,81 +71,29 @@ async def analyze_file(
 
 @router.websocket("/ws")
 async def websocket_endpoint(ws: WebSocket):
+    """WebSocket endpoint for real-time anomaly detection."""
     await ws.accept()
-
-    # Начальные параметры
-    current_method = "fft"
-    current_window_size = DEFAULT_WINDOWS_SIZE
-    current_score_threshold = 0.5
-    method_params = {
-        "window_size": current_window_size,
-        "score_threshold": current_score_threshold
-    }
-
-    # Создаем буферы данных для каждого параметра
-    data_buffers: Dict[str, deque] = defaultdict(lambda: deque(maxlen=current_window_size + 1))
-
+    
+    # Initialize analysis state
+    analysis_state = AnalysisState(default_window_size=DEFAULT_WINDOWS_SIZE)
+    
     try:
         parsed_data = app.state.default_data
-
-        # Индекс текущей записи
         record_index = 0
 
         while True:
             try:
-                # Проверяем наличие новых сообщений от клиента
+                # Check for new messages from client (non-blocking)
                 message_data = await asyncio.wait_for(ws.receive_text(), timeout=0.01)
-                try:
-                    message = json.loads(message_data)
-
-                    print(f"[WebSocket] Received message: {message}")
-
-                    # Обновляем параметры анализа
-                    if "method" in message:
-                        method = message["method"].lower()
-                        if method in METHODS:
-                            current_method = method
-                            print(f"[WebSocket] Method changed to: {current_method}")
-                            # Очищаем буферы при смене метода
-                            data_buffers.clear()
-                            data_buffers = defaultdict(lambda: deque(maxlen=current_window_size + 1))
-
-                    if "window_size" in message:
-                        window_size = message["window_size"]
-                        if window_size and window_size >= 0:
-                            current_window_size = window_size
-                            method_params["window_size"] = window_size
-                            print(f"[WebSocket] Window size changed to: {current_window_size}")
-                            # Обновляем размер буферов
-                            for key in data_buffers:
-                                data_buffers[key] = deque(data_buffers[key], maxlen=current_window_size + 1)
-
-                    if "score_threshold" in message:
-                        score_threshold = message["score_threshold"]
-                        if score_threshold and score_threshold >= 0:
-                            current_score_threshold = score_threshold
-                            method_params["score_threshold"] = score_threshold
-                            print(f"[WebSocket] Score threshold changed to: {current_score_threshold}")
-
-                    # Обновляем специфичные параметры метода
-                    # Эти параметры уже переданы через score_threshold, но оставим для обратной совместимости
-                    if current_method == "fft" and "FFT" in message:
-                        method_params["score_threshold"] = message["FFT"]
-                    elif current_method == "z_score" and "Z_score" in message:
-                        method_params["score_threshold"] = message["Z_score"]
-                    elif current_method == "lof" and "LOF" in message:
-                        method_params["score_threshold"] = message["LOF"]
-
-                except json.JSONDecodeError:
-                    print(f"[WebSocket] Invalid JSON received: {message_data}")
+                await handle_websocket_message(message_data, analysis_state)
 
             except asyncio.TimeoutError:
-                # Таймаут - нет новых сообщений, продолжаем отправку данных
+                # No new messages, continue sending data
                 pass
             except Exception as e:
                 print(f"[WebSocket] Error receiving message: {e}")
 
-            # Обрабатываем текущую запись данных
+            # Process current data record
             if record_index < len(parsed_data):
                 record = parsed_data[record_index]
                 data = {}
@@ -159,54 +103,32 @@ async def websocket_endpoint(ws: WebSocket):
                         data[key] = value
                         continue
 
-                    # Добавляем значение в буфер
-                    data_buffers[key].append(value)
+                    # Add value to buffer
+                    analysis_state.data_buffers[key].append(value)
 
-                    # Применяем текущий метод с текущими параметрами
-                    if len(data_buffers[key]) >= 2:  # Нужно как минимум 2 точки для анализа
-                        try:
-                            # Создаем копию параметров для текущего метода
-                            current_method_params = method_params.copy()
-
-                            # Удаляем лишние параметры в зависимости от метода
-                            if current_method == "fft":
-                                # У FFT обычно есть специфичные параметры
-                                pass
-                            elif current_method == "z_score":
-                                # Для z-score можем передать дополнительный параметр
-                                if "Z_score" in method_params:
-                                    current_method_params["z_threshold"] = method_params.get("Z_score", 3.0)
-                            elif current_method == "lof":
-                                # Для LOF можем передать дополнительный параметр
-                                if "LOF" in method_params:
-                                    current_method_params["lof_threshold"] = method_params.get("LOF", 25.0)
-
-                            is_anomaly = await METHODS[current_method](
-                                list(data_buffers[key]),
-                                **current_method_params
-                            )
-                            data[key] = [value, is_anomaly]
-                        except Exception as e:
-                            print(f"[WebSocket] Error in {current_method} method: {e}")
-                            print(f"Method params: {method_params}")
-                            print(f"Buffer length: {len(data_buffers[key])}")
-                            data[key] = [value, False]
+                    # Apply analysis method
+                    if len(analysis_state.data_buffers[key]) >= 2:
+                        is_anomaly = await apply_analysis_method(
+                            key,
+                            analysis_state.data_buffers[key],
+                            analysis_state.method,
+                            analysis_state.get_method_params()
+                        )
+                        data[key] = [value, is_anomaly]
                     else:
                         data[key] = [value, False]
 
                 try:
                     await ws.send_json({"data": data})
                     record_index += 1
-                    await asyncio.sleep(random.uniform(1, 3))  # Случайная задержка
+                    await asyncio.sleep(random.uniform(1, 3))
                 except Exception as e:
                     print(f"[WebSocket] Error sending data: {e}")
                     break
             else:
-                # Достигли конца данных, начинаем заново
+                # Reached end of data, restart
                 record_index = 0
-                # Очищаем буферы при перезапуске цикла
-                data_buffers.clear()
-                data_buffers = defaultdict(lambda: deque(maxlen=current_window_size + 1))
+                analysis_state.data_buffers.clear()
 
     except Exception as e:
         print(f"[WebSocket] Connection error: {e}")
@@ -216,7 +138,10 @@ async def websocket_endpoint(ws: WebSocket):
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    app.state.default_data = await parse_data()
+    raw_data = await parse_data()
+    # Filter to keep only 12 required parameters
+    app.state.default_data = filter_required_parameters(raw_data) if raw_data else []
+    print(f"[StartUp] Loaded {len(app.state.default_data)} records with 12 required parameters")
     yield
 
 

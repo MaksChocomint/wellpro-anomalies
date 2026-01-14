@@ -1,40 +1,29 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { useState, useEffect, useRef, useCallback } from "react";
-import Papa from "papaparse";
-import axios from "axios";
-const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
-
 import AnomalyModal from "@/components/AnomalyModal";
 import { StatusDisplay } from "@/components/StatusDisplay";
 import { GraphControls } from "@/components/GraphControls";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
+import { AnalysisMethodSelector } from "@/components/AnalysisMethodSelector";
+import { GraphGrid } from "@/components/GraphGrid";
+import { ControlButtons } from "@/components/ControlButtons";
 import { AnomalyDetectionMethod, AnomalyInfo } from "@/types/types";
 import { DynamicSensorData } from "@/types/types";
 import {
-  excelSerialToJsDate,
   formatDate,
   formatParamName,
-  getSparseTimeTicks,
+  excelSerialToJsDate,
 } from "@/utils/utils";
+import { useWebSocket } from "@/hooks/useWebSocket";
+import { useDataSimulation } from "@/hooks/useDataSimulation";
+import { analyzeFile, extractFlightStartTimeFromFile } from "@/utils/fileUtils";
+import { buildParametersMessage } from "@/utils/thresholdUtils";
 
 const MAX_DATA_POINTS = 1000;
 
-const GRAPH_COLORS = [
-  "#1f77b4",
-  "#ff7f0e",
-  "#2ca02c",
-  "#d62728",
-  "#9467bd",
-  "#8c564b",
-  "#e377c2",
-  "#7f7f7f",
-  "#bcbd22",
-  "#17becf",
-];
-
 export default function Home() {
+  // ===== State =====
   const [liveData, setLiveData] = useState<DynamicSensorData[]>([]);
   const [anomalyInfo, setAnomalyInfo] = useState<AnomalyInfo[]>([]);
   const [isBackendConnected, setIsBackendConnected] = useState<boolean>(false);
@@ -51,24 +40,6 @@ export default function Home() {
   const [flightStart, setFlightStart] = useState<Date | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSimulationActive, setIsSimulationActive] = useState<boolean>(false);
-  const wsRef = useRef<WebSocket | null>(null);
-  const fullDataRef = useRef<DynamicSensorData[]>([]);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const dataIndexRef = useRef<number>(0);
-
-  // Используем ref для актуальных значений
-  const analysisMethodRef = useRef<AnomalyDetectionMethod>("FFT");
-  const thresholdsRef = useRef({
-    Z_score: 3,
-    LOF: 25,
-    FFT: 0.5,
-    FFT_WINDOW_SIZE: 64,
-    Z_SCORE_WINDOW_SIZE: 50,
-    LOF_WINDOW_SIZE: 50,
-  });
-
-  const showAnomalyStatus = anomalyInfo.length > 0;
-
   const [thresholds, setThresholds] = useState({
     Z_score: 3,
     LOF: 25,
@@ -78,7 +49,12 @@ export default function Home() {
     LOF_WINDOW_SIZE: 50,
   });
 
-  // Обновляем ref при изменении состояния
+  // ===== Refs =====
+  const analysisMethodRef = useRef<AnomalyDetectionMethod>("FFT");
+  const thresholdsRef = useRef(thresholds);
+  const showAnomalyStatus = anomalyInfo.length > 0;
+
+  // Sync refs with state
   useEffect(() => {
     analysisMethodRef.current = analysisMethod;
   }, [analysisMethod]);
@@ -87,8 +63,11 @@ export default function Home() {
     thresholdsRef.current = thresholds;
   }, [thresholds]);
 
-  // Функция для отправки параметров на сервер
+  // ===== Callbacks =====
+
+  // Send parameters to server
   const sendParametersToServer = useCallback(() => {
+    const wsRef = useWebSocketHook.wsRef;
     if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
       console.warn(
         "[WebSocket] Connection is not open, cannot send parameters"
@@ -96,34 +75,15 @@ export default function Home() {
       return;
     }
 
-    // Используем актуальные значения из ref
-    const currentMethod = analysisMethodRef.current;
-    const currentThresholds = thresholdsRef.current;
-
-    // Создаем сообщение с учетом текущего метода
-    const message: any = {
-      method: currentMethod,
-    };
-
-    // Добавляем специфичные параметры в зависимости от метода
-    if (currentMethod === "FFT") {
-      message.window_size = currentThresholds.FFT_WINDOW_SIZE;
-      message.score_threshold = currentThresholds.FFT;
-      message.FFT = currentThresholds.FFT; // Добавляем для совместимости
-    } else if (currentMethod === "Z_score") {
-      message.window_size = currentThresholds.Z_SCORE_WINDOW_SIZE;
-      message.score_threshold = currentThresholds["Z_score"];
-      message.Z_score = currentThresholds["Z_score"];
-    } else if (currentMethod === "LOF") {
-      message.window_size = currentThresholds.LOF_WINDOW_SIZE;
-      message.score_threshold = currentThresholds.LOF;
-      message.LOF = currentThresholds.LOF;
-    }
-
+    const message = buildParametersMessage(
+      analysisMethodRef.current,
+      thresholdsRef.current
+    );
     console.log("[WebSocket] Sending updated parameters:", message);
     wsRef.current.send(JSON.stringify(message));
-  }, []); // Нет зависимостей, используем ref
+  }, []);
 
+  // Threshold handler
   const handleThresholdChange = useCallback(
     (key: string, value: number | string) => {
       const numericValue =
@@ -134,9 +94,7 @@ export default function Home() {
           [key]: numericValue,
         }));
 
-        // Если WebSocket подключен, отправляем обновленные параметры
         if (isBackendConnected) {
-          // Используем setTimeout для асинхронного обновления
           setTimeout(() => {
             sendParametersToServer();
           }, 100);
@@ -146,6 +104,28 @@ export default function Home() {
     [isBackendConnected, sendParametersToServer]
   );
 
+  // ===== Custom Hooks =====
+  const useWebSocketHook = useWebSocket({
+    setLiveData,
+    setAnomalyInfo,
+    setIsBackendConnected,
+    setConsecutiveAnomaliesCount,
+    setIsModalOpen,
+    setAvailableParameters,
+    setGraphVisibility,
+    setFlightStart,
+    sendParametersToServer,
+    MAX_DATA_POINTS,
+  });
+
+  const useDataSimulationHook = useDataSimulation({
+    setLiveData,
+    setAnomalyInfo,
+    setIsSimulationActive,
+    MAX_DATA_POINTS,
+  });
+
+  // ===== Modal Handlers =====
   const handleDoNotShowAgain = () => {
     setDoNotShowAgain(true);
     setIsModalOpen(false);
@@ -155,243 +135,55 @@ export default function Home() {
     setAnomalyInfo([]);
   };
 
-  // Функция остановки симуляции
-  const stopSimulation = useCallback(() => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-      setIsSimulationActive(false);
-      console.log("[Симуляция] Симуляция остановлена.");
-    }
-  }, []);
-
-  const startDataSimulation = useCallback(() => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-    }
-    setLiveData([]);
-    setAnomalyInfo([]);
-    dataIndexRef.current = 0;
-    console.log("[Симуляция] Начинаем загрузку данных. Интервал: 1000 мс.");
-
-    setIsSimulationActive(true);
-
-    intervalRef.current = setInterval(() => {
-      if (dataIndexRef.current < fullDataRef.current.length) {
-        setLiveData((prevData) => {
-          const newData = [
-            ...prevData,
-            fullDataRef.current[dataIndexRef.current],
-          ];
-          return newData.slice(-MAX_DATA_POINTS);
-        });
-        dataIndexRef.current++;
-      } else {
-        if (intervalRef.current) {
-          clearInterval(intervalRef.current);
-          intervalRef.current = null;
-          setIsSimulationActive(false);
-          console.log(
-            "[Симуляция] Данные из файла закончились. Симуляция остановлена."
-          );
-        }
-      }
-    }, 1000);
-  }, []);
-
-  const connectWebSocket = useCallback(() => {
-    // Останавливаем симуляцию, если она активна
-    stopSimulation();
-
-    if (wsRef.current) {
-      console.log("[WebSocket] Closing existing connection.");
-      wsRef.current.close();
-    }
-
-    setLiveData([]);
-    setAnomalyInfo([]);
-    setIsBackendConnected(false);
-    setConsecutiveAnomaliesCount(0);
-    setIsModalOpen(false);
-    setIsSimulationActive(false);
-
-    const ws = new WebSocket("ws://127.0.0.1:8000/api/v1/ws");
-    wsRef.current = ws;
-
-    ws.onopen = () => {
-      console.log("[WebSocket] Connection established.");
-      setIsBackendConnected(true);
-
-      // Отправляем начальные параметры
-      setTimeout(() => {
-        sendParametersToServer();
-      }, 500); // Небольшая задержка для стабилизации соединения
-    };
-
-    ws.onmessage = (event) => {
-      try {
-        const incomingMessage = JSON.parse(event.data);
-        const data = incomingMessage.data;
-
-        if (!data) {
-          console.warn(
-            "[WebSocket] Received message with no 'data' key. Skipping."
-          );
-          return;
-        }
-
-        console.log("[WebSocket] Data received:", data);
-
-        setLiveData((prevData) => {
-          const newDataPoint: DynamicSensorData = {};
-          let isFirstData = prevData.length === 0;
-          const newAnomaliesThisPoint: AnomalyInfo[] = [];
-
-          for (const key in data) {
-            if (key === "время") {
-              newDataPoint[key] = data[key];
-              continue;
-            }
-
-            const value = data[key];
-
-            if (Array.isArray(value) && value.length === 2) {
-              const [paramValue, isAnomaly] = value;
-              newDataPoint[key] = [paramValue, isAnomaly];
-
-              if (isAnomaly) {
-                setIsModalOpen(true);
-                newAnomaliesThisPoint.push({
-                  id: `${Date.now()}-${key}`,
-                  timestamp: data["время"] as number,
-                  param: key,
-                  message: `Аномалия обнаружена в ${formatParamName(
-                    key
-                  )}: ${paramValue.toFixed(2)}`,
-                });
-              }
-            } else {
-              const paramValue = parseFloat(value);
-              if (!isNaN(paramValue)) {
-                newDataPoint[key] = [paramValue, false];
-              } else {
-                console.warn(
-                  `[WebSocket] Skipping invalid data for key '${key}':`,
-                  value
-                );
-                continue;
-              }
-            }
-          }
-
-          if (newAnomaliesThisPoint.length > 0) {
-            setAnomalyInfo((prevInfo) => [
-              ...prevInfo,
-              ...newAnomaliesThisPoint,
-            ]);
-          }
-
-          if (isFirstData) {
-            const params = Object.keys(newDataPoint).filter(
-              (k) => k !== "время" && Array.isArray(newDataPoint[k])
-            );
-            setAvailableParameters(params);
-            setGraphVisibility(
-              params.reduce((acc, param) => ({ ...acc, [param]: true }), {})
-            );
-            setFlightStart(
-              excelSerialToJsDate(newDataPoint["время"] as number)
-            );
-          }
-
-          const updatedData = [...prevData, newDataPoint];
-          return updatedData.slice(-MAX_DATA_POINTS);
-        });
-      } catch (error) {
-        console.error("[WebSocket] Error parsing message:", error);
-      }
-    };
-
-    ws.onclose = (event) => {
-      console.log("[WebSocket] Connection closed.", event.code, event.reason);
-      setIsBackendConnected(false);
-    };
-
-    ws.onerror = (error) => {
-      console.error("[WebSocket] Error:", error);
-      setIsBackendConnected(false);
-    };
-  }, [stopSimulation, sendParametersToServer]);
-
+  // ===== Method Change Handler =====
   const handleAnalysisMethodChange = (method: AnomalyDetectionMethod) => {
-    // Если активна симуляция, останавливаем ее
     if (isSimulationActive) {
-      stopSimulation();
+      useDataSimulationHook.stopSimulation();
     }
 
     setAnalysisMethod(method);
 
-    // Если WebSocket подключен, отправляем новые параметры
     if (isBackendConnected) {
-      // Небольшая задержка для того чтобы состояние обновилось
       setTimeout(() => {
         sendParametersToServer();
       }, 100);
     }
   };
 
+  // ===== File Upload Handler =====
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Останавливаем WebSocket соединение
-    if (wsRef.current) {
-      wsRef.current.close();
-      wsRef.current = null;
+    if (useWebSocketHook.wsRef.current) {
+      useWebSocketHook.wsRef.current.close();
+      useWebSocketHook.wsRef.current = null;
     }
 
-    // Останавливаем симуляцию, если она была активна
-    stopSimulation();
-
+    useDataSimulationHook.stopSimulation();
     setIsLoading(true);
 
-    const formData = new FormData();
-    formData.append("file", file);
-
-    // Используем актуальные значения из ref
-    const currentMethod = analysisMethodRef.current;
-    const currentThresholds = thresholdsRef.current;
-
-    const score_threshold =
-      currentMethod === "FFT"
-        ? currentThresholds.FFT
-        : currentMethod === "Z_score"
-        ? currentThresholds["Z_score"]
-        : currentThresholds.LOF;
-
-    const window_size =
-      currentMethod === "FFT"
-        ? currentThresholds.FFT_WINDOW_SIZE
-        : currentMethod === "Z_score"
-        ? currentThresholds.Z_SCORE_WINDOW_SIZE
-        : currentThresholds.LOF_WINDOW_SIZE;
-
-    const url = `http://127.0.0.1:8000/api/v1/analyze/file?method=${currentMethod}&window_size=${window_size}&score_threshold=${score_threshold}`;
-
     try {
-      const response = await axios.post(url, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const analysisParams = {
+        method: analysisMethodRef.current,
+        window_size:
+          analysisMethodRef.current === "FFT"
+            ? thresholdsRef.current.FFT_WINDOW_SIZE
+            : analysisMethodRef.current === "Z_score"
+            ? thresholdsRef.current.Z_SCORE_WINDOW_SIZE
+            : thresholdsRef.current.LOF_WINDOW_SIZE,
+        score_threshold:
+          analysisMethodRef.current === "FFT"
+            ? thresholdsRef.current.FFT
+            : analysisMethodRef.current === "Z_score"
+            ? thresholdsRef.current.Z_score
+            : thresholdsRef.current.LOF,
+      };
 
-      const parsedData = response.data.data;
-      console.log("[File Upload] Data received:", parsedData);
-
-      // Сохраняем данные для симуляции
-      fullDataRef.current = parsedData;
+      const parsedData = await analyzeFile(file, analysisParams);
+      useDataSimulationHook.fullDataRef.current = parsedData;
 
       setLiveData([]);
       setAnomalyInfo([]);
@@ -413,91 +205,40 @@ export default function Home() {
         setGraphVisibility(initialVisibility);
       }
 
-      // Запускаем симуляцию с загруженными данными
-      startDataSimulation();
+      useDataSimulationHook.startDataSimulation();
 
+      // Extract flight start time
       const reader = new FileReader();
       reader.onload = (e) => {
         const text = e.target?.result as string;
-        const lines = text.split(/\r?\n/);
-        const flightStartLine = lines[0];
-        const timeMatch = flightStartLine.match(
-          /(\d{1,2}) (.*) (\d{4})г. (\d{1,2}):(\d{1,2})/
-        );
-        let startTime = null;
-        if (timeMatch) {
-          const [, day, monthStr, year, hour, minute] = timeMatch;
-          const monthIndex = [
-            "января",
-            "февраля",
-            "марта",
-            "апреля",
-            "мая",
-            "июня",
-            "июля",
-            "августа",
-            "сентября",
-            "октября",
-            "ноября",
-            "декабря",
-          ].indexOf(monthStr);
-          if (monthIndex !== -1) {
-            startTime = new Date(
-              parseInt(year),
-              monthIndex,
-              parseInt(day),
-              parseInt(hour),
-              parseInt(minute)
-            );
-          }
+        const startTime = extractFlightStartTimeFromFile(text);
+        if (startTime) {
+          setFlightStart(startTime);
         }
-        setFlightStart(startTime);
       };
       reader.readAsText(file);
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error("Axios error analyzing file:", error.message);
-        if (error.response) {
-          console.error("Response data:", error.response.data);
-          console.error("Response status:", error.response.status);
-        }
-      } else {
-        console.error("Error analyzing file:", error);
-      }
+      console.error("Error analyzing file:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
+  // ===== Switch to Real-time Handler =====
   const handleSwitchToRealTime = useCallback(() => {
-    // Останавливаем симуляцию
-    stopSimulation();
+    useDataSimulationHook.stopSimulation();
+    useDataSimulationHook.fullDataRef.current = [];
+    useDataSimulationHook.dataIndexRef.current = 0;
 
-    // Сбрасываем данные симуляции
-    fullDataRef.current = [];
-    dataIndexRef.current = 0;
-
-    // Сбрасываем состояния
     setLiveData([]);
     setAnomalyInfo([]);
     setConsecutiveAnomaliesCount(0);
     setFlightStart(null);
 
-    // Подключаемся к WebSocket
-    connectWebSocket();
-  }, [connectWebSocket, stopSimulation]);
+    useWebSocketHook.connectWebSocket();
+  }, []);
 
-  useEffect(() => {
-    connectWebSocket();
-
-    return () => {
-      if (wsRef.current) {
-        wsRef.current.close();
-      }
-      stopSimulation();
-    };
-  }, []); // Убраны зависимости, чтобы не переподключаться при каждом изменении
-
+  // ===== Visibility Handlers =====
   const handleVisibilityChange = (param: string) => {
     setGraphVisibility((prev) => ({
       ...prev,
@@ -521,314 +262,138 @@ export default function Home() {
     setGraphVisibility(newVisibility);
   };
 
+  // ===== Initialize WebSocket on Mount =====
+  useEffect(() => {
+    useWebSocketHook.connectWebSocket();
+
+    return () => {
+      if (useWebSocketHook.wsRef.current) {
+        useWebSocketHook.wsRef.current.close();
+      }
+      useDataSimulationHook.stopSimulation();
+    };
+  }, []);
+
+  // ===== Render =====
   return (
-    <div className="min-h-screen bg-gray-50 p-6 relative">
-      <h1 className="text-4xl font-extrabold text-center mb-2 text-gray-900">
-        WellPro: Мониторинг Буровых Данных
-      </h1>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 p-6 relative">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8 text-center">
+          <div className="inline-flex items-center justify-center mb-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
+              <span className="text-white text-xl font-bold">W</span>
+            </div>
+          </div>
+          <h1 className="text-5xl font-bold mb-2 bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 bg-clip-text text-transparent">
+            WellPro
+          </h1>
+          <p className="text-lg text-slate-600 font-medium">
+            Интеллектуальный мониторинг буровых данных
+          </p>
+        </div>
 
-      {flightStart && (
-        <p className="text-center text-gray-600 mb-8">
-          Начало бурения: {formatDate(flightStart)}
-        </p>
-      )}
+        {flightStart && (
+          <div className="text-center mb-8 p-4 bg-white/80 backdrop-blur-sm rounded-lg border border-slate-200 shadow-sm">
+            <p className="text-slate-600 font-medium">
+              📅 Начало бурения:{" "}
+              <span className="text-blue-600 font-semibold">
+                {formatDate(flightStart)}
+              </span>
+            </p>
+          </div>
+        )}
 
-      <StatusDisplay
-        anomalyDetected={showAnomalyStatus}
-        isBackendConnected={isBackendConnected && !isSimulationActive}
-        onDismissAnomaly={handleDismissAnomaly}
-      />
-
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8 p-4 bg-white rounded-xl shadow-md">
-        <GraphControls
-          graphVisibility={graphVisibility}
-          onVisibilityChange={handleVisibilityChange}
-          onShowAll={handleShowAll}
-          onHideAll={handleHideAll}
-          availableParameters={availableParameters}
+        <StatusDisplay
+          anomalyDetected={showAnomalyStatus}
+          isBackendConnected={isBackendConnected && !isSimulationActive}
+          onDismissAnomaly={handleDismissAnomaly}
         />
 
-        <div className="flex items-center gap-3">
-          <label
-            htmlFor="analysis-method"
-            className="text-gray-700 font-medium whitespace-nowrap"
-          >
-            Метод анализа:
-          </label>
-
-          <select
-            id="analysis-method"
-            value={analysisMethod}
-            onChange={(e) =>
-              handleAnalysisMethodChange(
-                e.target.value as AnomalyDetectionMethod
-              )
-            }
-            disabled={!isBackendConnected || isSimulationActive}
-            className="p-2 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="FFT">FFT</option>
-            <option value="Z_score">Z-score</option>
-            <option value="LOF">LOF</option>
-          </select>
-
-          {analysisMethod === "Z_score" && (
-            <>
-              <label className="text-gray-700 font-medium whitespace-nowrap">
-                Порог Z-score:
-              </label>
-
-              <input
-                type="number"
-                value={thresholds["Z_score"]}
-                onChange={(e) =>
-                  handleThresholdChange("Z_score", parseFloat(e.target.value))
-                }
-                className="p-2 border border-gray-300 rounded-md shadow-sm w-24 text-sm"
-                step="0.1"
-                disabled={!isBackendConnected || isSimulationActive}
+        {/* Controls Section */}
+        <div className="space-y-6 mb-10">
+          {/* Top Control Bar */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Graph Controls */}
+            <div className="lg:col-span-3 bg-white rounded-xl shadow-md border border-slate-200 p-6 backdrop-blur-sm bg-white/95">
+              <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center">
+                <span className="w-1 h-6 bg-blue-500 rounded-full mr-3"></span>
+                Параметры отображения
+              </h2>
+              <GraphControls
+                graphVisibility={graphVisibility}
+                onVisibilityChange={handleVisibilityChange}
+                onShowAll={handleShowAll}
+                onHideAll={handleHideAll}
+                availableParameters={availableParameters}
               />
+            </div>
 
-              <label className="text-gray-700 font-medium whitespace-nowrap">
-                Размер окна:
-              </label>
-
-              <input
-                type="number"
-                value={thresholds["Z_SCORE_WINDOW_SIZE"]}
-                onChange={(e) =>
-                  handleThresholdChange(
-                    "Z_SCORE_WINDOW_SIZE",
-                    parseInt(e.target.value)
-                  )
-                }
-                className="p-2 border border-gray-300 rounded-md shadow-sm w-24 text-sm"
-                disabled={!isBackendConnected || isSimulationActive}
+            {/* Analysis Method Selector */}
+            <div className="lg:col-span-2 bg-white rounded-xl shadow-md border border-slate-200 p-6 backdrop-blur-sm bg-white/95">
+              <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center">
+                <span className="w-1 h-6 bg-blue-500 rounded-full mr-3"></span>
+                Метод анализа
+              </h2>
+              <AnalysisMethodSelector
+                analysisMethod={analysisMethod}
+                thresholds={thresholds}
+                onMethodChange={handleAnalysisMethodChange}
+                onThresholdChange={handleThresholdChange}
+                isDisabled={!isBackendConnected || isSimulationActive}
               />
-            </>
-          )}
+            </div>
 
-          {analysisMethod === "LOF" && (
-            <>
-              <label className="text-gray-700 font-medium whitespace-nowrap">
-                Порог LOF:
-              </label>
-
-              <input
-                type="number"
-                value={thresholds["LOF"]}
-                onChange={(e) =>
-                  handleThresholdChange("LOF", parseFloat(e.target.value))
-                }
-                className="p-2 border border-gray-300 rounded-md shadow-sm w-24 text-sm"
-                step="0.1"
-                disabled={!isBackendConnected || isSimulationActive}
-              />
-
-              <label className="text-gray-700 font-medium whitespace-nowrap">
-                Размер окна:
-              </label>
-
-              <input
-                type="number"
-                value={thresholds["LOF_WINDOW_SIZE"]}
-                onChange={(e) =>
-                  handleThresholdChange(
-                    "LOF_WINDOW_SIZE",
-                    parseInt(e.target.value)
-                  )
-                }
-                className="p-2 border border-gray-300 rounded-md shadow-sm w-24 text-sm"
-                disabled={!isBackendConnected || isSimulationActive}
-              />
-            </>
-          )}
-
-          {analysisMethod === "FFT" && (
-            <>
-              <label className="text-gray-700 font-medium whitespace-nowrap">
-                Порог FFT:
-              </label>
-
-              <input
-                type="number"
-                value={thresholds["FFT"]}
-                onChange={(e) =>
-                  handleThresholdChange("FFT", parseFloat(e.target.value))
-                }
-                className="p-2 border border-gray-300 rounded-md shadow-sm w-24 text-sm"
-                step="0.01"
-                disabled={!isBackendConnected || isSimulationActive}
-              />
-
-              <label className="text-gray-700 font-medium whitespace-nowrap">
-                Размер окна:
-              </label>
-
-              <input
-                type="number"
-                value={thresholds["FFT_WINDOW_SIZE"]}
-                onChange={(e) =>
-                  handleThresholdChange(
-                    "FFT_WINDOW_SIZE",
-                    parseInt(e.target.value)
-                  )
-                }
-                className="p-2 border border-gray-300 rounded-md shadow-sm w-24 text-sm"
-                step="16"
-                disabled={!isBackendConnected || isSimulationActive}
-              />
-            </>
-          )}
-        </div>
-
-        <div className="flex items-center gap-3">
-          <label
-            htmlFor="file-upload"
-            className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-blue-700 cursor-pointer transition-colors"
-          >
-            Загрузить данные
-          </label>
-
-          <input
-            id="file-upload"
-            type="file"
-            accept=".txt"
-            onChange={handleFileChange}
-            className="hidden"
-          />
-
-          {/* Кнопка остановки симуляции */}
-          {isSimulationActive && (
-            <button
-              onClick={stopSimulation}
-              className="px-4 py-2 bg-red-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-red-700 transition-colors"
-            >
-              Остановить симуляцию
-            </button>
-          )}
-
-          {/* Кнопка запуска симуляции (если данные уже загружены, но симуляция остановлена) */}
-          {fullDataRef.current.length > 0 && !isSimulationActive && (
-            <button
-              onClick={startDataSimulation}
-              className="px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-green-700 transition-colors"
-            >
-              Запустить симуляцию
-            </button>
-          )}
-
-          <button
-            onClick={handleSwitchToRealTime}
-            disabled={isSimulationActive}
-            className={`px-4 py-2 text-white text-sm font-semibold rounded-lg shadow-md transition-colors ${
-              isSimulationActive
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-purple-600 hover:bg-purple-700"
-            }`}
-          >
-            Режим Real-time
-          </button>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {availableParameters.map(
-          (paramKey, index) =>
-            graphVisibility[paramKey] && (
-              <div
-                key={paramKey}
-                className="bg-white p-5 rounded-xl shadow-lg border border-gray-100"
-              >
-                <h3 className="text-xl font-semibold mb-3 text-gray-800">
-                  {formatParamName(paramKey)}
-                </h3>
-
-                <Plot
-                  data={[
-                    {
-                      x: liveData.map(
-                        (d) => (d[paramKey] as [number, boolean])[0]
-                      ),
-                      y: liveData.map((d) => d["время"]),
-                      type: "scatter",
-                      mode: "lines",
-                      name: formatParamName(paramKey),
-                      line: {
-                        color: GRAPH_COLORS[index % GRAPH_COLORS.length],
-                      },
-                      hovertemplate:
-                        `<b>${formatParamName(paramKey)}</b>: %{x:.2f}<br>` +
-                        `<b>Время</b>: %{customdata}<br>` +
-                        `<extra></extra>`,
-                      customdata: liveData.map((d) =>
-                        formatDate(excelSerialToJsDate(d["время"] as number))
-                      ),
-                    },
-                    {
-                      x: anomalyInfo
-                        .filter((info) => info.param === paramKey)
-                        .map((info) => {
-                          const dataPoint = liveData.find(
-                            (d) => d["время"] === info.timestamp
-                          );
-                          return dataPoint
-                            ? (dataPoint[paramKey] as [number, boolean])[0]
-                            : null;
-                        }),
-                      y: anomalyInfo
-                        .filter((info) => info.param === paramKey)
-                        .map((info) => info.timestamp),
-                      mode: "markers",
-                      type: "scatter",
-                      name: "Аномалия",
-                      marker: {
-                        color: "red",
-                        symbol: "x",
-                        size: 10,
-                      },
-                    },
-                  ]}
-                  layout={{
-                    autosize: true,
-                    margin: { l: 70, r: 10, t: 20, b: 40 },
-                    yaxis: {
-                      title: "Время",
-                      autorange: "reversed",
-                      ...(() => {
-                        const [tickValues, tickTexts] = getSparseTimeTicks(
-                          liveData,
-                          3
-                        );
-                        return {
-                          tickvals: tickValues,
-                          ticktext: tickTexts,
-                        };
-                      })(),
-                    },
-                    xaxis: {
-                      title: "Значение",
-                    },
-                    height: 300,
-                    hovermode: "y unified",
-                  }}
-                  useResizeHandler={true}
-                  style={{ width: "100%", height: "100%" }}
+            {/* Control Buttons */}
+            <div className="bg-white rounded-xl shadow-md border border-slate-200 p-6 backdrop-blur-sm bg-white/95">
+              <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center">
+                <span className="w-1 h-6 bg-blue-500 rounded-full mr-3"></span>
+                Управление
+              </h2>
+              <div className="flex flex-col gap-3">
+                <ControlButtons
+                  isSimulationActive={isSimulationActive}
+                  hasLoadedData={
+                    useDataSimulationHook.fullDataRef.current.length > 0
+                  }
+                  isDisabled={isSimulationActive}
+                  onFileUpload={handleFileChange}
+                  onStopSimulation={useDataSimulationHook.stopSimulation}
+                  onStartSimulation={useDataSimulationHook.startDataSimulation}
+                  onSwitchToRealTime={handleSwitchToRealTime}
                 />
               </div>
-            )
-        )}
-      </div>
+            </div>
+          </div>
+        </div>
 
-      {isModalOpen && !doNotShowAgain && (
-        <AnomalyModal
-          isModalOpen={isModalOpen}
-          setIsModalOpen={setIsModalOpen}
-          anomalyInfo={anomalyInfo}
-          onDoNotShowAgain={handleDoNotShowAgain}
-        />
-      )}
-      <LoadingOverlay isLoading={isLoading} />
+        {/* Graphs Section */}
+        <div className="mb-8">
+          <div className="flex items-center mb-6">
+            <span className="w-1 h-8 bg-gradient-to-b from-blue-500 to-blue-600 rounded-full mr-3"></span>
+            <h2 className="text-2xl font-bold text-slate-900">
+              Анализ параметров
+            </h2>
+          </div>
+          <GraphGrid
+            liveData={liveData}
+            availableParameters={availableParameters}
+            graphVisibility={graphVisibility}
+            anomalyInfo={anomalyInfo}
+          />
+        </div>
+
+        {isModalOpen && !doNotShowAgain && (
+          <AnomalyModal
+            isModalOpen={isModalOpen}
+            setIsModalOpen={setIsModalOpen}
+            anomalyInfo={anomalyInfo}
+            onDoNotShowAgain={handleDoNotShowAgain}
+          />
+        )}
+
+        <LoadingOverlay isLoading={isLoading} />
+      </div>
     </div>
   );
 }

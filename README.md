@@ -33,10 +33,13 @@ sudo apt install -y nodejs npm
 Для развертывания приложения необходимо:
 
 1. Склонировать репозиторий
+
 ```
 git clone https://github.com/MaksChocomint/wellpro-anomalies.git
 ```
+
 2. Равертывание Backend части:
+
 ```
 # Из корневой директории перейти в директорию backend
 cd backend
@@ -45,12 +48,15 @@ cd backend
 pip install -r requirements.txt
 
 # Поднять веб-сервер
-uvicorn main:app --reload  
+python -m uvicorn main:app --reload
 ```
+
 Веб-приложение (API) будет доступно по адресу:
+
 ```
 http://127.0.0.1:8000
 ```
+
 3. Равертывание Frontend части
 
 ```
@@ -63,7 +69,9 @@ npm install
 # Поднять веб-сервер
 npm run dev
 ```
+
 Веб-приложение будет доступно по адресу:
+
 ```
 http://127.0.0.1:3000
 ```
