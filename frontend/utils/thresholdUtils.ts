@@ -2,33 +2,29 @@ import { AnomalyDetectionMethod, Thresholds } from "@/types/types";
 
 export function buildParametersMessage(
   method: AnomalyDetectionMethod,
-  thresholds: Thresholds
+  thresholds: Thresholds,
 ): any {
   const message: any = { method: method.toLowerCase() };
 
   if (method === "FFT") {
     message.window_size = thresholds.FFT_WINDOW_SIZE;
     message.score_threshold = thresholds.FFT;
-    message.FFT = thresholds.FFT;
   } else if (method === "Z_score") {
     message.window_size = thresholds.Z_SCORE_WINDOW_SIZE;
     message.score_threshold = thresholds.Z_score;
-    message.Z_score = thresholds.Z_score;
   } else if (method === "LOF") {
     message.window_size = thresholds.LOF_WINDOW_SIZE;
     message.score_threshold = thresholds.LOF;
-    message.LOF = thresholds.LOF;
   } else if (method === "AMMAD") {
     message.window_size = thresholds.AMMAD_WINDOW_SIZE;
     message.score_threshold = thresholds.AMMAD;
-    message.AMMAD = thresholds.AMMAD;
   }
 
   return message;
 }
 
 export function getThresholdKeysForMethod(
-  method: AnomalyDetectionMethod
+  method: AnomalyDetectionMethod,
 ): string[] {
   switch (method) {
     case "FFT":

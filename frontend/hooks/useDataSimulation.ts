@@ -1,14 +1,18 @@
 import { useCallback, useRef } from "react";
-import { DynamicSensorData } from "@/types/types";
+import { DynamicSensorData, AnomalyInfo } from "@/types/types";
+import { processIncomingDataPoint } from "@/utils/dataProcessor";
 
 interface UseDataSimulationProps {
   setLiveData: (
     data:
       | DynamicSensorData[]
-      | ((prev: DynamicSensorData[]) => DynamicSensorData[])
+      | ((prev: DynamicSensorData[]) => DynamicSensorData[]),
   ) => void;
-  setAnomalyInfo: (data: any[] | ((prev: any[]) => any[])) => void;
+  setAnomalyInfo: (
+    data: AnomalyInfo[] | ((prev: AnomalyInfo[]) => AnomalyInfo[]),
+  ) => void;
   setIsSimulationActive: (active: boolean) => void;
+  setIsModalOpen: (open: boolean) => void;
   MAX_DATA_POINTS: number;
 }
 
@@ -16,9 +20,10 @@ export function useDataSimulation({
   setLiveData,
   setAnomalyInfo,
   setIsSimulationActive,
+  setIsModalOpen,
   MAX_DATA_POINTS,
 }: UseDataSimulationProps) {
-  const fullDataRef = useRef<DynamicSensorData[]>([]);
+  const fullDataRef = useRef<any[]>([]);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const dataIndexRef = useRef<number>(0);
 
@@ -27,49 +32,52 @@ export function useDataSimulation({
       clearInterval(intervalRef.current);
       intervalRef.current = null;
       setIsSimulationActive(false);
-      console.log("[Симуляция] Симуляция остановлена.");
+      console.log("[Симуляция] Пауза на индексе:", dataIndexRef.current);
     }
   }, [setIsSimulationActive]);
 
   const startDataSimulation = useCallback(() => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
+    if (intervalRef.current) return;
+
+    if (dataIndexRef.current === 0) {
+      setLiveData([]);
+      setAnomalyInfo([]);
     }
-    setLiveData([]);
-    setAnomalyInfo([]);
-    dataIndexRef.current = 0;
-    console.log("[Симуляция] Начинаем загрузку данных. Интервал: 1000 мс.");
 
     setIsSimulationActive(true);
 
     intervalRef.current = setInterval(() => {
-      if (dataIndexRef.current < fullDataRef.current.length) {
-        setLiveData((prevData) => {
-          const newData = [
-            ...prevData,
-            fullDataRef.current[dataIndexRef.current],
-          ];
-          return newData.slice(-MAX_DATA_POINTS);
-        });
+      const rawData = fullDataRef.current;
+      const index = dataIndexRef.current;
+
+      if (index < rawData.length) {
+        // Применяем общий паттерн обработки
+        const { newDataPoint, newAnomalies } = processIncomingDataPoint(
+          rawData[index],
+        );
+
+        setLiveData((prev) => [...prev, newDataPoint].slice(-MAX_DATA_POINTS));
+
+        if (newAnomalies.length > 0) {
+          setIsModalOpen(true);
+          setAnomalyInfo((prev) => [...prev, ...newAnomalies].slice(-50));
+        }
+
         dataIndexRef.current++;
       } else {
-        if (intervalRef.current) {
-          clearInterval(intervalRef.current);
-          intervalRef.current = null;
-          setIsSimulationActive(false);
-          console.log(
-            "[Симуляция] Данные из файла закончились. Симуляция остановлена."
-          );
-        }
+        stopSimulation();
+        dataIndexRef.current = 0;
+        console.log("[Симуляция] Завершена.");
       }
-    }, 1000);
-  }, [setLiveData, setAnomalyInfo, setIsSimulationActive, MAX_DATA_POINTS]);
-
-  return {
-    fullDataRef,
-    intervalRef,
-    dataIndexRef,
+    }, 500);
+  }, [
+    setLiveData,
+    setAnomalyInfo,
+    setIsSimulationActive,
+    setIsModalOpen,
+    MAX_DATA_POINTS,
     stopSimulation,
-    startDataSimulation,
-  };
+  ]);
+
+  return { fullDataRef, dataIndexRef, stopSimulation, startDataSimulation };
 }

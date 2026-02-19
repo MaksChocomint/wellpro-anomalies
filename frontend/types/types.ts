@@ -20,6 +20,7 @@ export interface Thresholds {
 }
 // Type for storing anomaly information
 export type AnomalyInfo = {
+  id: string | null;
   param: string;
   timestamp: number | string;
 };

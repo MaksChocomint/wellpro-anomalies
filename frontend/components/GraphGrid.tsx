@@ -92,7 +92,7 @@ export function GraphGrid({
       ...d,
       dateTime: excelSerialToJsDate(d["время"] as number),
       dateTimeString: excelSerialToJsDate(
-        d["время"] as number
+        d["время"] as number,
       ).toLocaleTimeString("ru-RU", {
         hour: "2-digit",
         minute: "2-digit",
@@ -108,7 +108,7 @@ export function GraphGrid({
         // Автоматически переходим к последним данным
         const newMaxIndex = Math.max(
           0,
-          processedData.length - MAX_VISIBLE_POINTS
+          processedData.length - MAX_VISIBLE_POINTS,
         );
         if (currentIndex < newMaxIndex) {
           setCurrentIndex(newMaxIndex);
@@ -143,7 +143,7 @@ export function GraphGrid({
       const startData = processedData[startIdx];
       const endIdx = Math.min(
         startIdx + MAX_VISIBLE_POINTS - 1,
-        processedData.length - 1
+        processedData.length - 1,
       );
       const endData = processedData[endIdx];
 
@@ -152,7 +152,7 @@ export function GraphGrid({
         end: endData?.dateTimeString || "",
       };
     },
-    [processedData]
+    [processedData],
   );
 
   // Перейти к самым последним данным
@@ -207,7 +207,7 @@ export function GraphGrid({
       const value = d[paramKey];
       const numericValue = Array.isArray(value) ? value[0] : value;
       const isAnomaly = anomalyInfo.some(
-        (info) => info.param === paramKey && info.timestamp === d["время"]
+        (info) => info.param === paramKey && info.timestamp === d["время"],
       );
 
       return {
@@ -232,7 +232,7 @@ export function GraphGrid({
     csvRows.push(
       `Временной диапазон: ${getTimeRange(currentIndex).start} - ${
         getTimeRange(currentIndex).end
-      }`
+      }`,
     );
     csvRows.push(`Всего записей: ${data.length}`);
     csvRows.push("");
@@ -277,7 +277,7 @@ export function GraphGrid({
     link.setAttribute("href", url);
     link.setAttribute(
       "download",
-      `данные_${safeParamName}_${safeTimeRange}.csv`
+      `данные_${safeParamName}_${safeTimeRange}.csv`,
     );
     link.style.visibility = "hidden";
 
@@ -394,13 +394,13 @@ export function GraphGrid({
                         processedData[
                           Math.min(
                             currentIndex + MAX_VISIBLE_POINTS - 1,
-                            processedData.length - 1
+                            processedData.length - 1,
                           )
-                        ]?.["время"]
+                        ]?.["время"],
                   )
                   .map((info) => {
                     const dPoint = processedData.find(
-                      (d) => d["время"] === info.timestamp
+                      (d) => d["время"] === info.timestamp,
                     );
                     const val = dPoint?.[paramKey];
                     return Array.isArray(val) ? val[0] : val;
@@ -415,9 +415,9 @@ export function GraphGrid({
                         processedData[
                           Math.min(
                             currentIndex + MAX_VISIBLE_POINTS - 1,
-                            processedData.length - 1
+                            processedData.length - 1,
                           )
-                        ]?.["время"]
+                        ]?.["время"],
                   )
                   .map((info) => excelSerialToJsDate(info.timestamp)),
                 mode: "markers",
@@ -673,9 +673,9 @@ export function GraphGrid({
                 processedData[
                   Math.min(
                     currentIndex + MAX_VISIBLE_POINTS - 1,
-                    processedData.length - 1
+                    processedData.length - 1,
                   )
-                ]?.["время"]
+                ]?.["время"],
           );
 
           return (
@@ -723,13 +723,13 @@ export function GraphGrid({
                     {
                       x: currentWindowAnomalies.map((info) => {
                         const dPoint = processedData.find(
-                          (d) => d["время"] === info.timestamp
+                          (d) => d["время"] === info.timestamp,
                         );
                         const val = dPoint?.[paramKey];
                         return Array.isArray(val) ? val[0] : val;
                       }),
                       y: currentWindowAnomalies.map((info) =>
-                        excelSerialToJsDate(info.timestamp)
+                        excelSerialToJsDate(info.timestamp),
                       ),
                       mode: "markers",
                       type: "scatter",

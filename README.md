@@ -48,7 +48,7 @@ cd backend
 pip install -r requirements.txt
 
 # Поднять веб-сервер
-python -m uvicorn main:app --reload
+python -m uvicorn app.main:app --reload
 ```
 
 Веб-приложение (API) будет доступно по адресу:

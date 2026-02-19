@@ -4,6 +4,7 @@ import {
   getThresholdKeysForMethod,
   getThresholdLabel,
 } from "@/utils/thresholdUtils";
+import { getDefaultThresholdByKey } from "@/constants/analysisDefaults";
 
 interface AnalysisMethodSelectorProps {
   analysisMethod: AnomalyDetectionMethod;
@@ -97,7 +98,7 @@ export function AnalysisMethodSelector({
       {analysisMethod === "AMMAD" && (
         <div className="p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
           <p className="text-sm text-blue-700">
-            <span className="font-semibold">Адаптивный метод AMMAD:</span>
+            <span className="font-semibold">Адаптивный метод AMMAD: </span>
             Комбинирует Z-score, LOF и FFT с автоматической настройкой весов для
             каждого параметра бурения на основе их характеристик.
           </p>
@@ -110,8 +111,7 @@ export function AnalysisMethodSelector({
           const { min, max } = getMethodMinMax(key);
           const step = getMethodStep(key);
           const value =
-            thresholds[key] ??
-            (key === "AMMAD" ? 0.7 : key.includes("WINDOW") ? 64 : 0);
+            thresholds[key] ?? getDefaultThresholdByKey(key);
 
           return (
             <div key={key} className="flex flex-col">

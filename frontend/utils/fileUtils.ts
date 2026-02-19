@@ -9,7 +9,7 @@ interface FileAnalysisParams {
 
 export async function analyzeFile(
   file: File,
-  params: FileAnalysisParams
+  params: FileAnalysisParams,
 ): Promise<DynamicSensorData[]> {
   const formData = new FormData();
   formData.append("file", file);
@@ -19,22 +19,22 @@ export async function analyzeFile(
   const windowSize =
     params.window_size ||
     (methodParam === "ammad"
-      ? 64
+      ? 32
       : methodParam === "fft"
-      ? 64
-      : methodParam === "z_score"
-      ? 50
-      : 50);
+        ? 64
+        : methodParam === "z_score"
+          ? 50
+          : 50);
 
   const scoreThreshold =
     params.score_threshold ||
     (methodParam === "ammad"
       ? 0.7
       : methodParam === "fft"
-      ? 0.5
-      : methodParam === "z_score"
-      ? 3
-      : 25);
+        ? 0.5
+        : methodParam === "z_score"
+          ? 3
+          : 25);
 
   const url = `http://127.0.0.1:8000/api/v1/analyze/file?method=${methodParam}&window_size=${windowSize}&score_threshold=${scoreThreshold}`;
 
@@ -43,7 +43,7 @@ export async function analyzeFile(
       headers: {
         "Content-Type": "multipart/form-data",
       },
-      timeout: 30000,
+      timeout: 3000000,
     });
 
     if (response.data && response.data.data) {
@@ -57,7 +57,7 @@ export async function analyzeFile(
       throw new Error(
         `Ошибка сервера: ${error.response?.status} ${
           error.response?.data?.error || error.message
-        }`
+        }`,
       );
     }
     throw error;
@@ -65,7 +65,7 @@ export async function analyzeFile(
 }
 
 export function extractFlightStartTimeFromFile(
-  fileContent: string
+  fileContent: string,
 ): Date | null {
   const lines = fileContent.split(/\r?\n/);
   if (lines.length === 0) return null;
@@ -74,7 +74,7 @@ export function extractFlightStartTimeFromFile(
 
   // Ищем дату в формате: "Начало рейса - 8 июня 2016г. 20:49"
   const timeMatch = flightStartLine.match(
-    /(\d{1,2})\s+(января|февраля|марта|апреля|мая|июня|июля|августа|сентября|октября|ноября|декабря)\s+(\d{4})г\.\s+(\d{1,2}):(\d{1,2})/
+    /(\d{1,2})\s+(января|февраля|марта|апреля|мая|июня|июля|августа|сентября|октября|ноября|декабря)\s+(\d{4})г\.\s+(\d{1,2}):(\d{1,2})/,
   );
 
   if (!timeMatch) {
@@ -107,6 +107,6 @@ export function extractFlightStartTimeFromFile(
     monthIndex,
     parseInt(day),
     parseInt(hour),
-    parseInt(minute)
+    parseInt(minute),
   );
 }
