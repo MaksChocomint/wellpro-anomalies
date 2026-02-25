@@ -49,7 +49,11 @@ export function useWebSocket({
     wsRef.current = ws;
 
     ws.onopen = () => {
-      setIsBackendConnected(true);
+      setTimeout(() => {
+        if (wsRef.current === ws) {
+          setIsBackendConnected(true);
+        }
+      }, 1000);
       setTimeout(sendParametersToServer, 500);
     };
 
@@ -79,7 +83,7 @@ export function useWebSocket({
 
           if (newAnomalies.length > 0) {
             setIsModalOpen(true);
-            setAnomalyInfo((prev) => [...prev, ...newAnomalies].slice(-50));
+            setAnomalyInfo((prev) => [...prev, ...newAnomalies].slice(-500));
           }
 
           return [...prevData, newDataPoint].slice(-MAX_DATA_POINTS);

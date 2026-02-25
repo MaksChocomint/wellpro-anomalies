@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey, Integer
+from sqlalchemy import CheckConstraint, ForeignKey, Index, Integer, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base
@@ -13,3 +13,9 @@ class Cluster(Base):
 
     field = relationship("Field", back_populates="clusters")
     wells = relationship("Well", back_populates="cluster", cascade="all, delete")
+
+    __table_args__ = (
+        Index("ix_clusters_field_id", "field_id"),
+        CheckConstraint("number > 0", name="cluster_number_positive_check"),
+        UniqueConstraint("field_id", "number", name="uq_clusters_field_number"),
+    )

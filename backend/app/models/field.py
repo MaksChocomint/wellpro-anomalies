@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey, Integer, String
+from sqlalchemy import ForeignKey, Index, Integer, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base
@@ -14,3 +14,9 @@ class Field(Base):
 
     company = relationship("Company", back_populates="fields")
     clusters = relationship("Cluster", back_populates="field", cascade="all, delete")
+
+    __table_args__ = (
+        Index("ix_fields_company_id", "company_id"),
+        Index("ix_fields_name", "name"),
+        UniqueConstraint("company_id", "name", name="uq_fields_company_name"),
+    )

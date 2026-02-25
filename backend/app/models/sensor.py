@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, Integer, String
+from sqlalchemy import DateTime, ForeignKey, Index, Integer, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base
@@ -18,3 +18,10 @@ class Sensor(Base):
     rig = relationship("Rig", back_populates="sensors")
     sensor_type = relationship("SensorType", back_populates="sensors")
     telemetry = relationship("Telemetry", back_populates="sensor", cascade="all, delete")
+
+    __table_args__ = (
+        Index("ix_sensors_rig_id", "rig_id"),
+        Index("ix_sensors_sensor_type_id", "sensor_type_id"),
+        UniqueConstraint("serial_number", name="uq_sensors_serial_number"),
+    )
+    

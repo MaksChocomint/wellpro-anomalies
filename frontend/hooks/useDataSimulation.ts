@@ -60,7 +60,7 @@ export function useDataSimulation({
 
         if (newAnomalies.length > 0) {
           setIsModalOpen(true);
-          setAnomalyInfo((prev) => [...prev, ...newAnomalies].slice(-50));
+          setAnomalyInfo((prev) => [...prev, ...newAnomalies].slice(-500));
         }
 
         dataIndexRef.current++;

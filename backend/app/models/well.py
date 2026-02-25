@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, Integer, String
+from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Index, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base
@@ -19,3 +19,16 @@ class Well(Base):
 
     cluster = relationship("Cluster", back_populates="wells")
     rigs = relationship("Rig", back_populates="well", cascade="all, delete")
+
+    __table_args__ = (
+        Index("ix_wells_cluster_id", "cluster_id"),
+        Index("ix_wells_status", "status"),
+        CheckConstraint("depth_target > 0", name="well_depth_positive_check"),
+        CheckConstraint(
+            "completed_at IS NULL OR completed_at >= started_at",
+            name="well_dates_check",
+        ),
+    )
+
+
+

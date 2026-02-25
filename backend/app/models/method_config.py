@@ -1,7 +1,7 @@
 from datetime import datetime
 from decimal import Decimal
 
-from sqlalchemy import DateTime, ForeignKey, Integer, Numeric
+from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Index, Integer, Numeric
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base
@@ -20,3 +20,10 @@ class MethodConfig(Base):
     rig = relationship("Rig", back_populates="method_configs")
     method = relationship("DetectionMethod", back_populates="configs")
     anomalies = relationship("Anomaly", back_populates="method_config")
+
+    __table_args__ = (
+        Index("ix_method_configs_rig_id", "rig_id"),
+        Index("ix_method_configs_method_id", "method_id"),
+        CheckConstraint("window_size > 0", name="method_configs_window_size_positive_check"),
+        CheckConstraint("threshold >= 0", name="method_configs_threshold_non_negative_check"),
+    )

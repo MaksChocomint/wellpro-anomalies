@@ -2,7 +2,7 @@ import { Thresholds } from "@/types/types";
 
 export const DEFAULT_Z_SCORE_THRESHOLD = 3.0;
 export const DEFAULT_LOF_THRESHOLD = 25.0;
-export const DEFAULT_FFT_THRESHOLD = 0.25;
+export const DEFAULT_FFT_THRESHOLD = 0.3;
 export const DEFAULT_AMMAD_THRESHOLD = 0.75;
 
 export const DEFAULT_Z_SCORE_WINDOW_SIZE = 30;
@@ -43,4 +43,3 @@ export function getDefaultThresholdByKey(key: string): number {
       return 0;
   }
 }
-

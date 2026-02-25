@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, Integer, String
+from sqlalchemy import CheckConstraint, DateTime, Integer, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base
@@ -14,3 +14,8 @@ class Company(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.utcnow)
 
     fields = relationship("Field", back_populates="company", cascade="all, delete")
+
+    __table_args__ = (
+        CheckConstraint("length(name) > 2", name="company_name_length_check"),
+        UniqueConstraint("name", name="uq_companies_name"),
+    )

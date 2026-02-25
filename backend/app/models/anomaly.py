@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, Integer
+from sqlalchemy import DateTime, ForeignKey, Index, Integer, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base
@@ -16,3 +16,14 @@ class Anomaly(Base):
 
     telemetry = relationship("Telemetry", back_populates="anomalies")
     method_config = relationship("MethodConfig", back_populates="anomalies")
+
+    __table_args__ = (
+        Index("ix_anomalies_detected_at", "detected_at"),
+        Index("ix_anomalies_telemetry_id", "telemetry_id"),
+        Index("ix_anomalies_method_config_id", "method_config_id"),
+        UniqueConstraint(
+            "telemetry_id",
+            "method_config_id",
+            name="uq_anomalies_telemetry_method_config",
+        ),
+    )

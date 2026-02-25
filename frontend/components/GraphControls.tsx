@@ -6,7 +6,7 @@ import {
   FaCheck,
   FaTimes,
 } from "react-icons/fa";
-import { AnomalyDetectionMethod } from "@/types/types";
+
 import { formatParamName } from "@/utils/utils";
 
 interface GraphControlsProps {

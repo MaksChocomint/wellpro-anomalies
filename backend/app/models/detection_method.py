@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, String, Text
+from sqlalchemy import Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base
@@ -12,3 +12,7 @@ class DetectionMethod(Base):
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     configs = relationship("MethodConfig", back_populates="method")
+
+    __table_args__ = (
+        UniqueConstraint("name", name="uq_detection_methods_name"),
+    )

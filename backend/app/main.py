@@ -1,4 +1,4 @@
-import asyncio
+﻿import asyncio
 import random
 import sys
 from collections import defaultdict, deque
@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager
 if sys.platform == "win32":
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
-from fastapi import FastAPI, APIRouter, UploadFile, File, WebSocket, Query
+from fastapi import FastAPI, APIRouter, UploadFile, File, WebSocket, Query, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
@@ -141,8 +141,11 @@ async def websocket_endpoint(ws: WebSocket):
             except asyncio.TimeoutError:
                 # Нет новых сообщений, продолжаем отправку данных
                 pass
+            except WebSocketDisconnect:
+                break
             except Exception as e:
                 print(f"[WebSocket] Ошибка при получении сообщения: {e}")
+                break
 
             # Обработка текущей записи данных
             if record_index < len(parsed_data):
@@ -178,6 +181,8 @@ async def websocket_endpoint(ws: WebSocket):
                     await ws.send_json({"data": data})
                     record_index += 1
                     await asyncio.sleep(random.uniform(1, 3))
+                except WebSocketDisconnect:
+                    break
                 except Exception as e:
                     print(f"[WebSocket] Ошибка отправки данных: {e}")
                     break

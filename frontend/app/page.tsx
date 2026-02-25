@@ -16,10 +16,14 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { analyzeFile, extractFlightStartTimeFromFile } from "@/utils/fileUtils";
 import { buildParametersMessage } from "@/utils/thresholdUtils";
 import { DEFAULT_THRESHOLDS } from "@/constants/analysisDefaults";
+import SelectionScreen from "@/components/SelectionScreen";
+import { ArrowLeft } from "lucide-react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const MAX_DATA_POINTS = 1000;
 
 export default function Home() {
+  const [selectedRig, setSelectedRig] = useState<any>(null);
   const [liveData, setLiveData] = useState<DynamicSensorData[]>([]);
   const [anomalyInfo, setAnomalyInfo] = useState<AnomalyInfo[]>([]);
   const [isBackendConnected, setIsBackendConnected] = useState<boolean>(false);
@@ -75,6 +79,21 @@ export default function Home() {
     [],
   );
 
+  const getWindowSize = (method: AnomalyDetectionMethod): number => {
+    switch (method) {
+      case "FFT":
+        return thresholds.FFT_WINDOW_SIZE || 32;
+      case "Z_score":
+        return thresholds.Z_SCORE_WINDOW_SIZE || 50;
+      case "LOF":
+        return thresholds.LOF_WINDOW_SIZE || 20;
+      case "AMMAD":
+        return thresholds.AMMAD_WINDOW_SIZE || 30;
+      default:
+        return 32;
+    }
+  };
+
   const useWebSocketHook = useWebSocket({
     setLiveData,
     setAnomalyInfo,
@@ -115,21 +134,17 @@ export default function Home() {
     sendParametersToServer,
   ]);
 
-  // ОБРАБОТКА ФАЙЛА
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // 1. Останавливаем все процессы
     if (useWebSocketHook.wsRef.current) {
       useWebSocketHook.wsRef.current.close();
       useWebSocketHook.wsRef.current = null;
     }
     useDataSimulationHook.stopSimulation();
-
-    // 2. СБРАСЫВАЕМ ИНДЕКС ДЛЯ НОВОГО ФАЙЛА
     useDataSimulationHook.dataIndexRef.current = 0;
 
     setIsLoading(true);
@@ -157,7 +172,6 @@ export default function Home() {
       };
 
       const parsedData = await analyzeFile(file, analysisParams);
-      console.log("Parsed data from file:", parsedData);
       useDataSimulationHook.fullDataRef.current = parsedData;
 
       setLiveData([]);
@@ -177,7 +191,6 @@ export default function Home() {
         setGraphVisibility(initialVisibility);
       }
 
-      // Запускаем симуляцию (теперь индекс 0, начнется сначала)
       useDataSimulationHook.startDataSimulation();
 
       const reader = new FileReader();
@@ -223,25 +236,37 @@ export default function Home() {
     };
   }, []);
 
-  // Вычисляем прогресс для визуализации (опционально)
+  const handleResetDoNotShowAgain = () => {
+    setDoNotShowAgain(false);
+  };
+
   const totalRows = useDataSimulationHook.fullDataRef.current.length;
   const currentRow = useDataSimulationHook.dataIndexRef.current;
   const progressPercent =
     totalRows > 0 ? Math.round((currentRow / totalRows) * 100) : 0;
 
+  if (!selectedRig) return <SelectionScreen onSelect={setSelectedRig} />;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 p-6 relative">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-8 text-center">
-          <h1 className="text-5xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-            WellPro
-          </h1>
-          <p className="text-lg text-slate-600 font-medium">
-            Интеллектуальный мониторинг буровых данных
-          </p>
+        <div className="flex justify-between items-center mb-8">
+          <button
+            onClick={() => setSelectedRig(null)}
+            className="flex items-center gap-2 text-slate-500 hover:text-blue-600 font-semibold transition"
+          >
+            <ArrowLeft size={20} /> Назад к выбору
+          </button>
+          <div className="text-right">
+            <h1 className="text-5xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+              WellPro
+            </h1>
+            <p className="text-lg text-slate-600 font-medium">
+              {selectedRig.name} • Активный мониторинг
+            </p>
+          </div>
         </div>
 
-        {/* Прогресс-бар симуляции (когда данные из файла) */}
         {totalRows > 0 && (
           <div className="mb-6 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
             <div className="flex justify-between mb-2 text-sm font-bold text-slate-600">
@@ -264,6 +289,31 @@ export default function Home() {
           isBackendConnected={isBackendConnected && !isSimulationActive}
           onDismissAnomaly={() => setAnomalyInfo([])}
         />
+
+        {doNotShowAgain && (
+          <div className="mb-6 bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-amber-100 rounded-lg">
+                <FaEyeSlash className="text-amber-600" />
+              </div>
+              <div>
+                <p className="font-medium text-amber-800">
+                  Уведомления об аномалиях скрыты
+                </p>
+                <p className="text-sm text-amber-600">
+                  Модальные окна не будут показываться при обнаружении аномалий
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={handleResetDoNotShowAgain}
+              className="flex items-center gap-2 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-medium transition-colors"
+            >
+              <FaEye className="text-lg" />
+              <span>Показывать снова</span>
+            </button>
+          </div>
+        )}
 
         <div className="space-y-6 mb-10">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -308,14 +358,16 @@ export default function Home() {
           anomalyInfo={anomalyInfo}
         />
 
-        {isModalOpen && !doNotShowAgain && (
-          <AnomalyModal
-            isModalOpen={isModalOpen}
-            setIsModalOpen={setIsModalOpen}
-            anomalyInfo={anomalyInfo}
-            onDoNotShowAgain={() => setDoNotShowAgain(true)}
-          />
-        )}
+        <AnomalyModal
+          isModalOpen={isModalOpen && !doNotShowAgain}
+          setIsModalOpen={setIsModalOpen}
+          anomalyInfo={anomalyInfo}
+          rigId={selectedRig?.rig_id || 0}
+          method={analysisMethod}
+          threshold={(thresholds as any)[analysisMethod] || 0.75}
+          windowSize={getWindowSize(analysisMethod)}
+          onDoNotShowAgain={() => setDoNotShowAgain(true)}
+        />
 
         <LoadingOverlay isLoading={isLoading} />
       </div>
