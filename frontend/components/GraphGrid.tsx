@@ -19,6 +19,8 @@ import {
   Settings,
 } from "lucide-react";
 
+import { UNIT_MAP } from "@/constants/units";
+
 const GRAPH_COLORS = [
   "#1f77b4",
   "#ff7f0e",
@@ -33,8 +35,6 @@ const GRAPH_COLORS = [
 ];
 
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
-
-
 
 interface GraphGridProps {
   liveData: DynamicSensorData[];
