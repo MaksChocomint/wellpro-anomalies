@@ -1,0 +1,193 @@
+﻿file,parameter,rows,count,mean,min,max
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\16-18.12.2014 рейс 9.txt,вес_на_крюке,18748,18748,4.019222654056512,0.239404052495956,36.95119857788086
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\16-18.12.2014 рейс 9.txt,глубина,18748,18748,796.489990234375,796.489990234375,796.489990234375
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\16-18.12.2014 рейс 9.txt,давление_на_входе,18748,18748,4.271316376592451,0.0,150.4577178955078
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\16-18.12.2014 рейс 9.txt,дмк,18748,18748,0.0,0.0,0.0
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\16-18.12.2014 рейс 9.txt,момент_ротора,18748,18748,0.0,0.0,0.0
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\16-18.12.2014 рейс 9.txt,нагрузка,18748,18748,0.0,0.0,0.0
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\16-18.12.2014 рейс 9.txt,обороты_ротора,18748,18748,-0.30856530301881696,-9.187278747558594,0.0
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\16-18.12.2014 рейс 9.txt,расход_на_входе,18748,18748,1.6239283642900961,0.0,24.004421234130856
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\16-18.12.2014 рейс 9.txt,скорость_бурения,18748,18748,0.0,0.0,0.0
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\16-18.12.2014 рейс 9.txt,скорость_спо,18748,18748,0.010075077660411129,0.0,0.76232898235321
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\16-18.12.2014 рейс 9.txt,температура_на_выходе,18748,18748,0.0,0.0,0.0
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\16-18.12.2014 рейс 9.txt,уровень_в_емкости,18748,18748,1.3799184026915507,0.889691472053528,1.688789486885071
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\18-19.12.2014 рейс 10.txt,вес_на_крюке,9618,9618,4.905499837009779,0.240514114499092,32.262794494628906
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\18-19.12.2014 рейс 10.txt,глубина,9618,9618,796.489990234375,796.489990234375,796.489990234375
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\18-19.12.2014 рейс 10.txt,давление_на_входе,9618,9618,22.81939009178982,0.0,137.36032104492188
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\18-19.12.2014 рейс 10.txt,дмк,9618,9618,0.0,0.0,0.0
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\18-19.12.2014 рейс 10.txt,момент_ротора,9618,9618,0.0,0.0,0.0
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\18-19.12.2014 рейс 10.txt,нагрузка,9618,9618,0.0,0.0,0.0
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\18-19.12.2014 рейс 10.txt,обороты_ротора,9618,9618,2.5171791555915495,-0.506746351718903,52.345211029052734
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\18-19.12.2014 рейс 10.txt,расход_на_входе,9618,9618,4.26943562303291,0.0,14.90988063812256
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\18-19.12.2014 рейс 10.txt,скорость_бурения,9618,9618,0.0,0.0,0.0
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\18-19.12.2014 рейс 10.txt,скорость_спо,9618,9618,0.012605253715068054,0.0,0.923529386520386
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\18-19.12.2014 рейс 10.txt,температура_на_выходе,9618,9618,0.0,0.0,0.0
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\18-19.12.2014 рейс 10.txt,уровень_в_емкости,9618,9618,1.353928752378308,0.972474992275238,1.514081597328186
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\19-21.12.2014 рейс 11.txt,вес_на_крюке,11485,11485,9.911168098268064,0.212762489914894,42.89525604248047
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\19-21.12.2014 рейс 11.txt,глубина,11485,11485,796.489990234375,796.489990234375,796.489990234375
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\19-21.12.2014 рейс 11.txt,давление_на_входе,11485,11485,38.57284031414715,0.0,126.1002960205078
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\19-21.12.2014 рейс 11.txt,дмк,11485,11485,0.0,0.0,0.0
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\19-21.12.2014 рейс 11.txt,момент_ротора,11485,11485,0.0,0.0,0.0
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\19-21.12.2014 рейс 11.txt,нагрузка,11485,11485,0.001909966718180054,0.0,3.139394283294678
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\19-21.12.2014 рейс 11.txt,обороты_ротора,11485,11485,16.157774927879718,-0.681995570659637,39.539817810058594
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\19-21.12.2014 рейс 11.txt,расход_на_входе,11485,11485,9.264997389508537,0.0,15.176177978515623
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\19-21.12.2014 рейс 11.txt,скорость_бурения,11485,11485,0.0,0.0,0.0
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\19-21.12.2014 рейс 11.txt,скорость_спо,11485,11485,0.012903017555460784,0.0,1.17192816734314
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\19-21.12.2014 рейс 11.txt,температура_на_выходе,11485,11485,0.0,0.0,0.0
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\19-21.12.2014 рейс 11.txt,уровень_в_емкости,11485,11485,1.2730327459385486,0.029616503044963,26.899999618530277
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\21-23.12.2014 рейс 12.txt,вес_на_крюке,7938,7938,10.043666883334462,0.129877626895905,27.138641357421875
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\21-23.12.2014 рейс 12.txt,глубина,7938,7938,810.3969695883453,796.489990234375,840.0399780273436
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\21-23.12.2014 рейс 12.txt,давление_на_входе,7938,7938,60.577212735132846,0.0,125.41548919677734
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\21-23.12.2014 рейс 12.txt,дмк,7938,7938,2.5190028375388693,0.0,76.41053009033203
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\21-23.12.2014 рейс 12.txt,момент_ротора,7938,7938,0.0,0.0,0.0
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\21-23.12.2014 рейс 12.txt,нагрузка,7938,7938,1.2156668596146134,0.0,11.22641372680664
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\21-23.12.2014 рейс 12.txt,обороты_ротора,7938,7938,7.312035354099414,-0.609265983104706,40.35959243774414
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\21-23.12.2014 рейс 12.txt,расход_на_входе,7938,7938,7.9761134300246725,0.0,18.14366149902344
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\21-23.12.2014 рейс 12.txt,скорость_бурения,7938,7938,1.9750548114830713,0.0,34.70588302612305
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\21-23.12.2014 рейс 12.txt,скорость_спо,7938,7938,0.013232630197707663,0.0,1.177937269210815
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\21-23.12.2014 рейс 12.txt,температура_на_выходе,7938,7938,0.0,0.0,0.0
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\21-23.12.2014 рейс 12.txt,уровень_в_емкости,7938,7938,1.4683779334054843,1.395304799079895,1.539345145225525
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\23-26.12.2014 рейс 15.txt,вес_на_крюке,25830,25830,9.472037452446067,0.233483701944351,22.45918273925781
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\23-26.12.2014 рейс 15.txt,глубина,25830,25830,937.9044829766971,840.0399780273436,1020.9642333984376
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\23-26.12.2014 рейс 15.txt,давление_на_входе,25830,25830,72.85143602518511,0.0,162.65701293945312
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\23-26.12.2014 рейс 15.txt,дмк,25830,25830,6.10221528283995,0.0,152.36000061035156
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\23-26.12.2014 рейс 15.txt,момент_ротора,25830,25830,0.0,0.0,0.0
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\23-26.12.2014 рейс 15.txt,нагрузка,25830,25830,2.45345940454854,0.0,16.429126739501953
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\23-26.12.2014 рейс 15.txt,обороты_ротора,25830,25830,14.35649819500061,-0.760892629623413,41.964553833007805
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\23-26.12.2014 рейс 15.txt,расход_на_входе,25830,25830,8.789973434881803,0.0,34.05351638793945
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\23-26.12.2014 рейс 15.txt,скорость_бурения,25830,25830,2.509653394868467,0.0,42.76470565795898
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\23-26.12.2014 рейс 15.txt,скорость_спо,25830,25830,0.01067016157785175,0.0,0.934688150882721
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\23-26.12.2014 рейс 15.txt,температура_на_выходе,25830,25830,0.0,0.0,0.0
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\23-26.12.2014 рейс 15.txt,уровень_в_емкости,25830,25830,1.2857668860794913,0.874546825885773,1.523099541664124
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\06-08.06.2016 рейс 11.txt,вес_на_крюке,19848,19848,49.53980487030103,20.044578552246094,111.12821960449217
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\06-08.06.2016 рейс 11.txt,глубина,19848,19848,3430.4317488941347,3425.18994140625,3434.056884765625
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\06-08.06.2016 рейс 11.txt,давление_на_входе,19848,19848,54.11790206130616,0.0,266.3119201660156
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\06-08.06.2016 рейс 11.txt,дмк,19848,19848,2.9289018032484506,0.0,51.122554779052734
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\06-08.06.2016 рейс 11.txt,момент_ротора,19848,19848,1.9435276628445353,0.0,18.21887969970703
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\06-08.06.2016 рейс 11.txt,нагрузка,19848,19848,-0.05075339308213698,-12.458471298217772,15.249284744262695
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\06-08.06.2016 рейс 11.txt,обороты_ротора,19848,19848,8.035312885682146,0.0,40.731460571289055
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\06-08.06.2016 рейс 11.txt,расход_на_входе,19848,19848,3.3036264719283333,0.0,14.228878021240234
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\06-08.06.2016 рейс 11.txt,скорость_бурения,19848,19848,0.15488372668503803,0.0,8.658642768859863
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\06-08.06.2016 рейс 11.txt,скорость_спо,19848,19848,0.03327254791404239,0.0,1.698090076446533
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\06-08.06.2016 рейс 11.txt,температура_на_выходе,19848,19848,15.96263056352032,9.34256076812744,36.56081008911133
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\06-08.06.2016 рейс 11.txt,уровень_в_емкости,19848,19848,1.4586292255710374,1.057862877845764,1.629183053970337
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\08-11.06.2016 рейс 12.txt,вес_на_крюке,26405,26405,65.22730278754817,20.327875137329105,117.5170211791992
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\08-11.06.2016 рейс 12.txt,глубина,26405,26405,3468.1823531402374,3434.06005859375,3497.437744140625
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\08-11.06.2016 рейс 12.txt,давление_на_входе,26405,26405,195.61199247291867,-39.96539688110352,335.8485717773437
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\08-11.06.2016 рейс 12.txt,дмк,26405,26405,10.773994870412487,0.0,79.78068542480467
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\08-11.06.2016 рейс 12.txt,момент_ротора,26405,26405,3.3010680823885625,0.0,18.928131103515625
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\08-11.06.2016 рейс 12.txt,нагрузка,26405,26405,1.8918247678767537,-3.986711025238037,9.969145774841309
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\08-11.06.2016 рейс 12.txt,обороты_ротора,26405,26405,15.844780355552114,0.0,45.89990234375
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\08-11.06.2016 рейс 12.txt,расход_на_входе,26405,26405,9.330059762057616,-11.505189895629885,16.070220947265625
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\08-11.06.2016 рейс 12.txt,скорость_бурения,26405,26405,0.8567379940670111,0.0,24.93387031555176
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\08-11.06.2016 рейс 12.txt,скорость_спо,26405,26405,0.02664902032236767,0.0,1.749390602111816
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\08-11.06.2016 рейс 12.txt,температура_на_выходе,26405,26405,25.205833580719208,11.0,34.58597946166992
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\08-11.06.2016 рейс 12.txt,уровень_в_емкости,26405,26405,1.523442723391702,0.839807093143463,1.957976341247559
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test.TXT,вес_на_крюке,26405,26405,65.22730278754817,20.3278751373291,117.517021179199
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test.TXT,глубина,26405,26405,3468.1823531402397,3434.06005859375,3497.43774414063
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test.TXT,давление_на_входе,26405,26405,195.6119924729187,-39.9653968811035,335.848571777344
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test.TXT,дмк,26405,26405,10.773994870412487,0.0,79.7806854248047
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test.TXT,момент_ротора,26405,26405,3.3010680823885625,0.0,18.9281311035156
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test.TXT,нагрузка,26405,26405,1.8918247678767537,-3.98671102523804,9.96914577484131
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test.TXT,обороты_ротора,26405,26405,15.844780355552114,0.0,45.89990234375
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test.TXT,расход_на_входе,26405,26405,9.330059762057616,-11.5051898956299,16.0702209472656
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test.TXT,скорость_бурения,26405,26405,0.8567379940670111,0.0,24.9338703155518
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test.TXT,скорость_спо,26405,26405,0.02664902032236767,0.0,1.74939060211182
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test.TXT,температура_на_выходе,26405,26405,25.205833580719208,11.0,34.5859794616699
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test.TXT,уровень_в_емкости,26405,26405,1.523442723391702,0.839807093143463,1.95797634124756
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test1.TXT,вес_на_крюке,97034,97034,35.25318572865972,0.41363325715065,73.6162338256836
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test1.TXT,глубина,97034,97034,3130.7023196635278,3098.03002929688,3157.32641601563
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test1.TXT,давление_на_входе,97034,97034,175.3269100958648,-0.319338738918304,269.472473144531
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test1.TXT,дмк,97034,97034,39.68845593715281,0.0,237.547180175781
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test1.TXT,момент_ротора,97034,97034,1.0453959681217555,-1.56502497196198,3.85347628593445
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test1.TXT,нагрузка,97034,97034,4.4875466998465425,0.0,22.1210613250732
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test1.TXT,обороты_ротора,97034,97034,14.27688201179796,0.0,67.0
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test1.TXT,расход_на_входе,97034,97034,10.084998964574732,-0.396172851324081,15.9774398803711
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test1.TXT,скорость_бурения,97034,97034,0.4363503643088945,0.0,8.11654567718506
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test1.TXT,скорость_спо,97034,97034,0.012965602457429882,0.0,1.55846989154816
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test1.TXT,температура_на_выходе,97034,97034,34.2864811918782,8.3248815536499,45.1276779174805
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test1.TXT,уровень_в_емкости,97034,97034,1.2030033244096376,0.616995751857758,1.53119516372681
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test2.TXT,вес_на_крюке,97034,97034,35.25318572865972,0.41363325715065,73.6162338256836
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test2.TXT,глубина,97034,97034,3130.7023196635278,3098.03002929688,3157.32641601563
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test2.TXT,давление_на_входе,97034,97034,175.3269100958648,-0.319338738918304,269.472473144531
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test2.TXT,дмк,97034,97034,39.68845593715281,0.0,237.547180175781
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test2.TXT,момент_ротора,97034,97034,1.0453959681217555,-1.56502497196198,3.85347628593445
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test2.TXT,нагрузка,97034,97034,4.4875466998465425,0.0,22.1210613250732
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test2.TXT,обороты_ротора,97034,97034,14.27688201179796,0.0,67.0
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test2.TXT,расход_на_входе,97034,97034,10.084998964574732,-0.396172851324081,15.9774398803711
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test2.TXT,скорость_бурения,97034,97034,0.4363503643088945,0.0,8.11654567718506
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test2.TXT,скорость_спо,97034,97034,0.012965602457429882,0.0,1.55846989154816
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test2.TXT,температура_на_выходе,97034,97034,34.2864811918782,8.3248815536499,45.1276779174805
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test2.TXT,уровень_в_емкости,97034,97034,1.2030033244096376,0.616995751857758,1.53119516372681
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_223_well_510\25.08-01.09.2014 рейс 55.txt,вес_на_крюке,54617,54617,46.664382713656515,1.59363842010498,97.24874114990233
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_223_well_510\25.08-01.09.2014 рейс 55.txt,глубина,54617,54617,3474.175098217688,3438.02001953125,3517.379150390625
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_223_well_510\25.08-01.09.2014 рейс 55.txt,давление_на_входе,54617,54617,188.8929250520948,0.0,280.7046813964844
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_223_well_510\25.08-01.09.2014 рейс 55.txt,дмк,54617,54617,34.96124811358621,0.0,233.13446044921875
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_223_well_510\25.08-01.09.2014 рейс 55.txt,момент_ротора,54617,54617,0.0,0.0,0.0
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_223_well_510\25.08-01.09.2014 рейс 55.txt,нагрузка,54617,54617,6.3932216850867505,0.0,46.61433792114258
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_223_well_510\25.08-01.09.2014 рейс 55.txt,обороты_ротора,54617,54617,0.0,0.0,0.0
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_223_well_510\25.08-01.09.2014 рейс 55.txt,расход_на_входе,54617,54617,11.91753236289021,0.0,15.256187438964844
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_223_well_510\25.08-01.09.2014 рейс 55.txt,скорость_бурения,54617,54617,0.5205009104395989,0.0,29.19399642944336
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_223_well_510\25.08-01.09.2014 рейс 55.txt,скорость_спо,54617,54617,0.006768843697662142,0.0,1.394198775291443
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_223_well_510\25.08-01.09.2014 рейс 55.txt,температура_на_выходе,54617,54617,35.21524077372215,5.417238712310791,42.75928115844727
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_223_well_510\25.08-01.09.2014 рейс 55.txt,уровень_в_емкости,54617,54617,1.0443984620906215,0.238007843494415,1.628029704093933
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\17-19.04.2012 рейс 18.txt,вес_на_крюке,15146,15146,13.31573604574269,0.0,43.89276885986328
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\17-19.04.2012 рейс 18.txt,глубина,15146,15146,1853.4790406982067,1849.4200439453125,1858.15234375
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\17-19.04.2012 рейс 18.txt,давление_на_входе,15146,15146,12.319037926225253,0.0,176.7218475341797
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\17-19.04.2012 рейс 18.txt,дмк,15146,15146,0.781145990847219,0.0,36.14811706542969
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\17-19.04.2012 рейс 18.txt,момент_ротора,15146,15146,0.34037951755937684,0.331797242164612,0.351115465164185
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\17-19.04.2012 рейс 18.txt,нагрузка,15146,15146,0.375819856759909,0.0,12.488165855407717
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\17-19.04.2012 рейс 18.txt,обороты_ротора,15146,15146,0.0,0.0,0.0
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\17-19.04.2012 рейс 18.txt,расход_на_входе,15146,15146,1.7361635810619465,-0.300000011920929,20.46571159362793
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\17-19.04.2012 рейс 18.txt,скорость_бурения,15146,15146,0.20755488535362987,0.0,18.56913185119629
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\17-19.04.2012 рейс 18.txt,скорость_спо,15146,0,,,
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\17-19.04.2012 рейс 18.txt,температура_на_выходе,15146,15146,-5770.971922499992,-3550642.0,11.696820259094238
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\17-19.04.2012 рейс 18.txt,уровень_в_емкости,15146,15146,133.3535443849967,0.884072661399841,121920.625
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\19-20.04.2012 рейс 19.txt,вес_на_крюке,14644,14644,7.973677291629496,0.0,39.41176986694336
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\19-20.04.2012 рейс 19.txt,глубина,14644,14644,1858.1500244140625,1858.1500244140625,1858.1500244140625
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\19-20.04.2012 рейс 19.txt,давление_на_входе,14644,14644,0.030763656211569627,0.0,3.720386743545532
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\19-20.04.2012 рейс 19.txt,дмк,14644,14644,0.0,0.0,0.0
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\19-20.04.2012 рейс 19.txt,момент_ротора,14644,14644,0.33817599875391,0.329599916934967,0.348643451929092
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\19-20.04.2012 рейс 19.txt,нагрузка,14644,14644,0.0,0.0,0.0
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\19-20.04.2012 рейс 19.txt,обороты_ротора,14644,14644,0.0,0.0,0.0
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\19-20.04.2012 рейс 19.txt,расход_на_входе,14644,14644,0.09648409559142175,0.0,9.876765251159668
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\19-20.04.2012 рейс 19.txt,скорость_бурения,14644,14644,0.0,0.0,0.0
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\19-20.04.2012 рейс 19.txt,скорость_спо,14644,0,,,
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\19-20.04.2012 рейс 19.txt,температура_на_выходе,14644,14644,-102.99383721080466,-710132.5,0.121528692543507
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\19-20.04.2012 рейс 19.txt,уровень_в_емкости,14644,14644,11.248007809452263,0.120548792183399,31958.494140625
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\01-07.07.2014 рейс 34.txt,вес_на_крюке,93303,93303,36.64073090633974,0.41363325715065,73.61623382568358
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\01-07.07.2014 рейс 34.txt,глубина,93303,93303,3129.637675402465,3098.030029296875,3157.326416015625
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\01-07.07.2014 рейс 34.txt,давление_на_входе,93303,93303,182.33947296869442,-0.319338738918304,269.47247314453125
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\01-07.07.2014 рейс 34.txt,дмк,93303,93303,41.27551775833237,0.0,237.54718017578125
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\01-07.07.2014 рейс 34.txt,момент_ротора,93303,93303,1.1117157017885588,-1.565024971961975,3.853476285934448
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\01-07.07.2014 рейс 34.txt,нагрузка,93303,93303,4.666994699772885,0.0,22.12106132507324
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\01-07.07.2014 рейс 34.txt,обороты_ротора,93303,93303,14.846260754453898,0.0,67.0
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\01-07.07.2014 рейс 34.txt,расход_на_входе,93303,93303,10.488111434053971,-0.396172851324081,15.977439880371094
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\01-07.07.2014 рейс 34.txt,скорость_бурения,93303,93303,0.45379914097455903,0.0,8.116545677185059
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\01-07.07.2014 рейс 34.txt,скорость_спо,93303,93303,0.013484070917915302,0.0,1.558469891548157
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\01-07.07.2014 рейс 34.txt,температура_на_выходе,93303,93303,35.21472895801238,8.324881553649902,45.12767791748047
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\01-07.07.2014 рейс 34.txt,уровень_в_емкости,93303,93303,1.2116204880493158,0.616995751857758,1.531195163726807
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\test.TXT,вес_на_крюке,97034,97034,35.25318572865972,0.41363325715065,73.6162338256836
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\test.TXT,глубина,97034,97034,3130.7023196635278,3098.03002929688,3157.32641601563
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\test.TXT,давление_на_входе,97034,97034,175.3269100958648,-0.319338738918304,269.472473144531
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\test.TXT,дмк,97034,97034,39.68845593715281,0.0,237.547180175781
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\test.TXT,момент_ротора,97034,97034,1.0453959681217555,-1.56502497196198,3.85347628593445
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\test.TXT,нагрузка,97034,97034,4.4875466998465425,0.0,22.1210613250732
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\test.TXT,обороты_ротора,97034,97034,14.27688201179796,0.0,67.0
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\test.TXT,расход_на_входе,97034,97034,10.084998964574732,-0.396172851324081,15.9774398803711
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\test.TXT,скорость_бурения,97034,97034,0.4363503643088945,0.0,8.11654567718506
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\test.TXT,скорость_спо,97034,97034,0.012965602457429882,0.0,1.55846989154816
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\test.TXT,температура_на_выходе,97034,97034,34.2864811918782,8.3248815536499,45.1276779174805
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\test.TXT,уровень_в_емкости,97034,97034,1.2030033244096376,0.616995751857758,1.53119516372681
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\test1.TXT,вес_на_крюке,97034,97034,35.25318572865972,0.41363325715065,73.6162338256836
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\test1.TXT,глубина,97034,97034,3130.7023196635278,3098.03002929688,3157.32641601563
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\test1.TXT,давление_на_входе,97034,97034,175.3269100958648,-0.319338738918304,269.472473144531
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\test1.TXT,дмк,97034,97034,39.68845593715281,0.0,237.547180175781
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\test1.TXT,момент_ротора,97034,97034,1.0453959681217555,-1.56502497196198,3.85347628593445
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\test1.TXT,нагрузка,97034,97034,4.4875466998465425,0.0,22.1210613250732
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\test1.TXT,обороты_ротора,97034,97034,14.27688201179796,0.0,67.0
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\test1.TXT,расход_на_входе,97034,97034,10.084998964574732,-0.396172851324081,15.9774398803711
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\test1.TXT,скорость_бурения,97034,97034,0.4363503643088945,0.0,8.11654567718506
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\test1.TXT,скорость_спо,97034,97034,0.012965602457429882,0.0,1.55846989154816
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\test1.TXT,температура_на_выходе,97034,97034,34.2864811918782,8.3248815536499,45.1276779174805
+D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\test1.TXT,уровень_в_емкости,97034,97034,1.2030033244096376,0.616995751857758,1.53119516372681

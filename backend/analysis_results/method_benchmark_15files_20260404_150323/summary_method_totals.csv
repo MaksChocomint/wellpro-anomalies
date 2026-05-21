@@ -1,0 +1,5 @@
+﻿method,window_size,score_threshold,anomalies_total,evaluated_total,percent_total
+ammad,24,0.72,255394,7351278,3.4741
+fft,64,0.3,158192,7351278,2.1519
+z_score,48,3.5,68207,7351278,0.9278
+lof,40,18.0,21141,7351278,0.2876

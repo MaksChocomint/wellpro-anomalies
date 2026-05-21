@@ -1,0 +1,61 @@
+﻿file_index,file,method,window_size,score_threshold,anomalies_total,evaluated_total,percent_total
+1,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\16-18.12.2014 рейс 9.txt,z_score,48,3.5,359,42000,0.8548
+1,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\16-18.12.2014 рейс 9.txt,lof,40,18.0,115,42000,0.2738
+1,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\16-18.12.2014 рейс 9.txt,fft,64,0.3,57,42000,0.1357
+1,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\16-18.12.2014 рейс 9.txt,ammad,48,0.8,149,42000,0.3548
+2,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\18-19.12.2014 рейс 10.txt,z_score,48,3.5,351,42000,0.8357
+2,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\18-19.12.2014 рейс 10.txt,lof,40,18.0,135,42000,0.3214
+2,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\18-19.12.2014 рейс 10.txt,fft,64,0.3,89,42000,0.2119
+2,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\18-19.12.2014 рейс 10.txt,ammad,48,0.8,4,42000,0.0095
+3,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\19-21.12.2014 рейс 11.txt,z_score,48,3.5,579,42000,1.3786
+3,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\19-21.12.2014 рейс 11.txt,lof,40,18.0,254,42000,0.6048
+3,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\19-21.12.2014 рейс 11.txt,fft,64,0.3,181,42000,0.431
+3,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\19-21.12.2014 рейс 11.txt,ammad,48,0.8,232,42000,0.5524
+4,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\21-23.12.2014 рейс 12.txt,z_score,48,3.5,637,42000,1.5167
+4,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\21-23.12.2014 рейс 12.txt,lof,40,18.0,241,42000,0.5738
+4,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\21-23.12.2014 рейс 12.txt,fft,64,0.3,201,42000,0.4786
+4,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\21-23.12.2014 рейс 12.txt,ammad,48,0.8,499,42000,1.1881
+5,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\23-26.12.2014 рейс 15.txt,z_score,48,3.5,756,42000,1.8
+5,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\23-26.12.2014 рейс 15.txt,lof,40,18.0,182,42000,0.4333
+5,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\23-26.12.2014 рейс 15.txt,fft,64,0.3,214,42000,0.5095
+5,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_122_well_120\23-26.12.2014 рейс 15.txt,ammad,48,0.8,505,42000,1.2024
+6,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\06-08.06.2016 рейс 11.txt,z_score,48,3.5,543,42000,1.2929
+6,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\06-08.06.2016 рейс 11.txt,lof,40,18.0,226,42000,0.5381
+6,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\06-08.06.2016 рейс 11.txt,fft,64,0.3,744,42000,1.7714
+6,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\06-08.06.2016 рейс 11.txt,ammad,48,0.8,460,42000,1.0952
+7,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\08-11.06.2016 рейс 12.txt,z_score,48,3.5,750,42000,1.7857
+7,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\08-11.06.2016 рейс 12.txt,lof,40,18.0,350,42000,0.8333
+7,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\08-11.06.2016 рейс 12.txt,fft,64,0.3,554,42000,1.319
+7,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\08-11.06.2016 рейс 12.txt,ammad,48,0.8,807,42000,1.9214
+8,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test.TXT,z_score,48,3.5,750,42000,1.7857
+8,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test.TXT,lof,40,18.0,350,42000,0.8333
+8,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test.TXT,fft,64,0.3,554,42000,1.319
+8,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test.TXT,ammad,48,0.8,807,42000,1.9214
+9,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test1.TXT,z_score,48,3.5,905,42000,2.1548
+9,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test1.TXT,lof,40,18.0,325,42000,0.7738
+9,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test1.TXT,fft,64,0.3,491,42000,1.169
+9,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test1.TXT,ammad,48,0.8,352,42000,0.8381
+10,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test2.TXT,z_score,48,3.5,905,42000,2.1548
+10,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test2.TXT,lof,40,18.0,325,42000,0.7738
+10,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test2.TXT,fft,64,0.3,491,42000,1.169
+10,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_209_well_505\test2.TXT,ammad,48,0.8,352,42000,0.8381
+11,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_223_well_510\25.08-01.09.2014 рейс 55.txt,z_score,48,3.5,928,42000,2.2095
+11,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_223_well_510\25.08-01.09.2014 рейс 55.txt,lof,40,18.0,233,42000,0.5548
+11,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_223_well_510\25.08-01.09.2014 рейс 55.txt,fft,64,0.3,163,42000,0.3881
+11,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_223_well_510\25.08-01.09.2014 рейс 55.txt,ammad,48,0.8,571,42000,1.3595
+12,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\17-19.04.2012 рейс 18.txt,z_score,48,3.5,319,38500,0.8286
+12,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\17-19.04.2012 рейс 18.txt,lof,40,18.0,175,38500,0.4545
+12,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\17-19.04.2012 рейс 18.txt,fft,64,0.3,299,38500,0.7766
+12,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\17-19.04.2012 рейс 18.txt,ammad,48,0.8,441,38500,1.1455
+13,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\19-20.04.2012 рейс 19.txt,z_score,48,3.5,162,38500,0.4208
+13,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\19-20.04.2012 рейс 19.txt,lof,40,18.0,68,38500,0.1766
+13,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\19-20.04.2012 рейс 19.txt,fft,64,0.3,248,38500,0.6442
+13,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_2270_well_800\19-20.04.2012 рейс 19.txt,ammad,48,0.8,248,38500,0.6442
+14,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\01-07.07.2014 рейс 34.txt,z_score,48,3.5,915,42000,2.1786
+14,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\01-07.07.2014 рейс 34.txt,lof,40,18.0,324,42000,0.7714
+14,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\01-07.07.2014 рейс 34.txt,fft,64,0.3,438,42000,1.0429
+14,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\01-07.07.2014 рейс 34.txt,ammad,48,0.8,376,42000,0.8952
+15,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\test.TXT,z_score,48,3.5,905,42000,2.1548
+15,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\test.TXT,lof,40,18.0,325,42000,0.7738
+15,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\test.TXT,fft,64,0.3,491,42000,1.169
+15,D:\diploma\wellpro-anomalies\backend\app\data\rig_files\cluster_4_well_515\test.TXT,ammad,48,0.8,352,42000,0.8381

@@ -1,0 +1,103 @@
+INFO:     Will watch for changes in these directories: ['D:\\diploma\\wellpro-anomalies\\backend']
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [16620] using WatchFiles
+INFO:     Started server process [31604]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:56483 - "WebSocket /api/v1/ws?cluster_number=2625&well_name=801&rig_id=4" [accepted]
+INFO:     connection open
+INFO:     connection closed
+INFO:     127.0.0.1:56584 - "WebSocket /api/v1/ws?cluster_number=223&well_name=510&rig_id=1" [accepted]
+INFO:     connection open
+INFO:     connection closed
+INFO:     127.0.0.1:50759 - "WebSocket /api/v1/ws?cluster_number=223&well_name=510&rig_id=1" [accepted]
+INFO:     connection open
+INFO:     connection closed
+INFO:     127.0.0.1:52283 - "WebSocket /api/v1/ws?cluster_number=223&well_name=510&rig_id=1" [accepted]
+INFO:     connection open
+INFO:     connection closed
+INFO:     127.0.0.1:54637 - "WebSocket /api/v1/ws?cluster_number=1&well_name=Bridge+Well&rig_id=11" [accepted]
+INFO:     connection open
+INFO:     connection closed
+INFO:     127.0.0.1:58839 - "WebSocket /api/v1/ws?cluster_number=2270&well_name=800&rig_id=5" [accepted]
+INFO:     connection open
+INFO:     connection closed
+INFO:     127.0.0.1:58863 - "WebSocket /api/v1/ws?cluster_number=209&well_name=505&rig_id=2" [accepted]
+INFO:     connection open
+INFO:     connection closed
+INFO:     127.0.0.1:58876 - "WebSocket /api/v1/ws?cluster_number=1&well_name=Bridge+Well&rig_id=11" [accepted]
+INFO:     connection open
+INFO:     connection closed
+INFO:     127.0.0.1:55820 - "WebSocket /api/v1/ws?cluster_number=1&well_name=Bridge+Well&rig_id=11" [accepted]
+INFO:     connection open
+INFO:     connection closed
+INFO:     127.0.0.1:62462 - "WebSocket /api/v1/ws?cluster_number=2625&well_name=801&rig_id=4" [accepted]
+INFO:     connection open
+INFO:     connection closed
+INFO:     127.0.0.1:62490 - "WebSocket /api/v1/ws?cluster_number=2270&well_name=800&rig_id=5" [accepted]
+INFO:     connection open
+INFO:     connection closed
+INFO:     127.0.0.1:64782 - "WebSocket /api/v1/ws?cluster_number=2625&well_name=801&rig_id=4" [accepted]
+INFO:     connection open
+INFO:     connection closed
+INFO:     127.0.0.1:52562 - "WebSocket /api/v1/ws?cluster_number=223&well_name=510&rig_id=1" [accepted]
+INFO:     connection open
+INFO:     connection closed
+INFO:     127.0.0.1:51282 - "WebSocket /api/v1/ws?cluster_number=2625&well_name=801&rig_id=4" [accepted]
+INFO:     connection open
+INFO:     connection closed
+WARNING:  WatchFiles detected changes in 'test.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [31604]
+INFO:     Started server process [33216]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'test.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [33216]
+INFO:     Started server process [27644]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:52040 - "WebSocket /api/v1/ws?cluster_number=122&well_name=120&rig_id=6" [accepted]
+INFO:     connection open
+INFO:     connection closed
+INFO:     127.0.0.1:64562 - "WebSocket /api/v1/ws?cluster_number=122&well_name=120&rig_id=6" [accepted]
+INFO:     connection open
+INFO:     connection closed
+INFO:     127.0.0.1:52435 - "WebSocket /api/v1/ws?cluster_number=561&well_name=562&rig_id=7" [accepted]
+INFO:     connection open
+INFO:     connection closed
+INFO:     127.0.0.1:52700 - "WebSocket /api/v1/ws?cluster_number=2&well_name=207&rig_id=9" [accepted]
+INFO:     connection open
+INFO:     connection closed
+INFO:     127.0.0.1:52798 - "WebSocket /api/v1/ws?cluster_number=223&well_name=510&rig_id=1" [accepted]
+INFO:     connection open
+INFO:     connection closed
+WARNING:  WatchFiles detected changes in 'analysis_results\build_thesis_figures.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [27644]
+INFO:     Started server process [20160]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'analysis_results\build_thesis_figures.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [20160]
+INFO:     Started server process [4108]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'analysis_results\build_thesis_figures.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [4108]
+INFO:     Started server process [26952]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.

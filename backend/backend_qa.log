@@ -1,0 +1,35 @@
+[DB] Подключение к базе и создание таблиц...
+[DB] Таблицы проверены/созданы
+[DataParser] Successfully parsed 26405 records
+[DataParser] Found 63 columns, keeping required parameters + time
+[DataParser] Filtered to 12/12 available parameters + time
+[StartUp] Загружено 26405 записей
+[StartUp] Привязано TXT-файлов к буровым: 16 (буровых: 5)
+INFO:     127.0.0.1:61268 - "GET /api/v1/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61270 - "GET /api/v1/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55919 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59361 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64403 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58396 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52424 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49535 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51966 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64219 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64237 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50854 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54083 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63870 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61234 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51337 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58751 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64755 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58842 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62076 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61186 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64754 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53818 - "GET /api/v1/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53830 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53832 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53828 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53829 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53831 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK

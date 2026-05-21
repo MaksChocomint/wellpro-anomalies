@@ -1,0 +1,6 @@
+files=15
+window_size=48
+score_threshold=0.8
+anomalies_total=9673
+evaluated_total=7351278
+percent_total=0.1316

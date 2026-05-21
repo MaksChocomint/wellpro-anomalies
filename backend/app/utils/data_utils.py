@@ -5,7 +5,7 @@ Handles parsing, filtering, and data transformation.
 
 from io import StringIO
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 import pandas as pd
 
 
@@ -25,6 +25,7 @@ REQUIRED_PARAMETERS = {
     "дмк",                        # DMK
 }
 
+FALLBACK_ENCODINGS: Tuple[str, ...] = ("utf-8", "utf-8-sig", "cp1251", "cp866")
 
 
 async def parse_data(text: Optional[bytes] = None, filename: str = "data/default.TXT") -> Optional[List[Dict]]:
@@ -47,8 +48,24 @@ async def parse_data(text: Optional[bytes] = None, filename: str = "data/default
             with open(data_path, 'rb') as file:
                 text = file.read()
         
-        # Decode and split lines
-        lines = text.decode("utf-8").strip().split('\n')
+        # Decode and split lines with fallback for legacy files.
+        decoded_text: Optional[str] = None
+        last_decode_error: Optional[Exception] = None
+        for encoding in FALLBACK_ENCODINGS:
+            try:
+                decoded_text = text.decode(encoding)
+                break
+            except UnicodeDecodeError as error:
+                last_decode_error = error
+                continue
+
+        if decoded_text is None:
+            print("[DataParser] Error: cannot decode file with supported encodings")
+            if last_decode_error:
+                print(f"[DataParser] Last decode error: {last_decode_error}")
+            return None
+
+        lines = decoded_text.strip().split('\n')
         
         # Line 0: "Начало рейса - ..." (skip)
         # Line 1: "Окончание рейса - ..." (skip)
@@ -81,7 +98,7 @@ async def parse_data(text: Optional[bytes] = None, filename: str = "data/default
         # Convert to records and filter to required parameters
         data = df.to_dict(orient="records")
         print(f"[DataParser] Successfully parsed {len(data)} records")
-        print(f"[DataParser] Found {len(df.columns)} columns, keeping 12 required parameters + time")
+        print(f"[DataParser] Found {len(df.columns)} columns, keeping required parameters + time")
         
         return data
     
@@ -132,8 +149,8 @@ def filter_required_parameters(data: List[Dict]) -> List[Dict]:
     # Report status
     found_params = sum(1 for p in REQUIRED_PARAMETERS if any(p in r for r in filtered))
     if missing_params:
-        print(f"[DataParser] Warning: {len(missing_params)} expected parameters not found: {missing_params}")
-    print(f"[DataParser] Filtered to {found_params}/12 required parameters + time")
+        print(f"[DataParser] Info: {len(missing_params)} parameters are absent in this file: {missing_params}")
+    print(f"[DataParser] Filtered to {found_params}/{len(REQUIRED_PARAMETERS)} available parameters + time")
     
     return filtered
 

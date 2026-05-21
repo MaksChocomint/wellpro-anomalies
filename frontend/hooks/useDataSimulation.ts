@@ -32,7 +32,6 @@ export function useDataSimulation({
       clearInterval(intervalRef.current);
       intervalRef.current = null;
       setIsSimulationActive(false);
-      console.log("[Симуляция] Пауза на индексе:", dataIndexRef.current);
     }
   }, [setIsSimulationActive]);
 
@@ -51,7 +50,7 @@ export function useDataSimulation({
       const index = dataIndexRef.current;
 
       if (index < rawData.length) {
-        // Применяем общий паттерн обработки
+        // Use the same normalization pattern for local and realtime payloads.
         const { newDataPoint, newAnomalies } = processIncomingDataPoint(
           rawData[index],
         );
@@ -67,7 +66,6 @@ export function useDataSimulation({
       } else {
         stopSimulation();
         dataIndexRef.current = 0;
-        console.log("[Симуляция] Завершена.");
       }
     }, 500);
   }, [

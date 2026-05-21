@@ -25,7 +25,7 @@ export function buildParametersMessage(
 
 export function getThresholdKeysForMethod(
   method: AnomalyDetectionMethod,
-): string[] {
+): Array<keyof Thresholds> {
   switch (method) {
     case "FFT":
       return ["FFT", "FFT_WINDOW_SIZE"];

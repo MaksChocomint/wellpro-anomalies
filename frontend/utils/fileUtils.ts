@@ -19,7 +19,7 @@ export async function analyzeFile(
   const windowSize =
     params.window_size ||
     (methodParam === "ammad"
-      ? 32
+      ? 48
       : methodParam === "fft"
         ? 64
         : methodParam === "z_score"
@@ -29,7 +29,7 @@ export async function analyzeFile(
   const scoreThreshold =
     params.score_threshold ||
     (methodParam === "ammad"
-      ? 0.7
+      ? 0.8
       : methodParam === "fft"
         ? 0.5
         : methodParam === "z_score"
@@ -52,7 +52,6 @@ export async function analyzeFile(
       throw new Error("Неверный формат ответа от сервера");
     }
   } catch (error) {
-    console.error("Ошибка анализа файла:", error);
     if (axios.isAxiosError(error)) {
       throw new Error(
         `Ошибка сервера: ${error.response?.status} ${

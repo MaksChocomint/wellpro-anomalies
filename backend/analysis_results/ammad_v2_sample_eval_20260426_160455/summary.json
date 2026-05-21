@@ -1,0 +1,10 @@
+{
+  "files":15,
+  "rows_used_total":45000,
+  "window_size":48,
+  "score_threshold":0.8,
+  "anomalies_total":2617,
+  "evaluated_total":534000,
+  "percent_total":0.4901,
+  "output_dir":"D:\\diploma\\wellpro-anomalies\\backend\\analysis_results\\ammad_v2_sample_eval_20260426_160455"
+}

@@ -1,0 +1,2329 @@
+{
+  "generated_at": "2026-04-03T19:56:32",
+  "input_root": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files",
+  "files_total": 16,
+  "files_parsed": 16,
+  "files_unique_by_content": 15,
+  "duplicate_groups": [
+    [
+      "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test2.TXT",
+      "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\test1.TXT"
+    ]
+  ],
+  "rows_total": 712123,
+  "total_duration_days_all_files": 54.57905092636065,
+  "total_duration_hours_all_files": 1309.8972222326556,
+  "total_duration_days_unique_files": 48.962094907758,
+  "total_duration_hours_unique_files": 1175.090277786192,
+  "parameters": [
+    "вес_на_крюке",
+    "глубина",
+    "давление_на_входе",
+    "дмк",
+    "момент_ротора",
+    "нагрузка",
+    "обороты_ротора",
+    "расход_на_входе",
+    "скорость_бурения",
+    "скорость_спо",
+    "температура_на_выходе",
+    "уровень_в_емкости"
+  ],
+  "missing_or_invalid_files": [],
+  "file_meta": [
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\16-18.12.2014 рейс 9.txt",
+      "file_hash": "325a1a30b411b0ddfdf909785b7bfafb",
+      "rows": 18748,
+      "duration_days": 2.183449074080272,
+      "duration_hours": 52.40277777792653,
+      "available_parameters_count": 12
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\18-19.12.2014 рейс 10.txt",
+      "file_hash": "6e3d37326ace55150241980ba64cb77b",
+      "rows": 9618,
+      "duration_days": 1.1130787037109258,
+      "duration_hours": 26.71388888906222,
+      "available_parameters_count": 12
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\19-21.12.2014 рейс 11.txt",
+      "file_hash": "5911dac1eff47f1ed8cee17ec44a3062",
+      "rows": 11485,
+      "duration_days": 1.3291666666627862,
+      "duration_hours": 31.899999999906868,
+      "available_parameters_count": 12
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\21-23.12.2014 рейс 12.txt",
+      "file_hash": "b0b5ce3dc62b8802638689899c42471a",
+      "rows": 7938,
+      "duration_days": 0.9186342592656729,
+      "duration_hours": 22.04722222237615,
+      "available_parameters_count": 12
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\23-26.12.2014 рейс 15.txt",
+      "file_hash": "d6ab36b448944d454dff07a8ac39cb72",
+      "rows": 25830,
+      "duration_days": 2.9877314814802958,
+      "duration_hours": 71.7055555555271,
+      "available_parameters_count": 12
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\06-08.06.2016 рейс 11.txt",
+      "file_hash": "d449775cdb745130f711113eaddfeaf5",
+      "rows": 19848,
+      "duration_days": 2.2971064814773854,
+      "duration_hours": 55.13055555545725,
+      "available_parameters_count": 12
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\08-11.06.2016 рейс 12.txt",
+      "file_hash": "f958bb3f42e3fd13a4413c34e47128cd",
+      "rows": 26405,
+      "duration_days": 3.056018518516794,
+      "duration_hours": 73.34444444440305,
+      "available_parameters_count": 12
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test.TXT",
+      "file_hash": "6283c5dccd2b0f532b788c7e0b7997ef",
+      "rows": 26405,
+      "duration_days": 3.0560185185968294,
+      "duration_hours": 73.3444444463239,
+      "available_parameters_count": 12
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test1.TXT",
+      "file_hash": "600bed0cfb2a024dd63ecea0fb2bb5f6",
+      "rows": 97034,
+      "duration_days": 5.61695601860265,
+      "duration_hours": 134.8069444464636,
+      "available_parameters_count": 12
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test2.TXT",
+      "file_hash": "ae7f783d3bb43911beaee8fe1b7a4dbd",
+      "rows": 97034,
+      "duration_days": 5.61695601860265,
+      "duration_hours": 134.8069444464636,
+      "available_parameters_count": 12
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_223_well_510\\25.08-01.09.2014 рейс 55.txt",
+      "file_hash": "e7453de0c318e9024037f98981ffc2ef",
+      "rows": 54617,
+      "duration_days": 6.32129629629344,
+      "duration_hours": 151.71111111104256,
+      "available_parameters_count": 12
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_2270_well_800\\17-19.04.2012 рейс 18.txt",
+      "file_hash": "af3067176075fc946e95e81acffe00a5",
+      "rows": 15146,
+      "duration_days": 1.752893518525525,
+      "duration_hours": 42.0694444446126,
+      "available_parameters_count": 11
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_2270_well_800\\19-20.04.2012 рейс 19.txt",
+      "file_hash": "045af9fe1f968ddae1ebd438c505fc7e",
+      "rows": 14644,
+      "duration_days": 1.694791666668607,
+      "duration_hours": 40.675000000046566,
+      "available_parameters_count": 11
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\01-07.07.2014 рейс 34.txt",
+      "file_hash": "162c25a8972ce992b3086a3be1ad18c5",
+      "rows": 93303,
+      "duration_days": 5.401041666671517,
+      "duration_hours": 129.62500000011642,
+      "available_parameters_count": 12
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\test.TXT",
+      "file_hash": "2424f36a98195a4f21ec23b6a77c7d6e",
+      "rows": 97034,
+      "duration_days": 5.61695601860265,
+      "duration_hours": 134.8069444464636,
+      "available_parameters_count": 12
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\test1.TXT",
+      "file_hash": "ae7f783d3bb43911beaee8fe1b7a4dbd",
+      "rows": 97034,
+      "duration_days": 5.61695601860265,
+      "duration_hours": 134.8069444464636,
+      "available_parameters_count": 12
+    }
+  ],
+  "per_file_stats": [
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\16-18.12.2014 рейс 9.txt",
+      "parameter": "вес_на_крюке",
+      "rows": 18748,
+      "count": 18748,
+      "mean": 4.019222654056512,
+      "min": 0.239404052495956,
+      "max": 36.95119857788086
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\16-18.12.2014 рейс 9.txt",
+      "parameter": "глубина",
+      "rows": 18748,
+      "count": 18748,
+      "mean": 796.489990234375,
+      "min": 796.489990234375,
+      "max": 796.489990234375
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\16-18.12.2014 рейс 9.txt",
+      "parameter": "давление_на_входе",
+      "rows": 18748,
+      "count": 18748,
+      "mean": 4.271316376592451,
+      "min": 0.0,
+      "max": 150.4577178955078
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\16-18.12.2014 рейс 9.txt",
+      "parameter": "дмк",
+      "rows": 18748,
+      "count": 18748,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\16-18.12.2014 рейс 9.txt",
+      "parameter": "момент_ротора",
+      "rows": 18748,
+      "count": 18748,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\16-18.12.2014 рейс 9.txt",
+      "parameter": "нагрузка",
+      "rows": 18748,
+      "count": 18748,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\16-18.12.2014 рейс 9.txt",
+      "parameter": "обороты_ротора",
+      "rows": 18748,
+      "count": 18748,
+      "mean": -0.30856530301881696,
+      "min": -9.187278747558594,
+      "max": 0.0
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\16-18.12.2014 рейс 9.txt",
+      "parameter": "расход_на_входе",
+      "rows": 18748,
+      "count": 18748,
+      "mean": 1.6239283642900961,
+      "min": 0.0,
+      "max": 24.004421234130856
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\16-18.12.2014 рейс 9.txt",
+      "parameter": "скорость_бурения",
+      "rows": 18748,
+      "count": 18748,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\16-18.12.2014 рейс 9.txt",
+      "parameter": "скорость_спо",
+      "rows": 18748,
+      "count": 18748,
+      "mean": 0.010075077660411129,
+      "min": 0.0,
+      "max": 0.76232898235321
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\16-18.12.2014 рейс 9.txt",
+      "parameter": "температура_на_выходе",
+      "rows": 18748,
+      "count": 18748,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\16-18.12.2014 рейс 9.txt",
+      "parameter": "уровень_в_емкости",
+      "rows": 18748,
+      "count": 18748,
+      "mean": 1.3799184026915507,
+      "min": 0.889691472053528,
+      "max": 1.688789486885071
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\18-19.12.2014 рейс 10.txt",
+      "parameter": "вес_на_крюке",
+      "rows": 9618,
+      "count": 9618,
+      "mean": 4.905499837009779,
+      "min": 0.240514114499092,
+      "max": 32.262794494628906
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\18-19.12.2014 рейс 10.txt",
+      "parameter": "глубина",
+      "rows": 9618,
+      "count": 9618,
+      "mean": 796.489990234375,
+      "min": 796.489990234375,
+      "max": 796.489990234375
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\18-19.12.2014 рейс 10.txt",
+      "parameter": "давление_на_входе",
+      "rows": 9618,
+      "count": 9618,
+      "mean": 22.81939009178982,
+      "min": 0.0,
+      "max": 137.36032104492188
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\18-19.12.2014 рейс 10.txt",
+      "parameter": "дмк",
+      "rows": 9618,
+      "count": 9618,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\18-19.12.2014 рейс 10.txt",
+      "parameter": "момент_ротора",
+      "rows": 9618,
+      "count": 9618,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\18-19.12.2014 рейс 10.txt",
+      "parameter": "нагрузка",
+      "rows": 9618,
+      "count": 9618,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\18-19.12.2014 рейс 10.txt",
+      "parameter": "обороты_ротора",
+      "rows": 9618,
+      "count": 9618,
+      "mean": 2.5171791555915495,
+      "min": -0.506746351718903,
+      "max": 52.345211029052734
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\18-19.12.2014 рейс 10.txt",
+      "parameter": "расход_на_входе",
+      "rows": 9618,
+      "count": 9618,
+      "mean": 4.26943562303291,
+      "min": 0.0,
+      "max": 14.90988063812256
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\18-19.12.2014 рейс 10.txt",
+      "parameter": "скорость_бурения",
+      "rows": 9618,
+      "count": 9618,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\18-19.12.2014 рейс 10.txt",
+      "parameter": "скорость_спо",
+      "rows": 9618,
+      "count": 9618,
+      "mean": 0.012605253715068054,
+      "min": 0.0,
+      "max": 0.923529386520386
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\18-19.12.2014 рейс 10.txt",
+      "parameter": "температура_на_выходе",
+      "rows": 9618,
+      "count": 9618,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\18-19.12.2014 рейс 10.txt",
+      "parameter": "уровень_в_емкости",
+      "rows": 9618,
+      "count": 9618,
+      "mean": 1.353928752378308,
+      "min": 0.972474992275238,
+      "max": 1.514081597328186
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\19-21.12.2014 рейс 11.txt",
+      "parameter": "вес_на_крюке",
+      "rows": 11485,
+      "count": 11485,
+      "mean": 9.911168098268064,
+      "min": 0.212762489914894,
+      "max": 42.89525604248047
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\19-21.12.2014 рейс 11.txt",
+      "parameter": "глубина",
+      "rows": 11485,
+      "count": 11485,
+      "mean": 796.489990234375,
+      "min": 796.489990234375,
+      "max": 796.489990234375
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\19-21.12.2014 рейс 11.txt",
+      "parameter": "давление_на_входе",
+      "rows": 11485,
+      "count": 11485,
+      "mean": 38.57284031414715,
+      "min": 0.0,
+      "max": 126.1002960205078
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\19-21.12.2014 рейс 11.txt",
+      "parameter": "дмк",
+      "rows": 11485,
+      "count": 11485,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\19-21.12.2014 рейс 11.txt",
+      "parameter": "момент_ротора",
+      "rows": 11485,
+      "count": 11485,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\19-21.12.2014 рейс 11.txt",
+      "parameter": "нагрузка",
+      "rows": 11485,
+      "count": 11485,
+      "mean": 0.001909966718180054,
+      "min": 0.0,
+      "max": 3.139394283294678
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\19-21.12.2014 рейс 11.txt",
+      "parameter": "обороты_ротора",
+      "rows": 11485,
+      "count": 11485,
+      "mean": 16.157774927879718,
+      "min": -0.681995570659637,
+      "max": 39.539817810058594
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\19-21.12.2014 рейс 11.txt",
+      "parameter": "расход_на_входе",
+      "rows": 11485,
+      "count": 11485,
+      "mean": 9.264997389508537,
+      "min": 0.0,
+      "max": 15.176177978515623
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\19-21.12.2014 рейс 11.txt",
+      "parameter": "скорость_бурения",
+      "rows": 11485,
+      "count": 11485,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\19-21.12.2014 рейс 11.txt",
+      "parameter": "скорость_спо",
+      "rows": 11485,
+      "count": 11485,
+      "mean": 0.012903017555460784,
+      "min": 0.0,
+      "max": 1.17192816734314
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\19-21.12.2014 рейс 11.txt",
+      "parameter": "температура_на_выходе",
+      "rows": 11485,
+      "count": 11485,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\19-21.12.2014 рейс 11.txt",
+      "parameter": "уровень_в_емкости",
+      "rows": 11485,
+      "count": 11485,
+      "mean": 1.2730327459385486,
+      "min": 0.029616503044963,
+      "max": 26.899999618530277
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\21-23.12.2014 рейс 12.txt",
+      "parameter": "вес_на_крюке",
+      "rows": 7938,
+      "count": 7938,
+      "mean": 10.043666883334462,
+      "min": 0.129877626895905,
+      "max": 27.138641357421875
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\21-23.12.2014 рейс 12.txt",
+      "parameter": "глубина",
+      "rows": 7938,
+      "count": 7938,
+      "mean": 810.3969695883453,
+      "min": 796.489990234375,
+      "max": 840.0399780273436
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\21-23.12.2014 рейс 12.txt",
+      "parameter": "давление_на_входе",
+      "rows": 7938,
+      "count": 7938,
+      "mean": 60.577212735132846,
+      "min": 0.0,
+      "max": 125.41548919677734
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\21-23.12.2014 рейс 12.txt",
+      "parameter": "дмк",
+      "rows": 7938,
+      "count": 7938,
+      "mean": 2.5190028375388693,
+      "min": 0.0,
+      "max": 76.41053009033203
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\21-23.12.2014 рейс 12.txt",
+      "parameter": "момент_ротора",
+      "rows": 7938,
+      "count": 7938,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\21-23.12.2014 рейс 12.txt",
+      "parameter": "нагрузка",
+      "rows": 7938,
+      "count": 7938,
+      "mean": 1.2156668596146134,
+      "min": 0.0,
+      "max": 11.22641372680664
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\21-23.12.2014 рейс 12.txt",
+      "parameter": "обороты_ротора",
+      "rows": 7938,
+      "count": 7938,
+      "mean": 7.312035354099414,
+      "min": -0.609265983104706,
+      "max": 40.35959243774414
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\21-23.12.2014 рейс 12.txt",
+      "parameter": "расход_на_входе",
+      "rows": 7938,
+      "count": 7938,
+      "mean": 7.9761134300246725,
+      "min": 0.0,
+      "max": 18.14366149902344
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\21-23.12.2014 рейс 12.txt",
+      "parameter": "скорость_бурения",
+      "rows": 7938,
+      "count": 7938,
+      "mean": 1.9750548114830713,
+      "min": 0.0,
+      "max": 34.70588302612305
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\21-23.12.2014 рейс 12.txt",
+      "parameter": "скорость_спо",
+      "rows": 7938,
+      "count": 7938,
+      "mean": 0.013232630197707663,
+      "min": 0.0,
+      "max": 1.177937269210815
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\21-23.12.2014 рейс 12.txt",
+      "parameter": "температура_на_выходе",
+      "rows": 7938,
+      "count": 7938,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\21-23.12.2014 рейс 12.txt",
+      "parameter": "уровень_в_емкости",
+      "rows": 7938,
+      "count": 7938,
+      "mean": 1.4683779334054843,
+      "min": 1.395304799079895,
+      "max": 1.539345145225525
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\23-26.12.2014 рейс 15.txt",
+      "parameter": "вес_на_крюке",
+      "rows": 25830,
+      "count": 25830,
+      "mean": 9.472037452446067,
+      "min": 0.233483701944351,
+      "max": 22.45918273925781
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\23-26.12.2014 рейс 15.txt",
+      "parameter": "глубина",
+      "rows": 25830,
+      "count": 25830,
+      "mean": 937.9044829766971,
+      "min": 840.0399780273436,
+      "max": 1020.9642333984376
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\23-26.12.2014 рейс 15.txt",
+      "parameter": "давление_на_входе",
+      "rows": 25830,
+      "count": 25830,
+      "mean": 72.85143602518511,
+      "min": 0.0,
+      "max": 162.65701293945312
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\23-26.12.2014 рейс 15.txt",
+      "parameter": "дмк",
+      "rows": 25830,
+      "count": 25830,
+      "mean": 6.10221528283995,
+      "min": 0.0,
+      "max": 152.36000061035156
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\23-26.12.2014 рейс 15.txt",
+      "parameter": "момент_ротора",
+      "rows": 25830,
+      "count": 25830,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\23-26.12.2014 рейс 15.txt",
+      "parameter": "нагрузка",
+      "rows": 25830,
+      "count": 25830,
+      "mean": 2.45345940454854,
+      "min": 0.0,
+      "max": 16.429126739501953
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\23-26.12.2014 рейс 15.txt",
+      "parameter": "обороты_ротора",
+      "rows": 25830,
+      "count": 25830,
+      "mean": 14.35649819500061,
+      "min": -0.760892629623413,
+      "max": 41.964553833007805
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\23-26.12.2014 рейс 15.txt",
+      "parameter": "расход_на_входе",
+      "rows": 25830,
+      "count": 25830,
+      "mean": 8.789973434881803,
+      "min": 0.0,
+      "max": 34.05351638793945
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\23-26.12.2014 рейс 15.txt",
+      "parameter": "скорость_бурения",
+      "rows": 25830,
+      "count": 25830,
+      "mean": 2.509653394868467,
+      "min": 0.0,
+      "max": 42.76470565795898
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\23-26.12.2014 рейс 15.txt",
+      "parameter": "скорость_спо",
+      "rows": 25830,
+      "count": 25830,
+      "mean": 0.01067016157785175,
+      "min": 0.0,
+      "max": 0.934688150882721
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\23-26.12.2014 рейс 15.txt",
+      "parameter": "температура_на_выходе",
+      "rows": 25830,
+      "count": 25830,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_122_well_120\\23-26.12.2014 рейс 15.txt",
+      "parameter": "уровень_в_емкости",
+      "rows": 25830,
+      "count": 25830,
+      "mean": 1.2857668860794913,
+      "min": 0.874546825885773,
+      "max": 1.523099541664124
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\06-08.06.2016 рейс 11.txt",
+      "parameter": "вес_на_крюке",
+      "rows": 19848,
+      "count": 19848,
+      "mean": 49.53980487030103,
+      "min": 20.044578552246094,
+      "max": 111.12821960449217
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\06-08.06.2016 рейс 11.txt",
+      "parameter": "глубина",
+      "rows": 19848,
+      "count": 19848,
+      "mean": 3430.4317488941347,
+      "min": 3425.18994140625,
+      "max": 3434.056884765625
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\06-08.06.2016 рейс 11.txt",
+      "parameter": "давление_на_входе",
+      "rows": 19848,
+      "count": 19848,
+      "mean": 54.11790206130616,
+      "min": 0.0,
+      "max": 266.3119201660156
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\06-08.06.2016 рейс 11.txt",
+      "parameter": "дмк",
+      "rows": 19848,
+      "count": 19848,
+      "mean": 2.9289018032484506,
+      "min": 0.0,
+      "max": 51.122554779052734
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\06-08.06.2016 рейс 11.txt",
+      "parameter": "момент_ротора",
+      "rows": 19848,
+      "count": 19848,
+      "mean": 1.9435276628445353,
+      "min": 0.0,
+      "max": 18.21887969970703
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\06-08.06.2016 рейс 11.txt",
+      "parameter": "нагрузка",
+      "rows": 19848,
+      "count": 19848,
+      "mean": -0.05075339308213698,
+      "min": -12.458471298217772,
+      "max": 15.249284744262695
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\06-08.06.2016 рейс 11.txt",
+      "parameter": "обороты_ротора",
+      "rows": 19848,
+      "count": 19848,
+      "mean": 8.035312885682146,
+      "min": 0.0,
+      "max": 40.731460571289055
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\06-08.06.2016 рейс 11.txt",
+      "parameter": "расход_на_входе",
+      "rows": 19848,
+      "count": 19848,
+      "mean": 3.3036264719283333,
+      "min": 0.0,
+      "max": 14.228878021240234
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\06-08.06.2016 рейс 11.txt",
+      "parameter": "скорость_бурения",
+      "rows": 19848,
+      "count": 19848,
+      "mean": 0.15488372668503803,
+      "min": 0.0,
+      "max": 8.658642768859863
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\06-08.06.2016 рейс 11.txt",
+      "parameter": "скорость_спо",
+      "rows": 19848,
+      "count": 19848,
+      "mean": 0.03327254791404239,
+      "min": 0.0,
+      "max": 1.698090076446533
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\06-08.06.2016 рейс 11.txt",
+      "parameter": "температура_на_выходе",
+      "rows": 19848,
+      "count": 19848,
+      "mean": 15.96263056352032,
+      "min": 9.34256076812744,
+      "max": 36.56081008911133
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\06-08.06.2016 рейс 11.txt",
+      "parameter": "уровень_в_емкости",
+      "rows": 19848,
+      "count": 19848,
+      "mean": 1.4586292255710374,
+      "min": 1.057862877845764,
+      "max": 1.629183053970337
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\08-11.06.2016 рейс 12.txt",
+      "parameter": "вес_на_крюке",
+      "rows": 26405,
+      "count": 26405,
+      "mean": 65.22730278754817,
+      "min": 20.327875137329105,
+      "max": 117.5170211791992
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\08-11.06.2016 рейс 12.txt",
+      "parameter": "глубина",
+      "rows": 26405,
+      "count": 26405,
+      "mean": 3468.1823531402374,
+      "min": 3434.06005859375,
+      "max": 3497.437744140625
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\08-11.06.2016 рейс 12.txt",
+      "parameter": "давление_на_входе",
+      "rows": 26405,
+      "count": 26405,
+      "mean": 195.61199247291867,
+      "min": -39.96539688110352,
+      "max": 335.8485717773437
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\08-11.06.2016 рейс 12.txt",
+      "parameter": "дмк",
+      "rows": 26405,
+      "count": 26405,
+      "mean": 10.773994870412487,
+      "min": 0.0,
+      "max": 79.78068542480467
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\08-11.06.2016 рейс 12.txt",
+      "parameter": "момент_ротора",
+      "rows": 26405,
+      "count": 26405,
+      "mean": 3.3010680823885625,
+      "min": 0.0,
+      "max": 18.928131103515625
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\08-11.06.2016 рейс 12.txt",
+      "parameter": "нагрузка",
+      "rows": 26405,
+      "count": 26405,
+      "mean": 1.8918247678767537,
+      "min": -3.986711025238037,
+      "max": 9.969145774841309
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\08-11.06.2016 рейс 12.txt",
+      "parameter": "обороты_ротора",
+      "rows": 26405,
+      "count": 26405,
+      "mean": 15.844780355552114,
+      "min": 0.0,
+      "max": 45.89990234375
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\08-11.06.2016 рейс 12.txt",
+      "parameter": "расход_на_входе",
+      "rows": 26405,
+      "count": 26405,
+      "mean": 9.330059762057616,
+      "min": -11.505189895629885,
+      "max": 16.070220947265625
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\08-11.06.2016 рейс 12.txt",
+      "parameter": "скорость_бурения",
+      "rows": 26405,
+      "count": 26405,
+      "mean": 0.8567379940670111,
+      "min": 0.0,
+      "max": 24.93387031555176
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\08-11.06.2016 рейс 12.txt",
+      "parameter": "скорость_спо",
+      "rows": 26405,
+      "count": 26405,
+      "mean": 0.02664902032236767,
+      "min": 0.0,
+      "max": 1.749390602111816
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\08-11.06.2016 рейс 12.txt",
+      "parameter": "температура_на_выходе",
+      "rows": 26405,
+      "count": 26405,
+      "mean": 25.205833580719208,
+      "min": 11.0,
+      "max": 34.58597946166992
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\08-11.06.2016 рейс 12.txt",
+      "parameter": "уровень_в_емкости",
+      "rows": 26405,
+      "count": 26405,
+      "mean": 1.523442723391702,
+      "min": 0.839807093143463,
+      "max": 1.957976341247559
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test.TXT",
+      "parameter": "вес_на_крюке",
+      "rows": 26405,
+      "count": 26405,
+      "mean": 65.22730278754817,
+      "min": 20.3278751373291,
+      "max": 117.517021179199
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test.TXT",
+      "parameter": "глубина",
+      "rows": 26405,
+      "count": 26405,
+      "mean": 3468.1823531402397,
+      "min": 3434.06005859375,
+      "max": 3497.43774414063
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test.TXT",
+      "parameter": "давление_на_входе",
+      "rows": 26405,
+      "count": 26405,
+      "mean": 195.6119924729187,
+      "min": -39.9653968811035,
+      "max": 335.848571777344
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test.TXT",
+      "parameter": "дмк",
+      "rows": 26405,
+      "count": 26405,
+      "mean": 10.773994870412487,
+      "min": 0.0,
+      "max": 79.7806854248047
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test.TXT",
+      "parameter": "момент_ротора",
+      "rows": 26405,
+      "count": 26405,
+      "mean": 3.3010680823885625,
+      "min": 0.0,
+      "max": 18.9281311035156
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test.TXT",
+      "parameter": "нагрузка",
+      "rows": 26405,
+      "count": 26405,
+      "mean": 1.8918247678767537,
+      "min": -3.98671102523804,
+      "max": 9.96914577484131
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test.TXT",
+      "parameter": "обороты_ротора",
+      "rows": 26405,
+      "count": 26405,
+      "mean": 15.844780355552114,
+      "min": 0.0,
+      "max": 45.89990234375
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test.TXT",
+      "parameter": "расход_на_входе",
+      "rows": 26405,
+      "count": 26405,
+      "mean": 9.330059762057616,
+      "min": -11.5051898956299,
+      "max": 16.0702209472656
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test.TXT",
+      "parameter": "скорость_бурения",
+      "rows": 26405,
+      "count": 26405,
+      "mean": 0.8567379940670111,
+      "min": 0.0,
+      "max": 24.9338703155518
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test.TXT",
+      "parameter": "скорость_спо",
+      "rows": 26405,
+      "count": 26405,
+      "mean": 0.02664902032236767,
+      "min": 0.0,
+      "max": 1.74939060211182
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test.TXT",
+      "parameter": "температура_на_выходе",
+      "rows": 26405,
+      "count": 26405,
+      "mean": 25.205833580719208,
+      "min": 11.0,
+      "max": 34.5859794616699
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test.TXT",
+      "parameter": "уровень_в_емкости",
+      "rows": 26405,
+      "count": 26405,
+      "mean": 1.523442723391702,
+      "min": 0.839807093143463,
+      "max": 1.95797634124756
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test1.TXT",
+      "parameter": "вес_на_крюке",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 35.25318572865972,
+      "min": 0.41363325715065,
+      "max": 73.6162338256836
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test1.TXT",
+      "parameter": "глубина",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 3130.7023196635278,
+      "min": 3098.03002929688,
+      "max": 3157.32641601563
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test1.TXT",
+      "parameter": "давление_на_входе",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 175.3269100958648,
+      "min": -0.319338738918304,
+      "max": 269.472473144531
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test1.TXT",
+      "parameter": "дмк",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 39.68845593715281,
+      "min": 0.0,
+      "max": 237.547180175781
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test1.TXT",
+      "parameter": "момент_ротора",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 1.0453959681217555,
+      "min": -1.56502497196198,
+      "max": 3.85347628593445
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test1.TXT",
+      "parameter": "нагрузка",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 4.4875466998465425,
+      "min": 0.0,
+      "max": 22.1210613250732
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test1.TXT",
+      "parameter": "обороты_ротора",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 14.27688201179796,
+      "min": 0.0,
+      "max": 67.0
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test1.TXT",
+      "parameter": "расход_на_входе",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 10.084998964574732,
+      "min": -0.396172851324081,
+      "max": 15.9774398803711
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test1.TXT",
+      "parameter": "скорость_бурения",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 0.4363503643088945,
+      "min": 0.0,
+      "max": 8.11654567718506
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test1.TXT",
+      "parameter": "скорость_спо",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 0.012965602457429882,
+      "min": 0.0,
+      "max": 1.55846989154816
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test1.TXT",
+      "parameter": "температура_на_выходе",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 34.2864811918782,
+      "min": 8.3248815536499,
+      "max": 45.1276779174805
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test1.TXT",
+      "parameter": "уровень_в_емкости",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 1.2030033244096376,
+      "min": 0.616995751857758,
+      "max": 1.53119516372681
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test2.TXT",
+      "parameter": "вес_на_крюке",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 35.25318572865972,
+      "min": 0.41363325715065,
+      "max": 73.6162338256836
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test2.TXT",
+      "parameter": "глубина",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 3130.7023196635278,
+      "min": 3098.03002929688,
+      "max": 3157.32641601563
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test2.TXT",
+      "parameter": "давление_на_входе",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 175.3269100958648,
+      "min": -0.319338738918304,
+      "max": 269.472473144531
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test2.TXT",
+      "parameter": "дмк",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 39.68845593715281,
+      "min": 0.0,
+      "max": 237.547180175781
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test2.TXT",
+      "parameter": "момент_ротора",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 1.0453959681217555,
+      "min": -1.56502497196198,
+      "max": 3.85347628593445
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test2.TXT",
+      "parameter": "нагрузка",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 4.4875466998465425,
+      "min": 0.0,
+      "max": 22.1210613250732
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test2.TXT",
+      "parameter": "обороты_ротора",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 14.27688201179796,
+      "min": 0.0,
+      "max": 67.0
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test2.TXT",
+      "parameter": "расход_на_входе",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 10.084998964574732,
+      "min": -0.396172851324081,
+      "max": 15.9774398803711
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test2.TXT",
+      "parameter": "скорость_бурения",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 0.4363503643088945,
+      "min": 0.0,
+      "max": 8.11654567718506
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test2.TXT",
+      "parameter": "скорость_спо",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 0.012965602457429882,
+      "min": 0.0,
+      "max": 1.55846989154816
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test2.TXT",
+      "parameter": "температура_на_выходе",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 34.2864811918782,
+      "min": 8.3248815536499,
+      "max": 45.1276779174805
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_209_well_505\\test2.TXT",
+      "parameter": "уровень_в_емкости",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 1.2030033244096376,
+      "min": 0.616995751857758,
+      "max": 1.53119516372681
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_223_well_510\\25.08-01.09.2014 рейс 55.txt",
+      "parameter": "вес_на_крюке",
+      "rows": 54617,
+      "count": 54617,
+      "mean": 46.664382713656515,
+      "min": 1.59363842010498,
+      "max": 97.24874114990233
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_223_well_510\\25.08-01.09.2014 рейс 55.txt",
+      "parameter": "глубина",
+      "rows": 54617,
+      "count": 54617,
+      "mean": 3474.175098217688,
+      "min": 3438.02001953125,
+      "max": 3517.379150390625
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_223_well_510\\25.08-01.09.2014 рейс 55.txt",
+      "parameter": "давление_на_входе",
+      "rows": 54617,
+      "count": 54617,
+      "mean": 188.8929250520948,
+      "min": 0.0,
+      "max": 280.7046813964844
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_223_well_510\\25.08-01.09.2014 рейс 55.txt",
+      "parameter": "дмк",
+      "rows": 54617,
+      "count": 54617,
+      "mean": 34.96124811358621,
+      "min": 0.0,
+      "max": 233.13446044921875
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_223_well_510\\25.08-01.09.2014 рейс 55.txt",
+      "parameter": "момент_ротора",
+      "rows": 54617,
+      "count": 54617,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_223_well_510\\25.08-01.09.2014 рейс 55.txt",
+      "parameter": "нагрузка",
+      "rows": 54617,
+      "count": 54617,
+      "mean": 6.3932216850867505,
+      "min": 0.0,
+      "max": 46.61433792114258
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_223_well_510\\25.08-01.09.2014 рейс 55.txt",
+      "parameter": "обороты_ротора",
+      "rows": 54617,
+      "count": 54617,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_223_well_510\\25.08-01.09.2014 рейс 55.txt",
+      "parameter": "расход_на_входе",
+      "rows": 54617,
+      "count": 54617,
+      "mean": 11.91753236289021,
+      "min": 0.0,
+      "max": 15.256187438964844
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_223_well_510\\25.08-01.09.2014 рейс 55.txt",
+      "parameter": "скорость_бурения",
+      "rows": 54617,
+      "count": 54617,
+      "mean": 0.5205009104395989,
+      "min": 0.0,
+      "max": 29.19399642944336
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_223_well_510\\25.08-01.09.2014 рейс 55.txt",
+      "parameter": "скорость_спо",
+      "rows": 54617,
+      "count": 54617,
+      "mean": 0.006768843697662142,
+      "min": 0.0,
+      "max": 1.394198775291443
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_223_well_510\\25.08-01.09.2014 рейс 55.txt",
+      "parameter": "температура_на_выходе",
+      "rows": 54617,
+      "count": 54617,
+      "mean": 35.21524077372215,
+      "min": 5.417238712310791,
+      "max": 42.75928115844727
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_223_well_510\\25.08-01.09.2014 рейс 55.txt",
+      "parameter": "уровень_в_емкости",
+      "rows": 54617,
+      "count": 54617,
+      "mean": 1.0443984620906215,
+      "min": 0.238007843494415,
+      "max": 1.628029704093933
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_2270_well_800\\17-19.04.2012 рейс 18.txt",
+      "parameter": "вес_на_крюке",
+      "rows": 15146,
+      "count": 15146,
+      "mean": 13.31573604574269,
+      "min": 0.0,
+      "max": 43.89276885986328
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_2270_well_800\\17-19.04.2012 рейс 18.txt",
+      "parameter": "глубина",
+      "rows": 15146,
+      "count": 15146,
+      "mean": 1853.4790406982067,
+      "min": 1849.4200439453125,
+      "max": 1858.15234375
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_2270_well_800\\17-19.04.2012 рейс 18.txt",
+      "parameter": "давление_на_входе",
+      "rows": 15146,
+      "count": 15146,
+      "mean": 12.319037926225253,
+      "min": 0.0,
+      "max": 176.7218475341797
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_2270_well_800\\17-19.04.2012 рейс 18.txt",
+      "parameter": "дмк",
+      "rows": 15146,
+      "count": 15146,
+      "mean": 0.781145990847219,
+      "min": 0.0,
+      "max": 36.14811706542969
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_2270_well_800\\17-19.04.2012 рейс 18.txt",
+      "parameter": "момент_ротора",
+      "rows": 15146,
+      "count": 15146,
+      "mean": 0.34037951755937684,
+      "min": 0.331797242164612,
+      "max": 0.351115465164185
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_2270_well_800\\17-19.04.2012 рейс 18.txt",
+      "parameter": "нагрузка",
+      "rows": 15146,
+      "count": 15146,
+      "mean": 0.375819856759909,
+      "min": 0.0,
+      "max": 12.488165855407717
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_2270_well_800\\17-19.04.2012 рейс 18.txt",
+      "parameter": "обороты_ротора",
+      "rows": 15146,
+      "count": 15146,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_2270_well_800\\17-19.04.2012 рейс 18.txt",
+      "parameter": "расход_на_входе",
+      "rows": 15146,
+      "count": 15146,
+      "mean": 1.7361635810619465,
+      "min": -0.300000011920929,
+      "max": 20.46571159362793
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_2270_well_800\\17-19.04.2012 рейс 18.txt",
+      "parameter": "скорость_бурения",
+      "rows": 15146,
+      "count": 15146,
+      "mean": 0.20755488535362987,
+      "min": 0.0,
+      "max": 18.56913185119629
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_2270_well_800\\17-19.04.2012 рейс 18.txt",
+      "parameter": "скорость_спо",
+      "rows": 15146,
+      "count": 0,
+      "mean": NaN,
+      "min": NaN,
+      "max": NaN
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_2270_well_800\\17-19.04.2012 рейс 18.txt",
+      "parameter": "температура_на_выходе",
+      "rows": 15146,
+      "count": 15146,
+      "mean": -5770.971922499992,
+      "min": -3550642.0,
+      "max": 11.696820259094238
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_2270_well_800\\17-19.04.2012 рейс 18.txt",
+      "parameter": "уровень_в_емкости",
+      "rows": 15146,
+      "count": 15146,
+      "mean": 133.3535443849967,
+      "min": 0.884072661399841,
+      "max": 121920.625
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_2270_well_800\\19-20.04.2012 рейс 19.txt",
+      "parameter": "вес_на_крюке",
+      "rows": 14644,
+      "count": 14644,
+      "mean": 7.973677291629496,
+      "min": 0.0,
+      "max": 39.41176986694336
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_2270_well_800\\19-20.04.2012 рейс 19.txt",
+      "parameter": "глубина",
+      "rows": 14644,
+      "count": 14644,
+      "mean": 1858.1500244140625,
+      "min": 1858.1500244140625,
+      "max": 1858.1500244140625
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_2270_well_800\\19-20.04.2012 рейс 19.txt",
+      "parameter": "давление_на_входе",
+      "rows": 14644,
+      "count": 14644,
+      "mean": 0.030763656211569627,
+      "min": 0.0,
+      "max": 3.720386743545532
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_2270_well_800\\19-20.04.2012 рейс 19.txt",
+      "parameter": "дмк",
+      "rows": 14644,
+      "count": 14644,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_2270_well_800\\19-20.04.2012 рейс 19.txt",
+      "parameter": "момент_ротора",
+      "rows": 14644,
+      "count": 14644,
+      "mean": 0.33817599875391,
+      "min": 0.329599916934967,
+      "max": 0.348643451929092
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_2270_well_800\\19-20.04.2012 рейс 19.txt",
+      "parameter": "нагрузка",
+      "rows": 14644,
+      "count": 14644,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_2270_well_800\\19-20.04.2012 рейс 19.txt",
+      "parameter": "обороты_ротора",
+      "rows": 14644,
+      "count": 14644,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_2270_well_800\\19-20.04.2012 рейс 19.txt",
+      "parameter": "расход_на_входе",
+      "rows": 14644,
+      "count": 14644,
+      "mean": 0.09648409559142175,
+      "min": 0.0,
+      "max": 9.876765251159668
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_2270_well_800\\19-20.04.2012 рейс 19.txt",
+      "parameter": "скорость_бурения",
+      "rows": 14644,
+      "count": 14644,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_2270_well_800\\19-20.04.2012 рейс 19.txt",
+      "parameter": "скорость_спо",
+      "rows": 14644,
+      "count": 0,
+      "mean": NaN,
+      "min": NaN,
+      "max": NaN
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_2270_well_800\\19-20.04.2012 рейс 19.txt",
+      "parameter": "температура_на_выходе",
+      "rows": 14644,
+      "count": 14644,
+      "mean": -102.99383721080466,
+      "min": -710132.5,
+      "max": 0.121528692543507
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_2270_well_800\\19-20.04.2012 рейс 19.txt",
+      "parameter": "уровень_в_емкости",
+      "rows": 14644,
+      "count": 14644,
+      "mean": 11.248007809452263,
+      "min": 0.120548792183399,
+      "max": 31958.494140625
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\01-07.07.2014 рейс 34.txt",
+      "parameter": "вес_на_крюке",
+      "rows": 93303,
+      "count": 93303,
+      "mean": 36.64073090633974,
+      "min": 0.41363325715065,
+      "max": 73.61623382568358
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\01-07.07.2014 рейс 34.txt",
+      "parameter": "глубина",
+      "rows": 93303,
+      "count": 93303,
+      "mean": 3129.637675402465,
+      "min": 3098.030029296875,
+      "max": 3157.326416015625
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\01-07.07.2014 рейс 34.txt",
+      "parameter": "давление_на_входе",
+      "rows": 93303,
+      "count": 93303,
+      "mean": 182.33947296869442,
+      "min": -0.319338738918304,
+      "max": 269.47247314453125
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\01-07.07.2014 рейс 34.txt",
+      "parameter": "дмк",
+      "rows": 93303,
+      "count": 93303,
+      "mean": 41.27551775833237,
+      "min": 0.0,
+      "max": 237.54718017578125
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\01-07.07.2014 рейс 34.txt",
+      "parameter": "момент_ротора",
+      "rows": 93303,
+      "count": 93303,
+      "mean": 1.1117157017885588,
+      "min": -1.565024971961975,
+      "max": 3.853476285934448
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\01-07.07.2014 рейс 34.txt",
+      "parameter": "нагрузка",
+      "rows": 93303,
+      "count": 93303,
+      "mean": 4.666994699772885,
+      "min": 0.0,
+      "max": 22.12106132507324
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\01-07.07.2014 рейс 34.txt",
+      "parameter": "обороты_ротора",
+      "rows": 93303,
+      "count": 93303,
+      "mean": 14.846260754453898,
+      "min": 0.0,
+      "max": 67.0
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\01-07.07.2014 рейс 34.txt",
+      "parameter": "расход_на_входе",
+      "rows": 93303,
+      "count": 93303,
+      "mean": 10.488111434053971,
+      "min": -0.396172851324081,
+      "max": 15.977439880371094
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\01-07.07.2014 рейс 34.txt",
+      "parameter": "скорость_бурения",
+      "rows": 93303,
+      "count": 93303,
+      "mean": 0.45379914097455903,
+      "min": 0.0,
+      "max": 8.116545677185059
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\01-07.07.2014 рейс 34.txt",
+      "parameter": "скорость_спо",
+      "rows": 93303,
+      "count": 93303,
+      "mean": 0.013484070917915302,
+      "min": 0.0,
+      "max": 1.558469891548157
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\01-07.07.2014 рейс 34.txt",
+      "parameter": "температура_на_выходе",
+      "rows": 93303,
+      "count": 93303,
+      "mean": 35.21472895801238,
+      "min": 8.324881553649902,
+      "max": 45.12767791748047
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\01-07.07.2014 рейс 34.txt",
+      "parameter": "уровень_в_емкости",
+      "rows": 93303,
+      "count": 93303,
+      "mean": 1.2116204880493158,
+      "min": 0.616995751857758,
+      "max": 1.531195163726807
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\test.TXT",
+      "parameter": "вес_на_крюке",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 35.25318572865972,
+      "min": 0.41363325715065,
+      "max": 73.6162338256836
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\test.TXT",
+      "parameter": "глубина",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 3130.7023196635278,
+      "min": 3098.03002929688,
+      "max": 3157.32641601563
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\test.TXT",
+      "parameter": "давление_на_входе",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 175.3269100958648,
+      "min": -0.319338738918304,
+      "max": 269.472473144531
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\test.TXT",
+      "parameter": "дмк",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 39.68845593715281,
+      "min": 0.0,
+      "max": 237.547180175781
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\test.TXT",
+      "parameter": "момент_ротора",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 1.0453959681217555,
+      "min": -1.56502497196198,
+      "max": 3.85347628593445
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\test.TXT",
+      "parameter": "нагрузка",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 4.4875466998465425,
+      "min": 0.0,
+      "max": 22.1210613250732
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\test.TXT",
+      "parameter": "обороты_ротора",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 14.27688201179796,
+      "min": 0.0,
+      "max": 67.0
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\test.TXT",
+      "parameter": "расход_на_входе",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 10.084998964574732,
+      "min": -0.396172851324081,
+      "max": 15.9774398803711
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\test.TXT",
+      "parameter": "скорость_бурения",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 0.4363503643088945,
+      "min": 0.0,
+      "max": 8.11654567718506
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\test.TXT",
+      "parameter": "скорость_спо",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 0.012965602457429882,
+      "min": 0.0,
+      "max": 1.55846989154816
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\test.TXT",
+      "parameter": "температура_на_выходе",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 34.2864811918782,
+      "min": 8.3248815536499,
+      "max": 45.1276779174805
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\test.TXT",
+      "parameter": "уровень_в_емкости",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 1.2030033244096376,
+      "min": 0.616995751857758,
+      "max": 1.53119516372681
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\test1.TXT",
+      "parameter": "вес_на_крюке",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 35.25318572865972,
+      "min": 0.41363325715065,
+      "max": 73.6162338256836
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\test1.TXT",
+      "parameter": "глубина",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 3130.7023196635278,
+      "min": 3098.03002929688,
+      "max": 3157.32641601563
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\test1.TXT",
+      "parameter": "давление_на_входе",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 175.3269100958648,
+      "min": -0.319338738918304,
+      "max": 269.472473144531
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\test1.TXT",
+      "parameter": "дмк",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 39.68845593715281,
+      "min": 0.0,
+      "max": 237.547180175781
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\test1.TXT",
+      "parameter": "момент_ротора",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 1.0453959681217555,
+      "min": -1.56502497196198,
+      "max": 3.85347628593445
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\test1.TXT",
+      "parameter": "нагрузка",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 4.4875466998465425,
+      "min": 0.0,
+      "max": 22.1210613250732
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\test1.TXT",
+      "parameter": "обороты_ротора",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 14.27688201179796,
+      "min": 0.0,
+      "max": 67.0
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\test1.TXT",
+      "parameter": "расход_на_входе",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 10.084998964574732,
+      "min": -0.396172851324081,
+      "max": 15.9774398803711
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\test1.TXT",
+      "parameter": "скорость_бурения",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 0.4363503643088945,
+      "min": 0.0,
+      "max": 8.11654567718506
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\test1.TXT",
+      "parameter": "скорость_спо",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 0.012965602457429882,
+      "min": 0.0,
+      "max": 1.55846989154816
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\test1.TXT",
+      "parameter": "температура_на_выходе",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 34.2864811918782,
+      "min": 8.3248815536499,
+      "max": 45.1276779174805
+    },
+    {
+      "file": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_4_well_515\\test1.TXT",
+      "parameter": "уровень_в_емкости",
+      "rows": 97034,
+      "count": 97034,
+      "mean": 1.2030033244096376,
+      "min": 0.616995751857758,
+      "max": 1.53119516372681
+    }
+  ],
+  "global_parameter_stats": [
+    {
+      "parameter": "вес_на_крюке",
+      "count": 712123,
+      "mean": 35.0466259095191,
+      "std": 23.446342515016664,
+      "observed_min": 0.0,
+      "observed_max": 117.5170211791992,
+      "q01": 0.0,
+      "q05": 0.443249106407166,
+      "q50": 44.4432601928711,
+      "q95": 76.47978210449219,
+      "q99": 87.3386154174805,
+      "iqr": 36.4946222305298,
+      "soft_window_min": 0.443249106407166,
+      "soft_window_max": 76.47978210449219,
+      "hard_window_min": 0.0,
+      "hard_window_max": 87.3386154174805,
+      "tukey_low_fence": -98.2854499816895,
+      "tukey_high_fence": 157.1769056320191,
+      "zero_pct": 2.099075581044286,
+      "negative_pct": 0.0,
+      "fence_outlier_pct": 0.0,
+      "delta_p95": 2.2335853576660014,
+      "delta_p99": 11.792016315460073,
+      "jump_spike_pct": 1.0001305983510904,
+      "max_zero_run": 4063,
+      "max_flat_run": 4063
+    },
+    {
+      "parameter": "глубина",
+      "count": 712123,
+      "mean": 2900.92760574,
+      "std": 758.345706725264,
+      "observed_min": 796.489990234375,
+      "observed_max": 3517.379150390625,
+      "q01": 796.489990234375,
+      "q05": 796.489990234375,
+      "q50": 3138.39819335938,
+      "q95": 3489.70556640625,
+      "q99": 3503.75927734375,
+      "iqr": 56.190429687495,
+      "soft_window_min": 796.489990234375,
+      "soft_window_max": 3489.70556640625,
+      "hard_window_min": 796.489990234375,
+      "hard_window_max": 3503.75927734375,
+      "tukey_low_fence": 2932.564697265645,
+      "tukey_high_fence": 3325.89770507811,
+      "zero_pct": 0.0,
+      "negative_pct": 0.0,
+      "fence_outlier_pct": 32.39384207503479,
+      "delta_p95": 0.01025390625,
+      "delta_p99": 0.028564453125227374,
+      "jump_spike_pct": 0.9949347499743718,
+      "max_zero_run": 0,
+      "max_flat_run": 18748
+    },
+    {
+      "parameter": "давление_на_входе",
+      "count": 712123,
+      "mean": 154.57566391833703,
+      "std": 118.77251947707661,
+      "observed_min": -39.96539688110352,
+      "observed_max": 335.848571777344,
+      "q01": -0.0783832147717476,
+      "q05": -0.0493524260818958,
+      "q50": 238.859512329102,
+      "q95": 262.571838378906,
+      "q99": 314.6529846191406,
+      "iqr": 250.529876708984,
+      "soft_window_min": -0.0493524260818958,
+      "soft_window_max": 262.571838378906,
+      "hard_window_min": -0.0783832147717476,
+      "hard_window_max": 314.6529846191406,
+      "tukey_low_fence": -751.589630126952,
+      "tukey_high_fence": 1002.119506835936,
+      "zero_pct": 12.144671636781847,
+      "negative_pct": 17.596398374999826,
+      "fence_outlier_pct": 0.0,
+      "delta_p95": 3.5707855224610228,
+      "delta_p99": 9.736983795166015,
+      "jump_spike_pct": 1.0001305983510904,
+      "max_zero_run": 6337,
+      "max_flat_run": 6337
+    },
+    {
+      "parameter": "дмк",
+      "count": 712123,
+      "mean": 30.867815629888426,
+      "std": 48.05946321840604,
+      "observed_min": 0.0,
+      "observed_max": 237.54718017578125,
+      "q01": 0.0,
+      "q05": 0.0,
+      "q50": 0.0,
+      "q95": 128.063537597656,
+      "q99": 211.259826660156,
+      "iqr": 55.5517692565918,
+      "soft_window_min": 0.0,
+      "soft_window_max": 128.063537597656,
+      "hard_window_min": 0.0,
+      "hard_window_max": 211.259826660156,
+      "tukey_low_fence": -166.6553077697754,
+      "tukey_high_fence": 222.2070770263672,
+      "zero_pct": 61.57658157368881,
+      "negative_pct": 0.0,
+      "fence_outlier_pct": 0.45778608470727666,
+      "delta_p95": 0.0,
+      "delta_p99": 0.0,
+      "jump_spike_pct": 0.4736647722884342,
+      "max_zero_run": 18748,
+      "max_flat_run": 18748
+    },
+    {
+      "parameter": "момент_ротора",
+      "count": 712123,
+      "mean": 1.028606574410135,
+      "std": 1.7865494412915086,
+      "observed_min": -1.56502497196198,
+      "observed_max": 18.928131103515625,
+      "q01": -1.05335462093353,
+      "q05": -0.583370447158813,
+      "q50": 0.0,
+      "q95": 3.18080472946167,
+      "q99": 7.994955062866211,
+      "iqr": 2.25031757354736,
+      "soft_window_min": -0.583370447158813,
+      "soft_window_max": 3.18080472946167,
+      "hard_window_min": -1.05335462093353,
+      "hard_window_max": 7.994955062866211,
+      "tukey_low_fence": -6.750952720642081,
+      "tukey_high_fence": 9.00127029418944,
+      "zero_pct": 28.887706196822737,
+      "negative_pct": 21.429163220398724,
+      "fence_outlier_pct": 0.03496586966015702,
+      "delta_p95": 0.3597261905670104,
+      "delta_p99": 0.6000810861587502,
+      "jump_spike_pct": 0.9999901700165845,
+      "max_zero_run": 54617,
+      "max_flat_run": 54617
+    },
+    {
+      "parameter": "нагрузка",
+      "count": 712123,
+      "mean": 3.797150853509802,
+      "std": 4.382517470660403,
+      "observed_min": -12.458471298217772,
+      "observed_max": 46.61433792114258,
+      "q01": 0.0,
+      "q05": 0.0,
+      "q50": 3.105977773666382,
+      "q95": 13.050329208374,
+      "q99": 16.4433288574219,
+      "iqr": 6.0938286781311,
+      "soft_window_min": 0.0,
+      "soft_window_max": 13.050329208374,
+      "hard_window_min": 0.0,
+      "hard_window_max": 16.4433288574219,
+      "tukey_low_fence": -18.2814860343933,
+      "tukey_high_fence": 24.3753147125244,
+      "zero_pct": 41.528780842635335,
+      "negative_pct": 0.44486696820633514,
+      "fence_outlier_pct": 0.011936140245435128,
+      "delta_p95": 1.7050249576568604,
+      "delta_p99": 3.3418483734131,
+      "jump_spike_pct": 0.9998497416820786,
+      "max_zero_run": 18748,
+      "max_flat_run": 18748
+    },
+    {
+      "parameter": "обороты_ротора",
+      "count": 712123,
+      "mean": 12.014341428822886,
+      "std": 15.193101650572737,
+      "observed_min": -9.187278747558594,
+      "observed_max": 67.0,
+      "q01": -0.4487698048353197,
+      "q05": 0.0,
+      "q50": 0.0,
+      "q95": 32.81724739074707,
+      "q99": 40.380378723144524,
+      "iqr": 30.0,
+      "soft_window_min": 0.0,
+      "soft_window_max": 32.81724739074707,
+      "hard_window_min": -0.4487698048353197,
+      "hard_window_max": 40.380378723144524,
+      "tukey_low_fence": -90.0,
+      "tukey_high_fence": 120.0,
+      "zero_pct": 55.91491919233054,
+      "negative_pct": 3.7853011347758745,
+      "fence_outlier_pct": 0.0,
+      "delta_p95": 0.012451305985451008,
+      "delta_p99": 1.400522607453097,
+      "jump_spike_pct": 1.0001305983510904,
+      "max_zero_run": 54617,
+      "max_flat_run": 54617
+    },
+    {
+      "parameter": "расход_на_входе",
+      "count": 712123,
+      "mean": 9.265393342580525,
+      "std": 6.8241744663012325,
+      "observed_min": -11.5051898956299,
+      "observed_max": 34.05351638793945,
+      "q01": -0.317604035139084,
+      "q05": -0.229566290974617,
+      "q50": 13.7422361373901,
+      "q95": 15.183632850647,
+      "q99": 15.4052505493164,
+      "iqr": 14.5581159591675,
+      "soft_window_min": -0.229566290974617,
+      "soft_window_max": 15.183632850647,
+      "hard_window_min": -0.317604035139084,
+      "hard_window_max": 15.4052505493164,
+      "tukey_low_fence": -43.6743478775025,
+      "tukey_high_fence": 58.23246383667,
+      "zero_pct": 14.051083871746876,
+      "negative_pct": 13.194630702842064,
+      "fence_outlier_pct": 0.0,
+      "delta_p95": 0.12608768939971943,
+      "delta_p99": 0.9593334197997798,
+      "jump_spike_pct": 0.9997093133475727,
+      "max_zero_run": 6765,
+      "max_flat_run": 6897
+    },
+    {
+      "parameter": "скорость_бурения",
+      "count": 712123,
+      "mean": 0.5225174987013769,
+      "std": 1.3710203778263519,
+      "observed_min": 0.0,
+      "observed_max": 42.76470565795898,
+      "q01": 0.0,
+      "q05": 0.0,
+      "q50": 0.0,
+      "q95": 2.22451090812683,
+      "q99": 6.49649477005005,
+      "iqr": 0.624349653720856,
+      "soft_window_min": 0.0,
+      "soft_window_max": 2.22451090812683,
+      "hard_window_min": 0.0,
+      "hard_window_max": 6.49649477005005,
+      "tukey_low_fence": -1.873048961162568,
+      "tukey_high_fence": 2.497398614883424,
+      "zero_pct": 64.06224767350585,
+      "negative_pct": 0.0,
+      "fence_outlier_pct": 3.493497612069825,
+      "delta_p95": 0.497409291565418,
+      "delta_p99": 1.290464401245117,
+      "jump_spike_pct": 0.9999901700165845,
+      "max_zero_run": 18748,
+      "max_flat_run": 18748
+    },
+    {
+      "parameter": "скорость_спо",
+      "count": 682333,
+      "mean": 0.0140208820467826,
+      "std": 0.08603610591908474,
+      "observed_min": 0.0,
+      "observed_max": 1.74939060211182,
+      "q01": 0.0,
+      "q05": 0.0,
+      "q50": 0.0,
+      "q95": 0.0,
+      "q99": 0.536263763904572,
+      "iqr": 0.0,
+      "soft_window_min": 0.0,
+      "soft_window_max": 0.0,
+      "hard_window_min": 0.0,
+      "hard_window_max": 0.536263763904572,
+      "tukey_low_fence": 0.0,
+      "tukey_high_fence": 0.0,
+      "zero_pct": 95.15764296904884,
+      "negative_pct": 0.0,
+      "fence_outlier_pct": 4.842357030951163,
+      "delta_p95": 9.356439113071893e-06,
+      "delta_p99": 0.1472596815228461,
+      "jump_spike_pct": 1.0001187128014903,
+      "max_zero_run": 12606,
+      "max_flat_run": 12606
+    },
+    {
+      "parameter": "температура_на_выходе",
+      "count": 712123,
+      "mean": -96.54319240114238,
+      "std": 19975.6937710019,
+      "observed_min": -3550642.0,
+      "observed_max": 45.1276779174805,
+      "q01": -7.462760763168335,
+      "q05": 0.0,
+      "q50": 37.69158172607422,
+      "q95": 44.6237945556641,
+      "q99": 44.9917755126953,
+      "iqr": 32.0861129760742,
+      "soft_window_min": 0.0,
+      "soft_window_max": 44.6237945556641,
+      "hard_window_min": -7.462760763168335,
+      "hard_window_max": 44.9917755126953,
+      "tukey_low_fence": -85.2583389282226,
+      "tukey_high_fence": 139.3444519042968,
+      "zero_pct": 10.337961279161044,
+      "negative_pct": 3.909998694045832,
+      "fence_outlier_pct": 0.004634030918815991,
+      "delta_p95": 0.1452083587645987,
+      "delta_p99": 0.4149415588378784,
+      "jump_spike_pct": 1.0001305983510904,
+      "max_zero_run": 25830,
+      "max_flat_run": 25830
+    },
+    {
+      "parameter": "уровень_в_емкости",
+      "count": 712123,
+      "mean": 4.253888793053591,
+      "std": 375.5166569794566,
+      "observed_min": 0.029616503044963,
+      "observed_max": 121920.625,
+      "q01": 0.7505037844181061,
+      "q05": 0.8899226248264308,
+      "q50": 1.24339771270752,
+      "q95": 1.584857821464539,
+      "q99": 1.7044119191169715,
+      "iqr": 0.1553614735603368,
+      "soft_window_min": 0.8899226248264308,
+      "soft_window_max": 1.584857821464539,
+      "hard_window_min": 0.7505037844181061,
+      "hard_window_max": 1.7044119191169715,
+      "tukey_low_fence": 0.7236623167991496,
+      "tukey_high_fence": 1.8111926317215072,
+      "zero_pct": 0.0,
+      "negative_pct": 0.0,
+      "fence_outlier_pct": 1.1226993089676922,
+      "delta_p95": 0.0036143064498901367,
+      "delta_p99": 0.01122605562210052,
+      "jump_spike_pct": 1.0001305983510904,
+      "max_zero_run": 0,
+      "max_flat_run": 435
+    }
+  ],
+  "context_rules_candidates": [
+    {
+      "parameter": "вес_на_крюке",
+      "context_soft_window": "[0.443249; 76.4798]",
+      "context_hard_window": "[0; 87.3386]",
+      "critical_fence_window": "[-98.2854; 157.177]",
+      "max_step_threshold": 11.792016315460073,
+      "flags": "длинные нулевые плато; длинные плато (залипание датчика)"
+    },
+    {
+      "parameter": "глубина",
+      "context_soft_window": "[796.49; 3489.71]",
+      "context_hard_window": "[796.49; 3503.76]",
+      "critical_fence_window": "[2932.56; 3325.9]",
+      "max_step_threshold": 0.028564453125227374,
+      "flags": "длинные плато (залипание датчика); выраженные хвостовые выбросы"
+    },
+    {
+      "parameter": "давление_на_входе",
+      "context_soft_window": "[-0.0493524; 262.572]",
+      "context_hard_window": "[-0.0783832; 314.653]",
+      "critical_fence_window": "[-751.59; 1002.12]",
+      "max_step_threshold": 9.736983795166015,
+      "flags": "много нулевых значений; длинные нулевые плато; длинные плато (залипание датчика); есть отрицательные значения"
+    },
+    {
+      "parameter": "дмк",
+      "context_soft_window": "[0; 128.064]",
+      "context_hard_window": "[0; 211.26]",
+      "critical_fence_window": "[-166.655; 222.207]",
+      "max_step_threshold": 0.0,
+      "flags": "много нулевых значений; длинные нулевые плато; длинные плато (залипание датчика)"
+    },
+    {
+      "parameter": "момент_ротора",
+      "context_soft_window": "[-0.58337; 3.1808]",
+      "context_hard_window": "[-1.05335; 7.99496]",
+      "critical_fence_window": "[-6.75095; 9.00127]",
+      "max_step_threshold": 0.6000810861587502,
+      "flags": "много нулевых значений; длинные нулевые плато; длинные плато (залипание датчика); есть отрицательные значения"
+    },
+    {
+      "parameter": "нагрузка",
+      "context_soft_window": "[0; 13.0503]",
+      "context_hard_window": "[0; 16.4433]",
+      "critical_fence_window": "[-18.2815; 24.3753]",
+      "max_step_threshold": 3.3418483734131,
+      "flags": "много нулевых значений; длинные нулевые плато; длинные плато (залипание датчика); есть отрицательные значения"
+    },
+    {
+      "parameter": "обороты_ротора",
+      "context_soft_window": "[0; 32.8172]",
+      "context_hard_window": "[-0.44877; 40.3804]",
+      "critical_fence_window": "[-90; 120]",
+      "max_step_threshold": 1.400522607453097,
+      "flags": "много нулевых значений; длинные нулевые плато; длинные плато (залипание датчика); есть отрицательные значения"
+    },
+    {
+      "parameter": "расход_на_входе",
+      "context_soft_window": "[-0.229566; 15.1836]",
+      "context_hard_window": "[-0.317604; 15.4053]",
+      "critical_fence_window": "[-43.6743; 58.2325]",
+      "max_step_threshold": 0.9593334197997798,
+      "flags": "много нулевых значений; длинные нулевые плато; длинные плато (залипание датчика); есть отрицательные значения"
+    },
+    {
+      "parameter": "скорость_бурения",
+      "context_soft_window": "[0; 2.22451]",
+      "context_hard_window": "[0; 6.49649]",
+      "critical_fence_window": "[-1.87305; 2.4974]",
+      "max_step_threshold": 1.290464401245117,
+      "flags": "много нулевых значений; длинные нулевые плато; длинные плато (залипание датчика); выраженные хвостовые выбросы"
+    },
+    {
+      "parameter": "скорость_спо",
+      "context_soft_window": "[0; 0]",
+      "context_hard_window": "[0; 0.536264]",
+      "critical_fence_window": "[0; 0]",
+      "max_step_threshold": 0.1472596815228461,
+      "flags": "много нулевых значений; длинные нулевые плато; длинные плато (залипание датчика); выраженные хвостовые выбросы"
+    },
+    {
+      "parameter": "температура_на_выходе",
+      "context_soft_window": "[0; 44.6238]",
+      "context_hard_window": "[-7.46276; 44.9918]",
+      "critical_fence_window": "[-85.2583; 139.344]",
+      "max_step_threshold": 0.4149415588378784,
+      "flags": "много нулевых значений; длинные нулевые плато; длинные плато (залипание датчика); есть отрицательные значения"
+    },
+    {
+      "parameter": "уровень_в_емкости",
+      "context_soft_window": "[0.889923; 1.58486]",
+      "context_hard_window": "[0.750504; 1.70441]",
+      "critical_fence_window": "[0.723662; 1.81119]",
+      "max_step_threshold": 0.01122605562210052,
+      "flags": "длинные плато (залипание датчика); выраженные хвостовые выбросы"
+    }
+  ]
+}

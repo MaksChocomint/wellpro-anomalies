@@ -1,0 +1,445 @@
+[DB] Подключение к базе и создание таблиц...
+[DB] Таблицы проверены/созданы
+[DataParser] Successfully parsed 26405 records
+[DataParser] Found 63 columns, keeping required parameters + time
+[DataParser] Filtered to 12/12 available parameters + time
+[StartUp] Загружено 26405 записей
+[StartUp] Привязано TXT-файлов к буровым: 16 (буровых: 5)
+INFO:     127.0.0.1:56472 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56473 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56474 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56475 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56476 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+[WebSocket] Для cluster=2625, well=801 привязок нет. Используется default.TXT
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+INFO:     127.0.0.1:56485 - "GET /api/v1/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56578 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56576 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56579 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56580 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56577 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+[WebSocket] Соединение закрыто
+[DataParser] Successfully parsed 54617 records
+[DataParser] Found 55 columns, keeping required parameters + time
+[DataParser] Filtered to 12/12 available parameters + time
+[WebSocket] Подключение для cluster=223, well=510. Назначено файлов: 1. Стартовый файл: 25.08-01.09.2014 рейс 55.txt
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+[DataParser] Successfully parsed 240 records
+[DataParser] Found 13 columns, keeping required parameters + time
+[DataParser] Filtered to 12/12 available parameters + time
+INFO:     127.0.0.1:56607 - "POST /api/v1/analyze/file?method=ammad&window_size=48&score_threshold=0.8 HTTP/1.1" 200 OK
+[WebSocket] Соединение закрыто
+[DataParser] Successfully parsed 240 records
+[DataParser] Found 13 columns, keeping required parameters + time
+[DataParser] Filtered to 12/12 available parameters + time
+INFO:     127.0.0.1:61987 - "POST /api/v1/analyze/file?method=ammad&window_size=48&score_threshold=0.8 HTTP/1.1" 200 OK
+[DataParser] Successfully parsed 240 records
+[DataParser] Found 13 columns, keeping required parameters + time
+[DataParser] Filtered to 12/12 available parameters + time
+INFO:     127.0.0.1:60484 - "POST /api/v1/analyze/file?method=ammad&window_size=48&score_threshold=0.8 HTTP/1.1" 200 OK
+[DataParser] Successfully parsed 240 records
+[DataParser] Found 13 columns, keeping required parameters + time
+[DataParser] Filtered to 12/12 available parameters + time
+INFO:     127.0.0.1:60497 - "POST /api/v1/analyze/file?method=ammad&window_size=48&score_threshold=0.8 HTTP/1.1" 200 OK
+[DataParser] Successfully parsed 54617 records
+[DataParser] Found 55 columns, keeping required parameters + time
+[DataParser] Filtered to 12/12 available parameters + time
+[WebSocket] Подключение для cluster=223, well=510. Назначено файлов: 1. Стартовый файл: 25.08-01.09.2014 рейс 55.txt
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+[DataParser] Successfully parsed 54617 records
+[DataParser] Found 55 columns, keeping required parameters + time
+[DataParser] Filtered to 12/12 available parameters + time
+[WebSocket] Подключение для cluster=223, well=510. Назначено файлов: 1. Стартовый файл: 25.08-01.09.2014 рейс 55.txt
+[WebSocket] Соединение закрыто
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+INFO:     127.0.0.1:52314 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52311 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52312 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52313 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52315 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+[WebSocket] Соединение закрыто
+[WebSocket] Для cluster=1, well=Bridge Well привязок нет. Используется default.TXT
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+INFO:     127.0.0.1:50946 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50945 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50947 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50946 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50945 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+[WebSocket] Соединение закрыто
+INFO:     127.0.0.1:51075 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51076 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51077 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51079 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51078 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+[DataParser] Successfully parsed 15146 records
+[DataParser] Found 37 columns, keeping required parameters + time
+[DataParser] Info: 1 parameters are absent in this file: {'скорость_спо'}
+[DataParser] Filtered to 11/12 available parameters + time
+[WebSocket] Подключение для cluster=2270, well=800. Назначено файлов: 2. Стартовый файл: 17-19.04.2012 рейс 18.txt
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+INFO:     127.0.0.1:58858 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58857 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58859 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58861 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58860 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58861 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58858 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58860 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58857 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58859 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+[WebSocket] Соединение закрыто
+[DataParser] Successfully parsed 19848 records
+[DataParser] Found 63 columns, keeping required parameters + time
+[DataParser] Filtered to 12/12 available parameters + time
+[WebSocket] Подключение для cluster=209, well=505. Назначено файлов: 5. Стартовый файл: 06-08.06.2016 рейс 11.txt
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+INFO:     127.0.0.1:58865 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58867 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58866 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58870 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58868 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58871 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58869 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58872 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58872 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58871 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+[WebSocket] Соединение закрыто
+[WebSocket] Для cluster=1, well=Bridge Well привязок нет. Используется default.TXT
+INFO:     127.0.0.1:58871 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58866 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58869 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58872 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58867 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58869 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58866 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58872 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58871 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58867 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+[WebSocket] Соединение закрыто
+[WebSocket] Для cluster=1, well=Bridge Well привязок нет. Используется default.TXT
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+[WebSocket] Соединение закрыто
+INFO:     127.0.0.1:62455 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62456 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62457 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62458 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62459 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+[WebSocket] Для cluster=2625, well=801 привязок нет. Используется default.TXT
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+INFO:     127.0.0.1:62466 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62463 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62468 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62469 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62465 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62467 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62464 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62469 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62468 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62466 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+[WebSocket] Соединение закрыто
+[DataParser] Successfully parsed 15146 records
+[DataParser] Found 37 columns, keeping required parameters + time
+[DataParser] Info: 1 parameters are absent in this file: {'скорость_спо'}
+[DataParser] Filtered to 11/12 available parameters + time
+[WebSocket] Подключение для cluster=2270, well=800. Назначено файлов: 2. Стартовый файл: 17-19.04.2012 рейс 18.txt
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+[WebSocket] Соединение закрыто
+[DataParser] Successfully parsed 97034 records
+[DataParser] Found 49 columns, keeping required parameters + time
+[DataParser] Filtered to 12/12 available parameters + time
+INFO:     127.0.0.1:64778 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64776 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64775 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64779 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64777 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+[WebSocket] Для cluster=2625, well=801 привязок нет. Используется default.TXT
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+[DataParser] Successfully parsed 19848 records
+[DataParser] Found 63 columns, keeping required parameters + time
+[DataParser] Filtered to 12/12 available parameters + time
+[WebSocket] Соединение закрыто
+INFO:     127.0.0.1:52557 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52558 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52560 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52559 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52561 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+[DataParser] Successfully parsed 54617 records
+[DataParser] Found 55 columns, keeping required parameters + time
+[DataParser] Filtered to 12/12 available parameters + time
+[WebSocket] Подключение для cluster=223, well=510. Назначено файлов: 1. Стартовый файл: 25.08-01.09.2014 рейс 55.txt
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+[DataParser] Successfully parsed 320 records
+[DataParser] Found 13 columns, keeping required parameters + time
+[DataParser] Filtered to 12/12 available parameters + time
+INFO:     127.0.0.1:56757 - "POST /api/v1/analyze/file?method=ammad&window_size=48&score_threshold=0.8 HTTP/1.1" 200 OK
+[WebSocket] Соединение закрыто
+INFO:     127.0.0.1:52549 - "POST /api/v1/analyze/file?method=ammad&window_size=48&score_threshold=0.8 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51278 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51281 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51280 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51277 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51279 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51281 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51278 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51280 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51277 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51279 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+ [WebSocket] Для cluster=2625, well=801 привязок нет. Используется default.TXT
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+[WebSocket] Соединение закрыто
+[Shutdown] Закрытие соединений...
+ [DB] Подключение к базе и создание таблиц...
+[DB] Таблицы проверены/созданы
+[DataParser] Successfully parsed 26405 records
+[DataParser] Found 63 columns, keeping required parameters + time
+[DataParser] Filtered to 12/12 available parameters + time
+[StartUp] Загружено 26405 записей
+[StartUp] Привязано TXT-файлов к буровым: 16 (буровых: 5)
+[Shutdown] Закрытие соединений...
+[DB] Подключение к базе и создание таблиц...
+[DB] Таблицы проверены/созданы
+[DataParser] Successfully parsed 26405 records
+[DataParser] Found 63 columns, keeping required parameters + time
+[DataParser] Filtered to 12/12 available parameters + time
+[StartUp] Загружено 26405 записей
+[StartUp] Привязано TXT-файлов к буровым: 16 (буровых: 5)
+INFO:     127.0.0.1:51926 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51928 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51930 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51927 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51929 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+[DataParser] Successfully parsed 18748 records
+[DataParser] Found 47 columns, keeping required parameters + time
+[DataParser] Filtered to 12/12 available parameters + time
+[WebSocket] Подключение для cluster=122, well=120. Назначено файлов: 5. Стартовый файл: 16-18.12.2014 рейс 9.txt
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+INFO:     127.0.0.1:61060 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61061 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61063 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61064 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61062 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+[WebSocket] Соединение закрыто
+INFO:     127.0.0.1:49818 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49816 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49817 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49819 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49820 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64523 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64526 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64527 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64525 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64524 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+[DataParser] Successfully parsed 18748 records
+[DataParser] Found 47 columns, keeping required parameters + time
+[DataParser] Filtered to 12/12 available parameters + time
+[WebSocket] Подключение для cluster=122, well=120. Назначено файлов: 5. Стартовый файл: 16-18.12.2014 рейс 9.txt
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+INFO:     127.0.0.1:52398 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52402 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52399 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52400 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52401 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+[WebSocket] Соединение закрыто
+[WebSocket] Для cluster=561, well=562 привязок нет. Используется default.TXT
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+INFO:     127.0.0.1:52619 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52623 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52620 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52622 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52621 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52623 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52620 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52622 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52619 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52621 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+[WebSocket] Соединение закрыто
+[WebSocket] Для cluster=2, well=207 привязок нет. Используется default.TXT
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+INFO:     127.0.0.1:52764 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52767 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52765 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52766 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52768 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52768 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52766 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52767 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52769 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52768 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK
+[WebSocket] Соединение закрыто
+[DataParser] Successfully parsed 54617 records
+[DataParser] Found 55 columns, keeping required parameters + time
+[DataParser] Filtered to 12/12 available parameters + time
+[WebSocket] Подключение для cluster=223, well=510. Назначено файлов: 1. Стартовый файл: 25.08-01.09.2014 рейс 55.txt
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+[WebSocketHandler] Received message: {'method': 'ammad', 'window_size': 48, 'score_threshold': 0.8}
+[WebSocketHandler] Method changed to: ammad
+[WebSocketHandler] Window size changed to: 48
+[WebSocketHandler] Score threshold changed to: 0.8
+[DataParser] Successfully parsed 240 records
+[DataParser] Found 13 columns, keeping required parameters + time
+[DataParser] Filtered to 12/12 available parameters + time
+INFO:     127.0.0.1:52808 - "POST /api/v1/analyze/file?method=ammad&window_size=48&score_threshold=0.8 HTTP/1.1" 200 OK
+[WebSocket] Соединение закрыто
+[DataParser] Successfully parsed 240 records
+[DataParser] Found 13 columns, keeping required parameters + time
+[DataParser] Filtered to 12/12 available parameters + time
+INFO:     127.0.0.1:53754 - "POST /api/v1/analyze/file?method=ammad&window_size=48&score_threshold=0.8 HTTP/1.1" 200 OK
+[DataParser] Successfully parsed 320 records
+[DataParser] Found 13 columns, keeping required parameters + time
+[DataParser] Filtered to 12/12 available parameters + time
+INFO:     127.0.0.1:62632 - "POST /api/v1/analyze/file?method=ammad&window_size=48&score_threshold=0.8 HTTP/1.1" 200 OK
+ [Shutdown] Закрытие соединений...
+ [DB] Подключение к базе и создание таблиц...
+[DB] Таблицы проверены/созданы
+[DataParser] Successfully parsed 26405 records
+[DataParser] Found 63 columns, keeping required parameters + time
+[DataParser] Filtered to 12/12 available parameters + time
+[StartUp] Загружено 26405 записей
+[StartUp] Привязано TXT-файлов к буровым: 16 (буровых: 5)
+[Shutdown] Закрытие соединений...
+ [DB] Подключение к базе и создание таблиц...
+[DB] Таблицы проверены/созданы
+[DataParser] Successfully parsed 26405 records
+[DataParser] Found 63 columns, keeping required parameters + time
+[DataParser] Filtered to 12/12 available parameters + time
+[StartUp] Загружено 26405 записей
+[StartUp] Привязано TXT-файлов к буровым: 16 (буровых: 5)
+[Shutdown] Закрытие соединений...
+[DB] Подключение к базе и создание таблиц...
+[DB] Таблицы проверены/созданы
+[DataParser] Successfully parsed 26405 records
+[DataParser] Found 63 columns, keeping required parameters + time
+[DataParser] Filtered to 12/12 available parameters + time
+[StartUp] Загружено 26405 записей
+[StartUp] Привязано TXT-файлов к буровым: 16 (буровых: 5)
+INFO:     127.0.0.1:50187 - "GET /api/v1/entities/companies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50190 - "GET /api/v1/entities/wells HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50189 - "GET /api/v1/entities/clusters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50188 - "GET /api/v1/entities/fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50191 - "GET /api/v1/entities/rigs HTTP/1.1" 200 OK

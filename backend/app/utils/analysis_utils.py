@@ -6,26 +6,38 @@ Handles WebSocket communication, parameter management, and data buffering.
 import json
 from collections import defaultdict, deque
 from typing import Dict, Optional, Callable
+from uuid import uuid4
 
 try:
-    from ..methods import METHODS
+    from ..methods import (
+        AMMAD_SCORE_THRESHOLD,
+        AMMAD_WINDOW_SIZE,
+        METHODS,
+        reset_ammad_detectors,
+    )
 except ImportError:
-    from methods import METHODS
+    from methods import (
+        AMMAD_SCORE_THRESHOLD,
+        AMMAD_WINDOW_SIZE,
+        METHODS,
+        reset_ammad_detectors,
+    )
 
 
 class AnalysisState:
     """Manages analysis parameters and state for WebSocket connection."""
     
-    def __init__(self, default_window_size: int = 50):
-        self.method = "fft"  # Метод по умолчанию
+    def __init__(self, default_window_size: int = AMMAD_WINDOW_SIZE):
+        self.method = "ammad"  # Метод по умолчанию
         self.window_size = default_window_size
-        self.score_threshold = 0.5
+        self.score_threshold = AMMAD_SCORE_THRESHOLD
+        self.detector_scope = f"analysis-{uuid4().hex}"
         self.data_buffers: Dict[str, deque] = defaultdict(
             lambda: deque(maxlen=default_window_size + 1)
         )
         self.method_params = {
             "window_size": default_window_size,
-            "score_threshold": 0.5
+            "score_threshold": AMMAD_SCORE_THRESHOLD
         }
     
     def update_method(self, method: str) -> bool:
@@ -43,6 +55,9 @@ class AnalysisState:
             return False
         
         if method != self.method:
+            if method == "ammad" or self.method == "ammad":
+                reset_ammad_detectors(self.detector_scope)
+
             self.method = method
             # Clear buffers on method change
             self.data_buffers.clear()
@@ -52,8 +67,8 @@ class AnalysisState:
             
             # Для AMMAD метода сбрасываем порог
             if method == "ammad":
-                self.score_threshold = 0.7  # Более высокий порог для AMMAD
-                self.method_params["score_threshold"] = 0.7
+                self.score_threshold = AMMAD_SCORE_THRESHOLD
+                self.method_params["score_threshold"] = AMMAD_SCORE_THRESHOLD
         
         return True
     
@@ -73,6 +88,8 @@ class AnalysisState:
         if window_size != self.window_size:
             self.window_size = window_size
             self.method_params["window_size"] = window_size
+            if self.method == "ammad":
+                reset_ammad_detectors(self.detector_scope)
             
             # Update buffer sizes
             for key in list(self.data_buffers.keys()):
@@ -97,12 +114,22 @@ class AnalysisState:
         if score_threshold != self.score_threshold:
             self.score_threshold = score_threshold
             self.method_params["score_threshold"] = score_threshold
+            if self.method == "ammad":
+                reset_ammad_detectors(self.detector_scope)
         
         return True
     
     def get_method_params(self) -> Dict:
         """Get current method parameters."""
-        return self.method_params.copy()
+        params = self.method_params.copy()
+        if self.method == "ammad":
+            params["detector_scope"] = self.detector_scope
+        return params
+
+    def reset_stream_state(self) -> None:
+        self.data_buffers.clear()
+        if self.method == "ammad":
+            reset_ammad_detectors(self.detector_scope)
 
 
 async def handle_websocket_message(

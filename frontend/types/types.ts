@@ -23,4 +23,6 @@ export type AnomalyInfo = {
   id: string | null;
   param: string;
   timestamp: number | string;
+  value?: number | string;
+  message?: string;
 };
