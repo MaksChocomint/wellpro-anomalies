@@ -105,19 +105,11 @@ SELECT rig_id, 'DRILLING', NOW()
 FROM rigs;
 
 -- 7. ТИПЫ ДАТЧИКОВ
-INSERT INTO sensor_types (name, unit) VALUES
-('глубина','м'),
-('скорость_бурения','м/ч'),
-('вес_на_крюке','т'),
-('момент_ротора','кНм'),
-('обороты_ротора','об/мин'),
-('давление_на_входе','бар'),
-('расход_на_входе','л/с'),
-('температура_на_выходе','°C'),
-('уровень_в_емкости','м'),
-('скорость_спо','м/с'),
-('нагрузка','т'),
-('дмк','мм');
+INSERT INTO sensor_types (name, unit) VALUES 
+('глубина','м'), ('скорость_бурения','м/ч'), ('вес_на_крюке','т'), 
+('момент_ротора','кНм'), ('обороты_ротора','об/мин'), ('давление_на_входе','бар'), 
+('расход_на_входе','л/с'), ('температура_на_выходе','°C'), ('уровень_в_емкости','м'), 
+('скорость_спо','м/с'), ('нагрузка','т'), ('дмк','мм');
 
 -- 8. ДАТЧИКИ
 INSERT INTO sensors (rig_id, sensor_type_id, serial_number, installed_at)
@@ -134,6 +126,5 @@ INSERT INTO detection_methods (name, description) VALUES
 
 -- 10. КОНФИГУРАЦИИ МЕТОДОВ
 INSERT INTO method_configs (rig_id, method_id, window_size, threshold, created_at)
-SELECT r.rig_id, m.method_id, 32, 0.75, NOW()
-FROM rigs r
-JOIN detection_methods m ON m.name = 'ammad';
+SELECT r.id, m.id, 32, 0.75, NOW() 
+FROM rigs r JOIN detection_methods m ON m.name = 'ammad';
