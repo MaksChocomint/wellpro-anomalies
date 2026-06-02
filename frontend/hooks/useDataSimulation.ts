@@ -14,6 +14,7 @@ interface UseDataSimulationProps {
   setIsSimulationActive: (active: boolean) => void;
   setIsModalOpen: (open: boolean) => void;
   MAX_DATA_POINTS: number;
+  MAX_ANOMALIES: number;
 }
 
 export function useDataSimulation({
@@ -22,6 +23,7 @@ export function useDataSimulation({
   setIsSimulationActive,
   setIsModalOpen,
   MAX_DATA_POINTS,
+  MAX_ANOMALIES,
 }: UseDataSimulationProps) {
   const fullDataRef = useRef<any[]>([]);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -59,7 +61,7 @@ export function useDataSimulation({
 
         if (newAnomalies.length > 0) {
           setIsModalOpen(true);
-          setAnomalyInfo((prev) => [...prev, ...newAnomalies].slice(-500));
+          setAnomalyInfo((prev) => [...prev, ...newAnomalies].slice(-MAX_ANOMALIES));
         }
 
         dataIndexRef.current++;
@@ -74,6 +76,7 @@ export function useDataSimulation({
     setIsSimulationActive,
     setIsModalOpen,
     MAX_DATA_POINTS,
+    MAX_ANOMALIES,
     stopSimulation,
   ]);
 

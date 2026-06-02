@@ -3,10 +3,19 @@ import { FaHourglassHalf } from "react-icons/fa";
 
 interface LoadingOverlayProps {
   isLoading: boolean;
+  progress?: {
+    percentage: number;
+    message: string;
+    processed_rows: number;
+    total_rows: number;
+    uploaded_bytes: number;
+    total_anomalies: number;
+  } | null;
 }
 
 export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
   isLoading,
+  progress = null,
 }) => {
   if (!isLoading) {
     return null;
@@ -26,6 +35,29 @@ export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
         <p className="text-slate-600">
           Пожалуйста, подождите, пока мы обработаем файл.
         </p>
+        {progress && (
+          <div className="mt-5 text-left">
+            <div className="flex items-center justify-between text-xs text-slate-500 mb-2">
+              <span>{progress.message || "Идет анализ"}</span>
+              <span>{Math.max(0, Math.min(100, progress.percentage))}%</span>
+            </div>
+            <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+              <div
+                className="bg-blue-500 h-full transition-all duration-300"
+                style={{
+                  width: `${Math.max(0, Math.min(100, progress.percentage))}%`,
+                }}
+              />
+            </div>
+            <div className="mt-2 text-[11px] text-slate-500 space-y-1">
+              <p>
+                Обработано строк: {progress.processed_rows}
+                {progress.total_rows > 0 ? ` / ${progress.total_rows}` : ""}
+              </p>
+              <p>Найдено аномалий: {progress.total_anomalies}</p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

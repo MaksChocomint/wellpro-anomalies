@@ -1,0 +1,490 @@
+{
+  "file": "d:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_9102_well_AMMAD-02-SPIKES\\02_statistical_spikes_first50.txt",
+  "rows_total": 240,
+  "anomalies_total": 16,
+  "active_params": [
+    "вес_на_крюке",
+    "глубина",
+    "давление_на_входе",
+    "дмк",
+    "момент_ротора",
+    "нагрузка",
+    "обороты_ротора",
+    "расход_на_входе",
+    "скорость_бурения",
+    "скорость_спо",
+    "температура_на_выходе",
+    "уровень_в_емкости"
+  ],
+  "injected_ranges": [
+    [
+      0,
+      5
+    ],
+    [
+      18,
+      23
+    ],
+    [
+      32,
+      37
+    ]
+  ],
+  "score_threshold": 0.8,
+  "window_size": 48,
+  "by_param": {
+    "скорость_бурения": 16
+  },
+  "by_param_first50": {
+    "скорость_бурения": 3
+  },
+  "anomalies": [
+    {
+      "row_index": 17,
+      "param": "скорость_бурения",
+      "time": null,
+      "value": 10.096153259277,
+      "in_injected_window": false,
+      "physical_limit_hit": true,
+      "hard_window_hit": true,
+      "stall_hit": false,
+      "history_len": 18,
+      "score": null
+    },
+    {
+      "row_index": 28,
+      "param": "скорость_бурения",
+      "time": null,
+      "value": 13.499999046326,
+      "in_injected_window": false,
+      "physical_limit_hit": true,
+      "hard_window_hit": true,
+      "stall_hit": false,
+      "history_len": 29,
+      "score": {
+        "z_result": false,
+        "lof_result": false,
+        "fft_result": false,
+        "orig_votes": 0,
+        "z_raw": 0.0,
+        "s_z": 0.04742587317756678,
+        "s_lof": 0.0,
+        "s_fft": 0.0,
+        "weights": [
+          0.2,
+          0.4,
+          0.4
+        ],
+        "final_score_before_bonus": 0.009485174635513356,
+        "final_score": 0.12948517463551334,
+        "score_threshold": 0.8
+      }
+    },
+    {
+      "row_index": 39,
+      "param": "скорость_бурения",
+      "time": null,
+      "value": 11.25,
+      "in_injected_window": false,
+      "physical_limit_hit": true,
+      "hard_window_hit": true,
+      "stall_hit": false,
+      "history_len": 40,
+      "score": {
+        "z_result": false,
+        "lof_result": false,
+        "fft_result": false,
+        "orig_votes": 0,
+        "z_raw": 0.8035680004489963,
+        "s_z": 0.10007135461856832,
+        "s_lof": 0.0,
+        "s_fft": 0.0,
+        "weights": [
+          0.2,
+          0.4,
+          0.4
+        ],
+        "final_score_before_bonus": 0.020014270923713665,
+        "final_score": 0.14001427092371366,
+        "score_threshold": 0.8
+      }
+    },
+    {
+      "row_index": 50,
+      "param": "скорость_бурения",
+      "time": null,
+      "value": 10.788460731506,
+      "in_injected_window": false,
+      "physical_limit_hit": true,
+      "hard_window_hit": true,
+      "stall_hit": false,
+      "history_len": 51,
+      "score": {
+        "z_result": false,
+        "lof_result": false,
+        "fft_result": false,
+        "orig_votes": 0,
+        "z_raw": 0.2630570926262937,
+        "s_z": 0.060828315311141176,
+        "s_lof": 0.0,
+        "s_fft": 0.20602703465773142,
+        "weights": [
+          0.2,
+          0.4,
+          0.4
+        ],
+        "final_score_before_bonus": 0.09457647692532081,
+        "final_score": 0.2145764769253208,
+        "score_threshold": 0.8
+      }
+    },
+    {
+      "row_index": 61,
+      "param": "скорость_бурения",
+      "time": null,
+      "value": 10.153845787048,
+      "in_injected_window": false,
+      "physical_limit_hit": true,
+      "hard_window_hit": true,
+      "stall_hit": false,
+      "history_len": 62,
+      "score": {
+        "z_result": false,
+        "lof_result": false,
+        "fft_result": false,
+        "orig_votes": 0,
+        "z_raw": 0.19613268596012018,
+        "s_z": 0.057115550957896284,
+        "s_lof": 0.0,
+        "s_fft": 0.2620814818788667,
+        "weights": [
+          0.2,
+          0.4,
+          0.4
+        ],
+        "final_score_before_bonus": 0.11625570294312594,
+        "final_score": 0.23625570294312592,
+        "score_threshold": 0.8
+      }
+    },
+    {
+      "row_index": 76,
+      "param": "скорость_бурения",
+      "time": null,
+      "value": 10.5,
+      "in_injected_window": false,
+      "physical_limit_hit": true,
+      "hard_window_hit": true,
+      "stall_hit": false,
+      "history_len": 77,
+      "score": {
+        "z_result": false,
+        "lof_result": false,
+        "fft_result": false,
+        "orig_votes": 0,
+        "z_raw": 0.08194910613216261,
+        "s_z": 0.051268422507637024,
+        "s_lof": 0.0,
+        "s_fft": 0.26091079268795897,
+        "weights": [
+          0.2,
+          0.4,
+          0.4
+        ],
+        "final_score_before_bonus": 0.114618001576711,
+        "final_score": 0.23461800157671098,
+        "score_threshold": 0.8
+      }
+    },
+    {
+      "row_index": 87,
+      "param": "скорость_бурения",
+      "time": null,
+      "value": 12.23076915741,
+      "in_injected_window": false,
+      "physical_limit_hit": true,
+      "hard_window_hit": true,
+      "stall_hit": false,
+      "history_len": 88,
+      "score": {
+        "z_result": false,
+        "lof_result": false,
+        "fft_result": false,
+        "orig_votes": 0,
+        "z_raw": 0.9398926257564545,
+        "s_z": 0.11303506448297829,
+        "s_lof": 0.0,
+        "s_fft": 0.24215716598209533,
+        "weights": [
+          0.2,
+          0.4,
+          0.4
+        ],
+        "final_score_before_bonus": 0.1194698792894338,
+        "final_score": 0.2394698792894338,
+        "score_threshold": 0.8
+      }
+    },
+    {
+      "row_index": 98,
+      "param": "скорость_бурения",
+      "time": null,
+      "value": 13.211538314819,
+      "in_injected_window": false,
+      "physical_limit_hit": true,
+      "hard_window_hit": true,
+      "stall_hit": false,
+      "history_len": 99,
+      "score": {
+        "z_result": false,
+        "lof_result": false,
+        "fft_result": false,
+        "orig_votes": 0,
+        "z_raw": 0.8749665181227425,
+        "s_z": 0.1066874029065884,
+        "s_lof": 0.0,
+        "s_fft": 0.19317913784599255,
+        "weights": [
+          0.2,
+          0.4,
+          0.4
+        ],
+        "final_score_before_bonus": 0.0986091357197147,
+        "final_score": 0.2186091357197147,
+        "score_threshold": 0.8
+      }
+    },
+    {
+      "row_index": 109,
+      "param": "скорость_бурения",
+      "time": null,
+      "value": 10.442307472229,
+      "in_injected_window": false,
+      "physical_limit_hit": true,
+      "hard_window_hit": true,
+      "stall_hit": false,
+      "history_len": 110,
+      "score": {
+        "z_result": false,
+        "lof_result": false,
+        "fft_result": false,
+        "orig_votes": 0,
+        "z_raw": 1.6398875392035805,
+        "s_z": 0.2042220250660096,
+        "s_lof": 0.0,
+        "s_fft": 0.35313477569114965,
+        "weights": [
+          0.2,
+          0.4,
+          0.4
+        ],
+        "final_score_before_bonus": 0.18209831528966178,
+        "final_score": 0.3020983152896618,
+        "score_threshold": 0.8
+      }
+    },
+    {
+      "row_index": 120,
+      "param": "скорость_бурения",
+      "time": null,
+      "value": 12.403845787048,
+      "in_injected_window": false,
+      "physical_limit_hit": true,
+      "hard_window_hit": true,
+      "stall_hit": false,
+      "history_len": 121,
+      "score": {
+        "z_result": false,
+        "lof_result": false,
+        "fft_result": false,
+        "orig_votes": 0,
+        "z_raw": 0.5307700384514062,
+        "s_z": 0.07804362356497706,
+        "s_lof": 0.0,
+        "s_fft": 0.4665230244604945,
+        "weights": [
+          0.2,
+          0.4,
+          0.4
+        ],
+        "final_score_before_bonus": 0.20221793449719322,
+        "final_score": 0.3222179344971932,
+        "score_threshold": 0.8
+      }
+    },
+    {
+      "row_index": 136,
+      "param": "скорость_бурения",
+      "time": null,
+      "value": 11.076922416687,
+      "in_injected_window": false,
+      "physical_limit_hit": true,
+      "hard_window_hit": true,
+      "stall_hit": false,
+      "history_len": 137,
+      "score": {
+        "z_result": false,
+        "lof_result": false,
+        "fft_result": false,
+        "orig_votes": 0,
+        "z_raw": 0.35302861419872766,
+        "s_z": 0.06617592203693166,
+        "s_lof": 0.0,
+        "s_fft": 0.2303080832138084,
+        "weights": [
+          0.2,
+          0.4,
+          0.4
+        ],
+        "final_score_before_bonus": 0.1053584176929097,
+        "final_score": 0.2253584176929097,
+        "score_threshold": 0.8
+      }
+    },
+    {
+      "row_index": 155,
+      "param": "скорость_бурения",
+      "time": null,
+      "value": 10.615384101868,
+      "in_injected_window": false,
+      "physical_limit_hit": true,
+      "hard_window_hit": true,
+      "stall_hit": false,
+      "history_len": 156,
+      "score": {
+        "z_result": false,
+        "lof_result": false,
+        "fft_result": false,
+        "orig_votes": 0,
+        "z_raw": 0.9835703738871856,
+        "s_z": 0.11748868013377368,
+        "s_lof": 0.0,
+        "s_fft": 0.0913118504295041,
+        "weights": [
+          0.2,
+          0.4,
+          0.4
+        ],
+        "final_score_before_bonus": 0.060022476198556385,
+        "final_score": 0.18002247619855638,
+        "score_threshold": 0.8
+      }
+    },
+    {
+      "row_index": 166,
+      "param": "скорость_бурения",
+      "time": null,
+      "value": 13.961538314819,
+      "in_injected_window": false,
+      "physical_limit_hit": true,
+      "hard_window_hit": true,
+      "stall_hit": false,
+      "history_len": 167,
+      "score": {
+        "z_result": false,
+        "lof_result": false,
+        "fft_result": false,
+        "orig_votes": 0,
+        "z_raw": 1.238449716802913,
+        "s_z": 0.14659628408116407,
+        "s_lof": 0.0,
+        "s_fft": 0.11612314037175483,
+        "weights": [
+          0.2,
+          0.4,
+          0.4
+        ],
+        "final_score_before_bonus": 0.07576851296493475,
+        "final_score": 0.19576851296493475,
+        "score_threshold": 0.8
+      }
+    },
+    {
+      "row_index": 182,
+      "param": "скорость_бурения",
+      "time": null,
+      "value": 12.115384101868,
+      "in_injected_window": false,
+      "physical_limit_hit": true,
+      "hard_window_hit": true,
+      "stall_hit": false,
+      "history_len": 183,
+      "score": {
+        "z_result": false,
+        "lof_result": false,
+        "fft_result": false,
+        "orig_votes": 0,
+        "z_raw": 0.8460613418306648,
+        "s_z": 0.10396374356183152,
+        "s_lof": 0.0,
+        "s_fft": 0.15956439425047955,
+        "weights": [
+          0.2,
+          0.4,
+          0.4
+        ],
+        "final_score_before_bonus": 0.08461850641255812,
+        "final_score": 0.20461850641255813,
+        "score_threshold": 0.8
+      }
+    },
+    {
+      "row_index": 198,
+      "param": "скорость_бурения",
+      "time": null,
+      "value": 10.096153259277,
+      "in_injected_window": false,
+      "physical_limit_hit": true,
+      "hard_window_hit": true,
+      "stall_hit": false,
+      "history_len": 199,
+      "score": {
+        "z_result": false,
+        "lof_result": false,
+        "fft_result": false,
+        "orig_votes": 0,
+        "z_raw": 0.23992336961885521,
+        "s_z": 0.059520076259391805,
+        "s_lof": 0.0,
+        "s_fft": 0.3171594106942483,
+        "weights": [
+          0.2,
+          0.4,
+          0.4
+        ],
+        "final_score_before_bonus": 0.1387677795295777,
+        "final_score": 0.2587677795295777,
+        "score_threshold": 0.8
+      }
+    },
+    {
+      "row_index": 222,
+      "param": "скорость_бурения",
+      "time": null,
+      "value": 10.038460731506,
+      "in_injected_window": false,
+      "physical_limit_hit": true,
+      "hard_window_hit": true,
+      "stall_hit": false,
+      "history_len": 223,
+      "score": {
+        "z_result": false,
+        "lof_result": false,
+        "fft_result": false,
+        "orig_votes": 0,
+        "z_raw": 0.7770529236141074,
+        "s_z": 0.09770867684446208,
+        "s_lof": 0.0,
+        "s_fft": 0.2361453474369975,
+        "weights": [
+          0.2,
+          0.4,
+          0.4
+        ],
+        "final_score_before_bonus": 0.11399987434369142,
+        "final_score": 0.2339998743436914,
+        "score_threshold": 0.8
+      }
+    }
+  ]
+}

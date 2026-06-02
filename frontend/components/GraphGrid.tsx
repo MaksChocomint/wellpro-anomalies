@@ -46,14 +46,16 @@ interface GraphGridProps {
   anomalyInfo: AnomalyInfo[];
   reportMethod: AnomalyDetectionMethod;
   reportThresholds: Thresholds;
+  focusRequest?: AnomalyInfo | null;
+  onFocusHandled?: () => void;
 }
 
 const RUSSIAN_TIME_KEY = "\u0432\u0440\u0435\u043c\u044f";
 const DEFAULT_VISIBLE_POINTS = 75;
 const MIN_VISIBLE_POINTS = 20;
-const MAX_VISIBLE_POINTS_LIMIT = 500;
+const MAX_VISIBLE_POINTS_LIMIT = 2000;
 const VISIBLE_POINTS_STEP = 5;
-const VISIBLE_POINT_PRESETS = [50, 75, 100, 150, 250, 350];
+const VISIBLE_POINT_PRESETS = [50, 75, 100, 250, 500, 1000];
 const REPORT_TIME_ZONE = "Europe/Moscow";
 
 const toNumericTimestamp = (value: unknown): number => {
@@ -162,6 +164,8 @@ export function GraphGrid({
   anomalyInfo,
   reportMethod,
   reportThresholds,
+  focusRequest = null,
+  onFocusHandled,
 }: GraphGridProps) {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isFullscreen, setIsFullscreen] = useState<string | null>(null);
@@ -172,10 +176,12 @@ export function GraphGrid({
     DEFAULT_VISIBLE_POINTS,
   );
   const [plotRevision, setPlotRevision] = useState<number>(0);
+  const [focusedParam, setFocusedParam] = useState<string | null>(null);
 
   const lastLiveDataLength = useRef<number>(liveData.length);
   const isProgrammaticRelayout = useRef<boolean>(false);
   const settingsContainerRef = useRef<HTMLDivElement | null>(null);
+  const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   const processedData = useMemo<any[]>(() => {
     return liveData.map((point) => {
@@ -198,6 +204,75 @@ export function GraphGrid({
   }, [liveData]);
 
   const maxIndex = Math.max(0, processedData.length - visiblePoints);
+
+  const findPointIndexByAnomaly = useCallback(
+    (anomaly: AnomalyInfo): number => {
+      const targetTs = toNumericTimestamp(anomaly.timestamp);
+      if (!Number.isFinite(targetTs) || processedData.length === 0) {
+        return -1;
+      }
+
+      let bestIndex = -1;
+      let bestDistance = Number.POSITIVE_INFINITY;
+      for (let index = 0; index < processedData.length; index += 1) {
+        const row = processedData[index] as Record<string, unknown>;
+        if (!(anomaly.param in row)) continue;
+
+        const rowTs = getPointTimestamp(row);
+        const distance = Math.abs(rowTs - targetTs);
+        if (distance < bestDistance) {
+          bestDistance = distance;
+          bestIndex = index;
+          if (distance <= 1e-10) break;
+        }
+      }
+
+      return bestIndex;
+    },
+    [processedData],
+  );
+
+  useEffect(() => {
+    if (!focusRequest) return;
+
+    const pointIndex = findPointIndexByAnomaly(focusRequest);
+    if (pointIndex < 0) {
+      onFocusHandled?.();
+      return;
+    }
+
+    setTrackNewData(false);
+    setFocusedParam(focusRequest.param);
+
+    const halfWindow = Math.floor(visiblePoints / 2);
+    const centeredIndex = Math.min(
+      maxIndex,
+      Math.max(0, pointIndex - halfWindow),
+    );
+    setCurrentIndex(centeredIndex);
+    setShowJumpToLatest(centeredIndex < maxIndex);
+
+    requestAnimationFrame(() => {
+      cardRefs.current[focusRequest.param]?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    });
+
+    onFocusHandled?.();
+  }, [
+    findPointIndexByAnomaly,
+    focusRequest,
+    maxIndex,
+    onFocusHandled,
+    visiblePoints,
+  ]);
+
+  useEffect(() => {
+    if (!focusedParam) return;
+    const timer = setTimeout(() => setFocusedParam(null), 4000);
+    return () => clearTimeout(timer);
+  }, [focusedParam]);
 
   useEffect(() => {
     if (liveData.length > lastLiveDataLength.current) {
@@ -988,7 +1063,14 @@ export function GraphGrid({
           return (
             <div
               key={paramKey}
-              className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-all duration-300 flex flex-col group"
+              ref={(node) => {
+                cardRefs.current[paramKey] = node;
+              }}
+              className={`bg-white rounded-xl shadow-sm border overflow-hidden hover:shadow-md transition-all duration-300 flex flex-col group ${
+                focusedParam === paramKey
+                  ? "border-amber-400 ring-2 ring-amber-200"
+                  : "border-slate-200"
+              }`}
             >
               <div className="px-4 py-3 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
                 <span className="text-sm font-bold text-slate-700 truncate mr-2">

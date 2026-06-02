@@ -66,7 +66,7 @@ http://localhost:8000
 Создайте PostgreSQL-базу `anomaly_db` и пользователя `user` с паролем `password`, либо поменяйте строку подключения в `backend/.env`:
 
 ```text
-DATABASE_URL=postgresql+asyncpg://user:password@127.0.0.1:5433/anomaly_db
+DATABASE_URL=postgresql+asyncpg://user:password@127.0.0.1:5434/anomaly_db
 ```
 
 ## Данные

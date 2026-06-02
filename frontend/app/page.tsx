@@ -13,7 +13,12 @@ import { DynamicSensorData } from "@/types/types";
 import { useWebSocket } from "@/hooks/useWebSocket";
 import { useDataSimulation } from "@/hooks/useDataSimulation";
 import { useDebounce } from "@/hooks/useDebounce";
-import { analyzeFile, extractFlightStartTimeFromFile } from "@/utils/fileUtils";
+import {
+  analyzeFile,
+  extractFlightStartTimeFromFile,
+  getFileAnalysisProgress,
+  type FileAnalysisProgress,
+} from "@/utils/fileUtils";
 import { processIncomingDataPoint } from "@/utils/dataProcessor";
 import { buildParametersMessage } from "@/utils/thresholdUtils";
 import { DEFAULT_THRESHOLDS } from "@/constants/analysisDefaults";
@@ -22,7 +27,9 @@ import { ArrowLeft } from "lucide-react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { SelectedRig } from "@/types/selection";
 
-const MAX_DATA_POINTS = 1000;
+const MAX_DATA_POINTS = 250000;
+const MAX_ANOMALIES = 30000;
+const FILE_PROGRESS_POLL_INTERVAL_MS = 2000;
 const DEFAULT_ANALYSIS_METHOD: AnomalyDetectionMethod = "AMMAD";
 
 export default function Home() {
@@ -52,6 +59,10 @@ export default function Home() {
   const [localSummaryFileName, setLocalSummaryFileName] = useState<
     string | null
   >(null);
+  const [fileAnalysisProgress, setFileAnalysisProgress] =
+    useState<FileAnalysisProgress | null>(null);
+  const [focusAnomalyRequest, setFocusAnomalyRequest] =
+    useState<AnomalyInfo | null>(null);
   const [localSummaryMethod, setLocalSummaryMethod] =
     useState<AnomalyDetectionMethod>(DEFAULT_ANALYSIS_METHOD);
   const [localSummaryThresholds, setLocalSummaryThresholds] =
@@ -62,10 +73,15 @@ export default function Home() {
     ...DEFAULT_THRESHOLDS,
   });
 
-  const analysisMethodRef =
-    useRef<AnomalyDetectionMethod>(DEFAULT_ANALYSIS_METHOD);
+  const analysisMethodRef = useRef<AnomalyDetectionMethod>(
+    DEFAULT_ANALYSIS_METHOD,
+  );
   const thresholdsRef = useRef(thresholds);
   const isFirstDebounceRender = useRef(true);
+  const progressPollIntervalRef = useRef<ReturnType<typeof setInterval> | null>(
+    null,
+  );
+  const activeProgressJobIdRef = useRef<string | null>(null);
   const showAnomalyStatus = anomalyInfo.length > 0;
   const debouncedAnalysisMethod = useDebounce(analysisMethod, 3000);
   const debouncedThresholds = useDebounce(thresholds, 3000);
@@ -75,12 +91,28 @@ export default function Home() {
   const isRealTimeActive =
     hasSelectedRig && isBackendConnected && !isSimulationActive;
 
+  const getRowTimestamp = useCallback((row: DynamicSensorData): number => {
+    const rawTimestamp =
+      row["время"] ?? row.time ?? row.Time ?? row.timestamp;
+    const timestamp = Array.isArray(rawTimestamp)
+      ? rawTimestamp[0]
+      : rawTimestamp;
+    const parsed = Number(String(timestamp ?? "").replace(",", "."));
+
+    return Number.isFinite(parsed) ? parsed : Number.POSITIVE_INFINITY;
+  }, []);
+
+  const sortRowsByTime = useCallback((rows: DynamicSensorData[]) => {
+    return [...rows].sort((a, b) => getRowTimestamp(a) - getRowTimestamp(b));
+  }, [getRowTimestamp]);
+
   const buildLocalSimulationArtifacts = useCallback(
     (rows: DynamicSensorData[]) => {
+      const orderedRows = sortRowsByTime(rows);
       const processedRows: DynamicSensorData[] = [];
       const anomalies: AnomalyInfo[] = [];
 
-      rows.forEach((row) => {
+      orderedRows.forEach((row) => {
         const { newDataPoint, newAnomalies } = processIncomingDataPoint(row);
         processedRows.push(newDataPoint);
         anomalies.push(...newAnomalies);
@@ -88,8 +120,38 @@ export default function Home() {
 
       return { processedRows, anomalies };
     },
-    [],
+    [sortRowsByTime],
   );
+
+  const stopProgressPolling = useCallback(() => {
+    if (progressPollIntervalRef.current) {
+      clearInterval(progressPollIntervalRef.current);
+      progressPollIntervalRef.current = null;
+    }
+  }, []);
+
+  const pollFileAnalysisProgress = useCallback(async (jobId: string) => {
+    try {
+      const progress = await getFileAnalysisProgress(jobId);
+      setFileAnalysisProgress(progress);
+
+      if (progress.status === "completed" || progress.status === "error") {
+        stopProgressPolling();
+      }
+    } catch {
+      // Progress endpoint can briefly return 404 before backend registers job.
+    }
+  }, [stopProgressPolling]);
+
+  const startProgressPolling = useCallback((jobId: string) => {
+    activeProgressJobIdRef.current = jobId;
+    stopProgressPolling();
+
+    void pollFileAnalysisProgress(jobId);
+    progressPollIntervalRef.current = setInterval(() => {
+      void pollFileAnalysisProgress(jobId);
+    }, FILE_PROGRESS_POLL_INTERVAL_MS);
+  }, [pollFileAnalysisProgress, stopProgressPolling]);
 
   useEffect(() => {
     analysisMethodRef.current = analysisMethod;
@@ -146,6 +208,7 @@ export default function Home() {
     setFlightStart,
     sendParametersToServer,
     MAX_DATA_POINTS,
+    MAX_ANOMALIES,
   });
 
   const useDataSimulationHook = useDataSimulation({
@@ -154,9 +217,12 @@ export default function Home() {
     setIsModalOpen,
     setIsSimulationActive,
     MAX_DATA_POINTS,
+    MAX_ANOMALIES,
   });
 
   const resetLiveState = useCallback(() => {
+    stopProgressPolling();
+    activeProgressJobIdRef.current = null;
     setLiveData([]);
     setAnomalyInfo([]);
     setAvailableParameters([]);
@@ -166,11 +232,17 @@ export default function Home() {
     setFileErrorMessage(null);
     setLocalSummaryEntries([]);
     setLocalSummaryFileName(null);
+    setFileAnalysisProgress(null);
+    setFocusAnomalyRequest(null);
     setIsLocalSummaryOpen(false);
     useDataSimulationHook.fullDataRef.current = [];
     useDataSimulationHook.dataIndexRef.current = 0;
     processedLocalDataRef.current = [];
-  }, [useDataSimulationHook.dataIndexRef, useDataSimulationHook.fullDataRef]);
+  }, [
+    stopProgressPolling,
+    useDataSimulationHook.dataIndexRef,
+    useDataSimulationHook.fullDataRef,
+  ]);
 
   const closeSocket = useCallback(() => {
     if (useWebSocketHook.wsRef.current) {
@@ -215,6 +287,13 @@ export default function Home() {
     return `Ошибка анализа файла: ${rawMessage}`;
   };
 
+  const formatBytes = (value: number): string => {
+    if (!Number.isFinite(value) || value <= 0) return "0 Б";
+    if (value < 1024) return `${Math.round(value)} Б`;
+    if (value < 1024 * 1024) return `${(value / 1024).toFixed(1)} КБ`;
+    return `${(value / (1024 * 1024)).toFixed(2)} МБ`;
+  };
+
   useEffect(() => {
     if (isFirstDebounceRender.current) {
       isFirstDebounceRender.current = false;
@@ -255,8 +334,9 @@ export default function Home() {
     return () => {
       closeSocket();
       useDataSimulationHook.stopSimulation();
+      stopProgressPolling();
     };
-  }, [closeSocket, useDataSimulationHook.stopSimulation]);
+  }, [closeSocket, stopProgressPolling, useDataSimulationHook.stopSimulation]);
 
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -268,12 +348,38 @@ export default function Home() {
     closeSocket();
     useDataSimulationHook.stopSimulation();
     useDataSimulationHook.dataIndexRef.current = 0;
+    stopProgressPolling();
+    activeProgressJobIdRef.current = null;
     setFileErrorMessage(null);
+    setFileAnalysisProgress(null);
+    setFocusAnomalyRequest(null);
     setIsLocalSummaryOpen(false);
 
     setIsLoading(true);
 
     try {
+      const createAnalysisJobId = () =>
+        typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+          ? crypto.randomUUID()
+          : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+
+      const analysisJobId = createAnalysisJobId();
+      setFileAnalysisProgress({
+        job_id: analysisJobId,
+        status: "uploading",
+        message: "Подготовка файла к отправке",
+        uploaded_bytes: file.size,
+        total_rows: 0,
+        processed_rows: 0,
+        percentage: 0,
+        total_anomalies: 0,
+        error: null,
+        started_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        finished_at: null,
+      });
+      startProgressPolling(analysisJobId);
+
       const method = analysisMethodRef.current;
       const analysisParams = {
         method,
@@ -295,9 +401,20 @@ export default function Home() {
                 : thresholdsRef.current.AMMAD,
       };
 
-      const parsedData = await analyzeFile(file, analysisParams);
+      const analysisResponse = await analyzeFile(
+        file,
+        analysisParams,
+        analysisJobId,
+      );
+      const parsedData = sortRowsByTime(analysisResponse.data);
+      if (analysisResponse.jobId && analysisResponse.jobId !== analysisJobId) {
+        startProgressPolling(analysisResponse.jobId);
+      }
       const { processedRows, anomalies } =
         buildLocalSimulationArtifacts(parsedData);
+      if (activeProgressJobIdRef.current) {
+        await pollFileAnalysisProgress(activeProgressJobIdRef.current);
+      }
       setFileErrorMessage(null);
       useDataSimulationHook.fullDataRef.current = parsedData;
       processedLocalDataRef.current = processedRows;
@@ -337,8 +454,23 @@ export default function Home() {
       processedLocalDataRef.current = [];
       setLocalSummaryEntries([]);
       setLocalSummaryFileName(null);
-      setFileErrorMessage(formatAnalysisErrorMessage(error));
+      const message = formatAnalysisErrorMessage(error);
+      setFileErrorMessage(message);
+      setFileAnalysisProgress((prev) =>
+        prev
+          ? {
+              ...prev,
+              status: "error",
+              message: "Ошибка анализа",
+              error: message,
+              finished_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            }
+          : null,
+      );
     } finally {
+      stopProgressPolling();
+      activeProgressJobIdRef.current = null;
       setIsLoading(false);
       inputElement.value = "";
     }
@@ -359,6 +491,8 @@ export default function Home() {
     processedLocalDataRef.current = [];
     setLocalSummaryEntries([]);
     setLocalSummaryFileName(null);
+    setFileAnalysisProgress(null);
+    setFocusAnomalyRequest(null);
     setLiveData([]);
     setAnomalyInfo([]);
     useWebSocketHook.connectWebSocket({
@@ -394,8 +528,8 @@ export default function Home() {
       setLocalSummaryEntries(summaryAnomalies);
     }
 
-    setLiveData(summaryRows.slice(-MAX_DATA_POINTS));
-    setAnomalyInfo(summaryAnomalies.slice(-500));
+    setLiveData(summaryRows);
+    setAnomalyInfo(summaryAnomalies);
     setConsecutiveAnomaliesCount(summaryAnomalies.length);
     useDataSimulationHook.dataIndexRef.current = totalRowsInFile;
     setIsLocalSummaryOpen(true);
@@ -441,6 +575,17 @@ export default function Home() {
     setDoNotShowAgain(false);
   };
 
+  const handleNavigateToAnomaly = useCallback((anomaly: AnomalyInfo) => {
+    setIsModalOpen(false);
+    setIsLocalSummaryOpen(false);
+    setGraphVisibility((prev) => ({ ...prev, [anomaly.param]: true }));
+    setFocusAnomalyRequest(anomaly);
+  }, []);
+
+  const handleFocusHandled = useCallback(() => {
+    setFocusAnomalyRequest(null);
+  }, []);
+
   const totalRows = useDataSimulationHook.fullDataRef.current.length;
   const currentRow = useDataSimulationHook.dataIndexRef.current;
   const progressPercent =
@@ -471,6 +616,36 @@ export default function Home() {
             </p>
           </div>
         </div>
+
+        {fileAnalysisProgress && isLoading && (
+          <div className="mb-6 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-2 text-sm font-semibold text-slate-600">
+              <span>Обработка файла: {fileAnalysisProgress.percentage}%</span>
+              <span className="text-xs text-slate-500">
+                {fileAnalysisProgress.message ||
+                  (fileAnalysisProgress.status === "parsing"
+                    ? "Парсинг данных"
+                    : "Идет анализ")}
+              </span>
+            </div>
+            <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+              <div
+                className="bg-blue-500 h-full transition-all duration-300"
+                style={{ width: `${Math.max(0, Math.min(100, fileAnalysisProgress.percentage))}%` }}
+              />
+            </div>
+            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500">
+              <span>Загружено: {formatBytes(fileAnalysisProgress.uploaded_bytes)}</span>
+              <span>
+                Обработано строк: {fileAnalysisProgress.processed_rows}
+                {fileAnalysisProgress.total_rows > 0
+                  ? ` / ${fileAnalysisProgress.total_rows}`
+                  : ""}
+              </span>
+              <span>Найдено аномалий: {fileAnalysisProgress.total_anomalies}</span>
+            </div>
+          </div>
+        )}
 
         {totalRows > 0 && (
           <div className="mb-6 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
@@ -574,6 +749,8 @@ export default function Home() {
           anomalyInfo={anomalyInfo}
           reportMethod={totalRows > 0 ? localSummaryMethod : analysisMethod}
           reportThresholds={totalRows > 0 ? localSummaryThresholds : thresholds}
+          focusRequest={focusAnomalyRequest}
+          onFocusHandled={handleFocusHandled}
         />
 
         <AnomalyModal
@@ -594,6 +771,7 @@ export default function Home() {
           }
           windowSize={getWindowSize(analysisMethod)}
           onDoNotShowAgain={() => setDoNotShowAgain(true)}
+          onNavigateToAnomaly={handleNavigateToAnomaly}
         />
         <LocalSummaryModal
           isOpen={isLocalSummaryOpen}
@@ -602,9 +780,11 @@ export default function Home() {
           method={localSummaryMethod}
           thresholds={localSummaryThresholds}
           fileName={localSummaryFileName}
+          allData={useDataSimulationHook.fullDataRef.current}
+          onNavigateToAnomaly={handleNavigateToAnomaly}
         />
 
-        <LoadingOverlay isLoading={isLoading} />
+        <LoadingOverlay isLoading={isLoading} progress={fileAnalysisProgress} />
       </div>
     </div>
   );

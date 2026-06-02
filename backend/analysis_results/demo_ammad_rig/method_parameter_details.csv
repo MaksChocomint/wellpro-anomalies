@@ -1,0 +1,107 @@
+﻿file,scenario,cluster_number,well_name,rig_name,method,parameter,total,first_50,first_index
+01_physical_limits_first50.txt,Физические пределы,9101,AMMAD-01-PHYS,WR-AMMAD-01-PHYS,z_score,скорость_бурения,9,3,47
+01_physical_limits_first50.txt,Физические пределы,9101,AMMAD-01-PHYS,WR-AMMAD-01-PHYS,z_score,вес_на_крюке,11,3,47
+01_physical_limits_first50.txt,Физические пределы,9101,AMMAD-01-PHYS,WR-AMMAD-01-PHYS,z_score,момент_ротора,2,2,47
+01_physical_limits_first50.txt,Физические пределы,9101,AMMAD-01-PHYS,WR-AMMAD-01-PHYS,z_score,обороты_ротора,6,2,47
+01_physical_limits_first50.txt,Физические пределы,9101,AMMAD-01-PHYS,WR-AMMAD-01-PHYS,z_score,давление_на_входе,2,2,47
+01_physical_limits_first50.txt,Физические пределы,9101,AMMAD-01-PHYS,WR-AMMAD-01-PHYS,z_score,расход_на_входе,4,2,47
+01_physical_limits_first50.txt,Физические пределы,9101,AMMAD-01-PHYS,WR-AMMAD-01-PHYS,z_score,температура_на_выходе,2,2,47
+01_physical_limits_first50.txt,Физические пределы,9101,AMMAD-01-PHYS,WR-AMMAD-01-PHYS,z_score,уровень_в_емкости,2,2,47
+01_physical_limits_first50.txt,Физические пределы,9101,AMMAD-01-PHYS,WR-AMMAD-01-PHYS,z_score,скорость_спо,2,2,47
+01_physical_limits_first50.txt,Физические пределы,9101,AMMAD-01-PHYS,WR-AMMAD-01-PHYS,z_score,нагрузка,8,2,47
+01_physical_limits_first50.txt,Физические пределы,9101,AMMAD-01-PHYS,WR-AMMAD-01-PHYS,z_score,дмк,6,3,47
+01_physical_limits_first50.txt,Физические пределы,9101,AMMAD-01-PHYS,WR-AMMAD-01-PHYS,lof,скорость_бурения,2,0,68
+01_physical_limits_first50.txt,Физические пределы,9101,AMMAD-01-PHYS,WR-AMMAD-01-PHYS,lof,дмк,3,0,130
+01_physical_limits_first50.txt,Физические пределы,9101,AMMAD-01-PHYS,WR-AMMAD-01-PHYS,fft,давление_на_входе,18,0,125
+01_physical_limits_first50.txt,Физические пределы,9101,AMMAD-01-PHYS,WR-AMMAD-01-PHYS,ammad,скорость_бурения,18,5,0
+01_physical_limits_first50.txt,Физические пределы,9101,AMMAD-01-PHYS,WR-AMMAD-01-PHYS,ammad,вес_на_крюке,5,5,0
+01_physical_limits_first50.txt,Физические пределы,9101,AMMAD-01-PHYS,WR-AMMAD-01-PHYS,ammad,момент_ротора,21,5,0
+01_physical_limits_first50.txt,Физические пределы,9101,AMMAD-01-PHYS,WR-AMMAD-01-PHYS,ammad,обороты_ротора,5,5,0
+01_physical_limits_first50.txt,Физические пределы,9101,AMMAD-01-PHYS,WR-AMMAD-01-PHYS,ammad,давление_на_входе,5,5,0
+01_physical_limits_first50.txt,Физические пределы,9101,AMMAD-01-PHYS,WR-AMMAD-01-PHYS,ammad,расход_на_входе,5,5,0
+01_physical_limits_first50.txt,Физические пределы,9101,AMMAD-01-PHYS,WR-AMMAD-01-PHYS,ammad,температура_на_выходе,5,5,0
+01_physical_limits_first50.txt,Физические пределы,9101,AMMAD-01-PHYS,WR-AMMAD-01-PHYS,ammad,уровень_в_емкости,5,5,0
+01_physical_limits_first50.txt,Физические пределы,9101,AMMAD-01-PHYS,WR-AMMAD-01-PHYS,ammad,скорость_спо,5,5,0
+01_physical_limits_first50.txt,Физические пределы,9101,AMMAD-01-PHYS,WR-AMMAD-01-PHYS,ammad,нагрузка,5,5,0
+01_physical_limits_first50.txt,Физические пределы,9101,AMMAD-01-PHYS,WR-AMMAD-01-PHYS,ammad,дмк,9,5,0
+02_statistical_spikes_first50.txt,Статистические и рабочие выбросы,9102,AMMAD-02-SPIKES,WR-AMMAD-02-SPIKES,z_score,скорость_бурения,6,0,124
+02_statistical_spikes_first50.txt,Статистические и рабочие выбросы,9102,AMMAD-02-SPIKES,WR-AMMAD-02-SPIKES,z_score,вес_на_крюке,9,0,69
+02_statistical_spikes_first50.txt,Статистические и рабочие выбросы,9102,AMMAD-02-SPIKES,WR-AMMAD-02-SPIKES,z_score,обороты_ротора,5,0,72
+02_statistical_spikes_first50.txt,Статистические и рабочие выбросы,9102,AMMAD-02-SPIKES,WR-AMMAD-02-SPIKES,z_score,расход_на_входе,2,0,114
+02_statistical_spikes_first50.txt,Статистические и рабочие выбросы,9102,AMMAD-02-SPIKES,WR-AMMAD-02-SPIKES,z_score,нагрузка,8,0,69
+02_statistical_spikes_first50.txt,Статистические и рабочие выбросы,9102,AMMAD-02-SPIKES,WR-AMMAD-02-SPIKES,z_score,дмк,3,0,130
+02_statistical_spikes_first50.txt,Статистические и рабочие выбросы,9102,AMMAD-02-SPIKES,WR-AMMAD-02-SPIKES,lof,дмк,3,0,130
+02_statistical_spikes_first50.txt,Статистические и рабочие выбросы,9102,AMMAD-02-SPIKES,WR-AMMAD-02-SPIKES,fft,давление_на_входе,18,0,125
+02_statistical_spikes_first50.txt,Статистические и рабочие выбросы,9102,AMMAD-02-SPIKES,WR-AMMAD-02-SPIKES,ammad,скорость_бурения,16,3,17
+02_statistical_spikes_first50.txt,Статистические и рабочие выбросы,9102,AMMAD-02-SPIKES,WR-AMMAD-02-SPIKES,ammad,момент_ротора,18,2,16
+02_statistical_spikes_first50.txt,Статистические и рабочие выбросы,9102,AMMAD-02-SPIKES,WR-AMMAD-02-SPIKES,ammad,дмк,4,0,72
+03_context_stuck_sensors_first50.txt,Контекстное залипание каналов при росте глубины,9103,AMMAD-03-STUCK,WR-AMMAD-03-STUCK,z_score,скорость_бурения,9,0,51
+03_context_stuck_sensors_first50.txt,Контекстное залипание каналов при росте глубины,9103,AMMAD-03-STUCK,WR-AMMAD-03-STUCK,z_score,вес_на_крюке,11,0,51
+03_context_stuck_sensors_first50.txt,Контекстное залипание каналов при росте глубины,9103,AMMAD-03-STUCK,WR-AMMAD-03-STUCK,z_score,обороты_ротора,6,0,51
+03_context_stuck_sensors_first50.txt,Контекстное залипание каналов при росте глубины,9103,AMMAD-03-STUCK,WR-AMMAD-03-STUCK,z_score,давление_на_входе,2,0,51
+03_context_stuck_sensors_first50.txt,Контекстное залипание каналов при росте глубины,9103,AMMAD-03-STUCK,WR-AMMAD-03-STUCK,z_score,расход_на_входе,4,0,51
+03_context_stuck_sensors_first50.txt,Контекстное залипание каналов при росте глубины,9103,AMMAD-03-STUCK,WR-AMMAD-03-STUCK,z_score,уровень_в_емкости,1,0,57
+03_context_stuck_sensors_first50.txt,Контекстное залипание каналов при росте глубины,9103,AMMAD-03-STUCK,WR-AMMAD-03-STUCK,z_score,нагрузка,8,0,51
+03_context_stuck_sensors_first50.txt,Контекстное залипание каналов при росте глубины,9103,AMMAD-03-STUCK,WR-AMMAD-03-STUCK,z_score,дмк,5,0,51
+03_context_stuck_sensors_first50.txt,Контекстное залипание каналов при росте глубины,9103,AMMAD-03-STUCK,WR-AMMAD-03-STUCK,lof,дмк,3,0,130
+03_context_stuck_sensors_first50.txt,Контекстное залипание каналов при росте глубины,9103,AMMAD-03-STUCK,WR-AMMAD-03-STUCK,fft,давление_на_входе,18,0,125
+03_context_stuck_sensors_first50.txt,Контекстное залипание каналов при росте глубины,9103,AMMAD-03-STUCK,WR-AMMAD-03-STUCK,ammad,скорость_бурения,17,4,10
+03_context_stuck_sensors_first50.txt,Контекстное залипание каналов при росте глубины,9103,AMMAD-03-STUCK,WR-AMMAD-03-STUCK,ammad,вес_на_крюке,4,4,10
+03_context_stuck_sensors_first50.txt,Контекстное залипание каналов при росте глубины,9103,AMMAD-03-STUCK,WR-AMMAD-03-STUCK,ammad,момент_ротора,21,4,10
+03_context_stuck_sensors_first50.txt,Контекстное залипание каналов при росте глубины,9103,AMMAD-03-STUCK,WR-AMMAD-03-STUCK,ammad,обороты_ротора,4,4,10
+03_context_stuck_sensors_first50.txt,Контекстное залипание каналов при росте глубины,9103,AMMAD-03-STUCK,WR-AMMAD-03-STUCK,ammad,давление_на_входе,4,4,10
+03_context_stuck_sensors_first50.txt,Контекстное залипание каналов при росте глубины,9103,AMMAD-03-STUCK,WR-AMMAD-03-STUCK,ammad,расход_на_входе,4,4,10
+03_context_stuck_sensors_first50.txt,Контекстное залипание каналов при росте глубины,9103,AMMAD-03-STUCK,WR-AMMAD-03-STUCK,ammad,нагрузка,4,4,10
+03_context_stuck_sensors_first50.txt,Контекстное залипание каналов при росте глубины,9103,AMMAD-03-STUCK,WR-AMMAD-03-STUCK,ammad,дмк,8,4,10
+04_fft_oscillations_starts_first50.txt,Высокочастотные колебания,9104,AMMAD-04-OSC,WR-AMMAD-04-OSC,z_score,скорость_бурения,6,0,124
+04_fft_oscillations_starts_first50.txt,Высокочастотные колебания,9104,AMMAD-04-OSC,WR-AMMAD-04-OSC,z_score,вес_на_крюке,6,0,124
+04_fft_oscillations_starts_first50.txt,Высокочастотные колебания,9104,AMMAD-04-OSC,WR-AMMAD-04-OSC,z_score,обороты_ротора,4,0,124
+04_fft_oscillations_starts_first50.txt,Высокочастотные колебания,9104,AMMAD-04-OSC,WR-AMMAD-04-OSC,z_score,расход_на_входе,1,0,206
+04_fft_oscillations_starts_first50.txt,Высокочастотные колебания,9104,AMMAD-04-OSC,WR-AMMAD-04-OSC,z_score,уровень_в_емкости,1,0,57
+04_fft_oscillations_starts_first50.txt,Высокочастотные колебания,9104,AMMAD-04-OSC,WR-AMMAD-04-OSC,z_score,нагрузка,6,0,124
+04_fft_oscillations_starts_first50.txt,Высокочастотные колебания,9104,AMMAD-04-OSC,WR-AMMAD-04-OSC,z_score,дмк,3,0,130
+04_fft_oscillations_starts_first50.txt,Высокочастотные колебания,9104,AMMAD-04-OSC,WR-AMMAD-04-OSC,fft,обороты_ротора,30,0,111
+04_fft_oscillations_starts_first50.txt,Высокочастотные колебания,9104,AMMAD-04-OSC,WR-AMMAD-04-OSC,fft,нагрузка,34,0,108
+04_fft_oscillations_starts_first50.txt,Высокочастотные колебания,9104,AMMAD-04-OSC,WR-AMMAD-04-OSC,ammad,скорость_бурения,17,5,1
+04_fft_oscillations_starts_first50.txt,Высокочастотные колебания,9104,AMMAD-04-OSC,WR-AMMAD-04-OSC,ammad,вес_на_крюке,8,5,1
+04_fft_oscillations_starts_first50.txt,Высокочастотные колебания,9104,AMMAD-04-OSC,WR-AMMAD-04-OSC,ammad,момент_ротора,21,5,0
+04_fft_oscillations_starts_first50.txt,Высокочастотные колебания,9104,AMMAD-04-OSC,WR-AMMAD-04-OSC,ammad,обороты_ротора,8,5,1
+04_fft_oscillations_starts_first50.txt,Высокочастотные колебания,9104,AMMAD-04-OSC,WR-AMMAD-04-OSC,ammad,давление_на_входе,8,5,1
+04_fft_oscillations_starts_first50.txt,Высокочастотные колебания,9104,AMMAD-04-OSC,WR-AMMAD-04-OSC,ammad,расход_на_входе,9,5,0
+04_fft_oscillations_starts_first50.txt,Высокочастотные колебания,9104,AMMAD-04-OSC,WR-AMMAD-04-OSC,ammad,нагрузка,9,5,0
+04_fft_oscillations_starts_first50.txt,Высокочастотные колебания,9104,AMMAD-04-OSC,WR-AMMAD-04-OSC,ammad,дмк,11,5,1
+05_mixed_all_types_first50.txt,Смешанный сценарий,9105,AMMAD-05-MIXED,WR-AMMAD-05-MIXED,z_score,скорость_бурения,10,0,50
+05_mixed_all_types_first50.txt,Смешанный сценарий,9105,AMMAD-05-MIXED,WR-AMMAD-05-MIXED,z_score,вес_на_крюке,4,0,126
+05_mixed_all_types_first50.txt,Смешанный сценарий,9105,AMMAD-05-MIXED,WR-AMMAD-05-MIXED,z_score,момент_ротора,3,3,33
+05_mixed_all_types_first50.txt,Смешанный сценарий,9105,AMMAD-05-MIXED,WR-AMMAD-05-MIXED,z_score,обороты_ротора,6,3,32
+05_mixed_all_types_first50.txt,Смешанный сценарий,9105,AMMAD-05-MIXED,WR-AMMAD-05-MIXED,z_score,расход_на_входе,2,0,114
+05_mixed_all_types_first50.txt,Смешанный сценарий,9105,AMMAD-05-MIXED,WR-AMMAD-05-MIXED,z_score,уровень_в_емкости,1,0,57
+05_mixed_all_types_first50.txt,Смешанный сценарий,9105,AMMAD-05-MIXED,WR-AMMAD-05-MIXED,z_score,нагрузка,9,0,50
+05_mixed_all_types_first50.txt,Смешанный сценарий,9105,AMMAD-05-MIXED,WR-AMMAD-05-MIXED,z_score,дмк,6,0,50
+05_mixed_all_types_first50.txt,Смешанный сценарий,9105,AMMAD-05-MIXED,WR-AMMAD-05-MIXED,lof,скорость_бурения,1,0,68
+05_mixed_all_types_first50.txt,Смешанный сценарий,9105,AMMAD-05-MIXED,WR-AMMAD-05-MIXED,lof,дмк,3,0,130
+05_mixed_all_types_first50.txt,Смешанный сценарий,9105,AMMAD-05-MIXED,WR-AMMAD-05-MIXED,fft,обороты_ротора,7,0,63
+05_mixed_all_types_first50.txt,Смешанный сценарий,9105,AMMAD-05-MIXED,WR-AMMAD-05-MIXED,fft,давление_на_входе,18,0,125
+05_mixed_all_types_first50.txt,Смешанный сценарий,9105,AMMAD-05-MIXED,WR-AMMAD-05-MIXED,ammad,скорость_бурения,17,4,0
+05_mixed_all_types_first50.txt,Смешанный сценарий,9105,AMMAD-05-MIXED,WR-AMMAD-05-MIXED,ammad,вес_на_крюке,1,1,23
+05_mixed_all_types_first50.txt,Смешанный сценарий,9105,AMMAD-05-MIXED,WR-AMMAD-05-MIXED,ammad,момент_ротора,14,2,10
+05_mixed_all_types_first50.txt,Смешанный сценарий,9105,AMMAD-05-MIXED,WR-AMMAD-05-MIXED,ammad,давление_на_входе,1,1,23
+05_mixed_all_types_first50.txt,Смешанный сценарий,9105,AMMAD-05-MIXED,WR-AMMAD-05-MIXED,ammad,расход_на_входе,1,1,23
+05_mixed_all_types_first50.txt,Смешанный сценарий,9105,AMMAD-05-MIXED,WR-AMMAD-05-MIXED,ammad,температура_на_выходе,2,2,0
+05_mixed_all_types_first50.txt,Смешанный сценарий,9105,AMMAD-05-MIXED,WR-AMMAD-05-MIXED,ammad,уровень_в_емкости,2,2,0
+05_mixed_all_types_first50.txt,Смешанный сценарий,9105,AMMAD-05-MIXED,WR-AMMAD-05-MIXED,ammad,скорость_спо,2,2,0
+05_mixed_all_types_first50.txt,Смешанный сценарий,9105,AMMAD-05-MIXED,WR-AMMAD-05-MIXED,ammad,нагрузка,2,2,31
+05_mixed_all_types_first50.txt,Смешанный сценарий,9105,AMMAD-05-MIXED,WR-AMMAD-05-MIXED,ammad,дмк,7,3,10
+06_related_pressure_events.txt,Связанные импульсы давления,9106,AMMAD-06-REL-PRESS,WR-AMMAD-06-REL-PRESS,z_score,скорость_бурения,6,0,124
+06_related_pressure_events.txt,Связанные импульсы давления,9106,AMMAD-06-REL-PRESS,WR-AMMAD-06-REL-PRESS,z_score,вес_на_крюке,9,1,33
+06_related_pressure_events.txt,Связанные импульсы давления,9106,AMMAD-06-REL-PRESS,WR-AMMAD-06-REL-PRESS,z_score,обороты_ротора,8,3,36
+06_related_pressure_events.txt,Связанные импульсы давления,9106,AMMAD-06-REL-PRESS,WR-AMMAD-06-REL-PRESS,z_score,давление_на_входе,3,0,80
+06_related_pressure_events.txt,Связанные импульсы давления,9106,AMMAD-06-REL-PRESS,WR-AMMAD-06-REL-PRESS,z_score,расход_на_входе,2,0,114
+06_related_pressure_events.txt,Связанные импульсы давления,9106,AMMAD-06-REL-PRESS,WR-AMMAD-06-REL-PRESS,z_score,уровень_в_емкости,1,0,57
+06_related_pressure_events.txt,Связанные импульсы давления,9106,AMMAD-06-REL-PRESS,WR-AMMAD-06-REL-PRESS,z_score,нагрузка,9,0,69
+06_related_pressure_events.txt,Связанные импульсы давления,9106,AMMAD-06-REL-PRESS,WR-AMMAD-06-REL-PRESS,z_score,дмк,3,0,130
+06_related_pressure_events.txt,Связанные импульсы давления,9106,AMMAD-06-REL-PRESS,WR-AMMAD-06-REL-PRESS,lof,дмк,3,0,130
+06_related_pressure_events.txt,Связанные импульсы давления,9106,AMMAD-06-REL-PRESS,WR-AMMAD-06-REL-PRESS,fft,давление_на_входе,5,0,133
+06_related_pressure_events.txt,Связанные импульсы давления,9106,AMMAD-06-REL-PRESS,WR-AMMAD-06-REL-PRESS,ammad,скорость_бурения,16,3,17
+06_related_pressure_events.txt,Связанные импульсы давления,9106,AMMAD-06-REL-PRESS,WR-AMMAD-06-REL-PRESS,ammad,момент_ротора,21,4,10
+06_related_pressure_events.txt,Связанные импульсы давления,9106,AMMAD-06-REL-PRESS,WR-AMMAD-06-REL-PRESS,ammad,дмк,5,1,10

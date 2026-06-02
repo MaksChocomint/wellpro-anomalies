@@ -39,6 +39,7 @@ interface AnomalyModalProps {
   threshold: number;
   windowSize: number; // Добавляем windowSize
   onDoNotShowAgain: () => void;
+  onNavigateToAnomaly?: (anomaly: AnomalyInfo) => void;
 }
 
 // Функция для получения иконки по параметру
@@ -98,6 +99,7 @@ const AnomalyModal: React.FC<AnomalyModalProps> = ({
   threshold,
   windowSize, // Добавляем windowSize
   onDoNotShowAgain,
+  onNavigateToAnomaly,
 }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
@@ -261,6 +263,18 @@ const AnomalyModal: React.FC<AnomalyModalProps> = ({
                               )}
                             </span>
                           </div>
+                          {onNavigateToAnomaly && (
+                            <div className="mt-3">
+                              <button
+                                type="button"
+                                onClick={() => onNavigateToAnomaly(info)}
+                                className="inline-flex items-center gap-2 rounded-md border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-100 transition-colors"
+                              >
+                                <FaChartLine className="text-xs" />
+                                Перейти на график
+                              </button>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </li>

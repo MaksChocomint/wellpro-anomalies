@@ -3,8 +3,10 @@ import random
 import sys
 from collections import defaultdict, deque
 from contextlib import asynccontextmanager
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
+from uuid import uuid4
 
 if sys.platform == "win32":
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
@@ -35,6 +37,93 @@ DEFAULT_FILE_PATH = (Path(__file__).resolve().parent / "data" / "default.TXT").r
 DEFAULT_WINDOWS_SIZE = max(FFT_WINDOW_SIZE, LOF_WINDOW_SIZE, Z_SCORE_WINDOW_SIZE)
 DEFAULT_REALTIME_WINDOW_SIZE = AMMAD_WINDOW_SIZE
 router = APIRouter()
+
+# Progress tracking for file analysis jobs.
+ANALYSIS_PROGRESS_TTL_SECONDS = 60 * 60
+MAX_TRACKED_ANALYSIS_JOBS = 1000
+_analysis_progress_by_job: dict[str, dict[str, Any]] = {}
+
+
+def _utc_iso_now() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+
+def _normalize_analysis_job_id(raw_job_id: str | None) -> str:
+    if raw_job_id is None:
+        return uuid4().hex
+
+    raw = str(raw_job_id).strip()
+    if not raw:
+        return uuid4().hex
+
+    allowed = [ch for ch in raw if ch.isalnum() or ch in ("-", "_", ":")]
+    sanitized = "".join(allowed).strip()
+    if not sanitized:
+        return uuid4().hex
+    return sanitized[:128]
+
+
+def _default_progress(job_id: str) -> dict[str, Any]:
+    now = _utc_iso_now()
+    return {
+        "job_id": job_id,
+        "status": "idle",
+        "message": "",
+        "uploaded_bytes": 0,
+        "total_rows": 0,
+        "processed_rows": 0,
+        "percentage": 0,
+        "total_anomalies": 0,
+        "error": None,
+        "started_at": now,
+        "updated_at": now,
+        "finished_at": None,
+    }
+
+
+def _prune_analysis_progress() -> None:
+    now = datetime.now(timezone.utc)
+
+    stale_jobs: list[str] = []
+    for job_id, payload in _analysis_progress_by_job.items():
+        status = str(payload.get("status") or "")
+        updated_at_raw = payload.get("updated_at")
+        if not isinstance(updated_at_raw, str):
+            continue
+        try:
+            updated_at = datetime.fromisoformat(updated_at_raw)
+        except ValueError:
+            continue
+        if updated_at.tzinfo is None:
+            updated_at = updated_at.replace(tzinfo=timezone.utc)
+
+        if status in {"completed", "error"} and (now - updated_at).total_seconds() > ANALYSIS_PROGRESS_TTL_SECONDS:
+            stale_jobs.append(job_id)
+
+    for job_id in stale_jobs:
+        _analysis_progress_by_job.pop(job_id, None)
+
+    if len(_analysis_progress_by_job) <= MAX_TRACKED_ANALYSIS_JOBS:
+        return
+
+    sorted_items = sorted(
+        _analysis_progress_by_job.items(),
+        key=lambda item: str(item[1].get("updated_at") or ""),
+    )
+    extra_count = len(_analysis_progress_by_job) - MAX_TRACKED_ANALYSIS_JOBS
+    for job_id, _ in sorted_items[:extra_count]:
+        _analysis_progress_by_job.pop(job_id, None)
+
+
+def _update_analysis_progress(job_id: str, **updates: Any) -> dict[str, Any]:
+    current = _analysis_progress_by_job.get(job_id)
+    if current is None:
+        current = _default_progress(job_id)
+    current.update(updates)
+    current["updated_at"] = _utc_iso_now()
+    _analysis_progress_by_job[job_id] = current
+    _prune_analysis_progress()
+    return current
 
 
 def _to_float(value: Any) -> Optional[float]:
@@ -79,18 +168,59 @@ async def realtime_file_bindings():
     return summarize_bindings()
 
 
+@router.get("/analyze/file-progress")
+async def analyze_file_progress(job_id: str = Query(..., min_length=1, max_length=128)):
+    _prune_analysis_progress()
+    payload = _analysis_progress_by_job.get(job_id)
+    if payload is None:
+        return JSONResponse(
+            content={"error": "Прогресс для указанного job_id не найден"},
+            status_code=404,
+        )
+    return payload
+
+
 @router.post("/analyze/file")
 async def analyze_file(
     method: str,
     window_size: int = Query(None),
     score_threshold: float = Query(None),
+    job_id: str | None = Query(None),
     file: UploadFile = File(...),
 ):
     """Анализ загруженного файла на аномалии с подсчетом количества."""
+    import time as time_module
+    start_time = time_module.time()
+    progress_job_id = _normalize_analysis_job_id(job_id)
+
+    _update_analysis_progress(
+        progress_job_id,
+        status="uploading",
+        message="Получение файла",
+        uploaded_bytes=0,
+        total_rows=0,
+        processed_rows=0,
+        percentage=0,
+        total_anomalies=0,
+        error=None,
+        started_at=_utc_iso_now(),
+        finished_at=None,
+    )
+
     method = method.lower()
     if method not in METHODS:
+        _update_analysis_progress(
+            progress_job_id,
+            status="error",
+            message="Неверный метод анализа",
+            error=f"Неверный метод. Выберите из {list(METHODS.keys())}",
+            finished_at=_utc_iso_now(),
+        )
         return JSONResponse(
-            content={"error": f"Неверный метод. Выберите из {list(METHODS.keys())}"},
+            content={
+                "error": f"Неверный метод. Выберите из {list(METHODS.keys())}",
+                "job_id": progress_job_id,
+            },
             status_code=400,
         )
 
@@ -100,16 +230,69 @@ async def analyze_file(
     if score_threshold and score_threshold >= 0:
         method_params["score_threshold"] = score_threshold
 
-    text = await file.read()
-    parsed_data = await parse_data(text, DEFAULT_FILENAME)
+    try:
+        text = await file.read()
+        print(f"[ANALYZE_FILE] Файл загружен, размер: {len(text)} байт", flush=True)
+        _update_analysis_progress(
+            progress_job_id,
+            status="parsing",
+            message="Файл загружен, начинается парсинг",
+            uploaded_bytes=len(text),
+        )
+    except Exception as e:
+        print(f"[ANALYZE_FILE] Ошибка при чтении файла: {e}", flush=True)
+        _update_analysis_progress(
+            progress_job_id,
+            status="error",
+            message="Ошибка чтения файла",
+            error=str(e),
+            finished_at=_utc_iso_now(),
+        )
+        return JSONResponse(
+            content={"error": f"Ошибка при чтении файла: {str(e)}", "job_id": progress_job_id},
+            status_code=400,
+        )
+
+    try:
+        parsed_data = await parse_data(text, DEFAULT_FILENAME)
+    except Exception as e:
+        print(f"[ANALYZE_FILE] Ошибка при парсинге: {e}", flush=True)
+        _update_analysis_progress(
+            progress_job_id,
+            status="error",
+            message="Ошибка парсинга файла",
+            error=str(e),
+            finished_at=_utc_iso_now(),
+        )
+        return JSONResponse(
+            content={"error": f"Ошибка при парсинге файла: {str(e)}", "job_id": progress_job_id},
+            status_code=400,
+        )
 
     if parsed_data is None:
+        _update_analysis_progress(
+            progress_job_id,
+            status="error",
+            message='Столбец "Время" отсутствует',
+            error='Столбец "Время" обязателен в файле',
+            finished_at=_utc_iso_now(),
+        )
         return JSONResponse(
-            content={"error": 'Столбец "Время" обязателен в файле'},
+            content={"error": 'Столбец "Время" обязателен в файле', "job_id": progress_job_id},
             status_code=400,
         )
 
     parsed_data = filter_required_parameters(parsed_data)
+    print(f"[ANALYZE_FILE] Файл прочитан. Записей: {len(parsed_data)}, параметров: {len(parsed_data[0]) if parsed_data else 0}", flush=True)
+    _update_analysis_progress(
+        progress_job_id,
+        status="analyzing",
+        message="Идет анализ записей",
+        total_rows=len(parsed_data),
+        processed_rows=0,
+        percentage=0,
+    )
+    
     detector_scope = None
     if method == "ammad":
         detector_scope = f"file:{id(parsed_data)}"
@@ -121,8 +304,15 @@ async def analyze_file(
     prev = defaultdict(lambda: deque(maxlen=deque_length))
 
     total_anomalies = 0
+    last_progress_push_ts = time_module.time()
 
     for i, record in enumerate(parsed_data):
+        if i % max(1, len(parsed_data) // 10) == 0:
+            elapsed = time_module.time() - start_time
+            rate = (i + 1) / max(0.001, elapsed)
+            eta = (len(parsed_data) - i) / max(0.001, rate)
+            print(f"[ANALYZE_FILE] Обработано {i}/{len(parsed_data)} записей за {elapsed:.2f}с ({rate:.1f} rec/s, ETA: {eta:.1f}s)", flush=True)
+        
         tasks = []
         previous_row = parsed_data[i - 1] if i > 0 else None
         row_context = _build_row_context(record, previous_row)
@@ -140,9 +330,16 @@ async def analyze_file(
 
             tasks.append(METHODS[method](data=list(prev[key]), **current_params))
 
-        results = await asyncio.gather(*tasks)
+        try:
+            results = await asyncio.gather(*tasks)
+        except Exception as e:
+            print(f"[ANALYZE_FILE] Ошибка при анализе записи {i}: {e}", flush=True)
+            raise
 
         for j, key in enumerate(keys):
+            if j >= len(results):
+                print(f"[ANALYZE_FILE] ОШИБКА: результатов меньше чем параметров! j={j}, len(results)={len(results)}, keys={len(keys)}", flush=True)
+                continue
             is_anomaly = bool(results[j])
             data[i][key] = [record[key], is_anomaly]
 
@@ -151,10 +348,46 @@ async def analyze_file(
 
         data[i]["время"] = time
 
+        now_ts = time_module.time()
+        should_push_progress = (
+            (now_ts - last_progress_push_ts) >= 2.0 or i == len(parsed_data) - 1
+        )
+        if should_push_progress:
+            processed_rows = i + 1
+            percentage = (
+                int((processed_rows / len(parsed_data)) * 100)
+                if parsed_data
+                else 100
+            )
+            _update_analysis_progress(
+                progress_job_id,
+                status="analyzing",
+                message="Идет анализ записей",
+                total_rows=len(parsed_data),
+                processed_rows=processed_rows,
+                percentage=percentage,
+                total_anomalies=total_anomalies,
+            )
+            last_progress_push_ts = now_ts
+
     if detector_scope:
         reset_ammad_detectors(detector_scope)
 
+    elapsed = time_module.time() - start_time
+    print(f"[ANALYZE_FILE] Анализ завершен за {elapsed:.2f}с. Аномалий: {total_anomalies}/{len(data)}", flush=True)
+    _update_analysis_progress(
+        progress_job_id,
+        status="completed",
+        message="Анализ завершен",
+        total_rows=len(data),
+        processed_rows=len(data),
+        percentage=100,
+        total_anomalies=total_anomalies,
+        finished_at=_utc_iso_now(),
+    )
+
     return {
+        "job_id": progress_job_id,
         "total_records": len(data),
         "total_anomalies": total_anomalies,
         "data": data,

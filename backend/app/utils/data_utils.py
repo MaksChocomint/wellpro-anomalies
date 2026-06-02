@@ -26,6 +26,7 @@ REQUIRED_PARAMETERS = {
 }
 
 FALLBACK_ENCODINGS: Tuple[str, ...] = ("utf-8", "utf-8-sig", "cp1251", "cp866")
+TIME_COLUMN = "время"
 
 
 async def parse_data(text: Optional[bytes] = None, filename: str = "data/default.TXT") -> Optional[List[Dict]]:
@@ -90,10 +91,15 @@ async def parse_data(text: Optional[bytes] = None, filename: str = "data/default
         df.columns = df.columns.str.strip()
         
         # Check for required time column
-        if 'время' not in df.columns:
+        if TIME_COLUMN not in df.columns:
             print("[DataParser] Error: 'время' column not found")
             print(f"[DataParser] Available columns: {df.columns.tolist()}")
             return None
+
+        time_values = pd.to_numeric(df[TIME_COLUMN], errors="coerce").dropna()
+        if len(time_values) > 1 and not time_values.is_monotonic_increasing:
+            df = df.sort_values(TIME_COLUMN, kind="mergesort").reset_index(drop=True)
+            print("[DataParser] Time column was not ascending; reordered records ascending")
         
         # Convert to records and filter to required parameters
         data = df.to_dict(orient="records")
@@ -130,8 +136,8 @@ def filter_required_parameters(data: List[Dict]) -> List[Dict]:
         filtered_record = {}
         
         # Always include time
-        if "время" in record:
-            filtered_record["время"] = record["время"]
+        if TIME_COLUMN in record:
+            filtered_record[TIME_COLUMN] = record[TIME_COLUMN]
         
         # Extract only required parameters
         for param in REQUIRED_PARAMETERS:

@@ -1,0 +1,387 @@
+{
+  "generated_at": "2026-05-30T15:22:47",
+  "file_path": "D:\\diploma\\wellpro-anomalies\\backend\\app\\data\\rig_files\\cluster_9102_well_AMMAD-02-SPIKES\\02_statistical_spikes_first50.txt",
+  "total_rows": 240,
+  "required_parameters_count": 12,
+  "available_parameters_count": 12,
+  "method_summary": [
+    {
+      "method": "z_score",
+      "anomalies_count": 33,
+      "evaluated_points": 2880,
+      "percent_of_total_rows": 13.75,
+      "percent_of_evaluated_points": 1.1458
+    },
+    {
+      "method": "lof",
+      "anomalies_count": 3,
+      "evaluated_points": 2880,
+      "percent_of_total_rows": 1.25,
+      "percent_of_evaluated_points": 0.1042
+    },
+    {
+      "method": "fft",
+      "anomalies_count": 18,
+      "evaluated_points": 2880,
+      "percent_of_total_rows": 7.5,
+      "percent_of_evaluated_points": 0.625
+    },
+    {
+      "method": "ammad",
+      "anomalies_count": 38,
+      "evaluated_points": 2880,
+      "percent_of_total_rows": 15.8333,
+      "percent_of_evaluated_points": 1.3194
+    }
+  ],
+  "parameter_summary": [
+    {
+      "parameter": "вес_на_крюке",
+      "present_in_file": true,
+      "z_score": {
+        "anomalies_count": 9,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 3.75,
+        "percent_of_evaluated_points": 3.75
+      },
+      "lof": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "fft": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "ammad": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "total_anomalies_all_methods": 9
+    },
+    {
+      "parameter": "глубина",
+      "present_in_file": true,
+      "z_score": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "lof": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "fft": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "ammad": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "total_anomalies_all_methods": 0
+    },
+    {
+      "parameter": "давление_на_входе",
+      "present_in_file": true,
+      "z_score": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "lof": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "fft": {
+        "anomalies_count": 18,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 7.5,
+        "percent_of_evaluated_points": 7.5
+      },
+      "ammad": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "total_anomalies_all_methods": 18
+    },
+    {
+      "parameter": "дмк",
+      "present_in_file": true,
+      "z_score": {
+        "anomalies_count": 3,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 1.25,
+        "percent_of_evaluated_points": 1.25
+      },
+      "lof": {
+        "anomalies_count": 3,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 1.25,
+        "percent_of_evaluated_points": 1.25
+      },
+      "fft": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "ammad": {
+        "anomalies_count": 4,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 1.6667,
+        "percent_of_evaluated_points": 1.6667
+      },
+      "total_anomalies_all_methods": 10
+    },
+    {
+      "parameter": "момент_ротора",
+      "present_in_file": true,
+      "z_score": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "lof": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "fft": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "ammad": {
+        "anomalies_count": 18,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 7.5,
+        "percent_of_evaluated_points": 7.5
+      },
+      "total_anomalies_all_methods": 18
+    },
+    {
+      "parameter": "нагрузка",
+      "present_in_file": true,
+      "z_score": {
+        "anomalies_count": 8,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 3.3333,
+        "percent_of_evaluated_points": 3.3333
+      },
+      "lof": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "fft": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "ammad": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "total_anomalies_all_methods": 8
+    },
+    {
+      "parameter": "обороты_ротора",
+      "present_in_file": true,
+      "z_score": {
+        "anomalies_count": 5,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 2.0833,
+        "percent_of_evaluated_points": 2.0833
+      },
+      "lof": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "fft": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "ammad": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "total_anomalies_all_methods": 5
+    },
+    {
+      "parameter": "расход_на_входе",
+      "present_in_file": true,
+      "z_score": {
+        "anomalies_count": 2,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.8333,
+        "percent_of_evaluated_points": 0.8333
+      },
+      "lof": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "fft": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "ammad": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "total_anomalies_all_methods": 2
+    },
+    {
+      "parameter": "скорость_бурения",
+      "present_in_file": true,
+      "z_score": {
+        "anomalies_count": 6,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 2.5,
+        "percent_of_evaluated_points": 2.5
+      },
+      "lof": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "fft": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "ammad": {
+        "anomalies_count": 16,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 6.6667,
+        "percent_of_evaluated_points": 6.6667
+      },
+      "total_anomalies_all_methods": 22
+    },
+    {
+      "parameter": "скорость_спо",
+      "present_in_file": true,
+      "z_score": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "lof": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "fft": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "ammad": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "total_anomalies_all_methods": 0
+    },
+    {
+      "parameter": "температура_на_выходе",
+      "present_in_file": true,
+      "z_score": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "lof": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "fft": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "ammad": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "total_anomalies_all_methods": 0
+    },
+    {
+      "parameter": "уровень_в_емкости",
+      "present_in_file": true,
+      "z_score": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "lof": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "fft": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "ammad": {
+        "anomalies_count": 0,
+        "evaluated_points": 240,
+        "percent_of_total_rows": 0.0,
+        "percent_of_evaluated_points": 0.0
+      },
+      "total_anomalies_all_methods": 0
+    }
+  ]
+}

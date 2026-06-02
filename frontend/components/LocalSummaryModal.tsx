@@ -1,10 +1,10 @@
 import React, { useMemo } from "react";
+import { AnomalyDetectionMethod, AnomalyInfo, Thresholds } from "@/types/types";
 import {
-  AnomalyDetectionMethod,
-  AnomalyInfo,
-  Thresholds,
-} from "@/types/types";
-import { excelSerialToJsDate, formatDate, formatParamName } from "@/utils/utils";
+  excelSerialToJsDate,
+  formatDate,
+  formatParamName,
+} from "@/utils/utils";
 import { X } from "lucide-react";
 
 interface LocalSummaryModalProps {
@@ -14,6 +14,8 @@ interface LocalSummaryModalProps {
   method: AnomalyDetectionMethod;
   thresholds: Thresholds;
   fileName: string | null;
+  allData?: any[];
+  onNavigateToAnomaly?: (anomaly: AnomalyInfo) => void;
 }
 
 const CORE_PARAMETERS: string[] = [
@@ -61,7 +63,10 @@ function formatValue(value: number | string | undefined): string {
   return String(value);
 }
 
-function getMethodSettings(method: AnomalyDetectionMethod, thresholds: Thresholds) {
+function getMethodSettings(
+  method: AnomalyDetectionMethod,
+  thresholds: Thresholds,
+) {
   switch (method) {
     case "FFT":
       return {
@@ -96,7 +101,10 @@ function getMethodSettings(method: AnomalyDetectionMethod, thresholds: Threshold
   }
 }
 
-function formatThreshold(method: AnomalyDetectionMethod, value: number): string {
+function formatThreshold(
+  method: AnomalyDetectionMethod,
+  value: number,
+): string {
   if (method === "LOF" || method === "Z_score") {
     return value.toFixed(2);
   }
@@ -110,28 +118,44 @@ export default function LocalSummaryModal({
   method,
   thresholds,
   fileName,
+  allData = [],
+  onNavigateToAnomaly,
 }: LocalSummaryModalProps) {
   const totalAnomalies = anomalies.length;
   const methodSettings = getMethodSettings(method, thresholds);
 
   const parameterSummary = useMemo(() => {
     const counts: Record<string, number> = {};
+    const totalCounts: Record<string, number> = {};
+
+    // Подсчитаем количество аномалий для каждого параметра
     anomalies.forEach((item) => {
       counts[item.param] = (counts[item.param] || 0) + 1;
     });
 
+    // Подсчитаем общее количество записей для каждого параметра
+    allData.forEach((record) => {
+      CORE_PARAMETERS.forEach((param) => {
+        if (record[param] !== undefined) {
+          totalCounts[param] = (totalCounts[param] || 0) + 1;
+        }
+      });
+    });
+
     return CORE_PARAMETERS.map((param) => {
       const count = counts[param] || 0;
+      const total = totalCounts[param] || 1; // Избегаем деления на 0
       const percent =
-        totalAnomalies > 0 ? Number(((count / totalAnomalies) * 100).toFixed(2)) : 0;
+        total > 0 ? Number(((count / total) * 100).toFixed(2)) : 0;
 
       return {
         param,
         count,
         percent,
+        total,
       };
     });
-  }, [anomalies, totalAnomalies]);
+  }, [anomalies, allData]);
 
   if (!isOpen) return null;
 
@@ -140,10 +164,12 @@ export default function LocalSummaryModal({
       <div className="w-full max-w-6xl max-h-[90vh] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl flex flex-col">
         <div className="px-6 py-4 border-b border-slate-200 bg-slate-50 flex items-start justify-between gap-4">
           <div>
-            <h2 className="text-xl font-bold text-slate-900">Сводка локального анализа</h2>
+            <h2 className="text-xl font-bold text-slate-900">
+              Сводка локального анализа
+            </h2>
             <p className="text-sm text-slate-600 mt-1">
-              Режим: <span className="font-semibold">Локальная симуляция</span> • Файл:{" "}
-              <span className="font-semibold">{fileName || "—"}</span>
+              Режим: <span className="font-semibold">Локальная симуляция</span>{" "}
+              • Файл: <span className="font-semibold">{fileName || "—"}</span>
             </p>
           </div>
 
@@ -160,7 +186,9 @@ export default function LocalSummaryModal({
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
             <div className="rounded-xl border border-slate-200 bg-white p-3">
               <p className="text-xs text-slate-500">Метод</p>
-              <p className="text-base font-semibold text-slate-900 mt-1">{method}</p>
+              <p className="text-base font-semibold text-slate-900 mt-1">
+                {method}
+              </p>
             </div>
             <div className="rounded-xl border border-slate-200 bg-white p-3">
               <p className="text-xs text-slate-500">Окно анализа</p>
@@ -169,14 +197,18 @@ export default function LocalSummaryModal({
               </p>
             </div>
             <div className="rounded-xl border border-slate-200 bg-white p-3">
-              <p className="text-xs text-slate-500">{methodSettings.thresholdLabel}</p>
+              <p className="text-xs text-slate-500">
+                {methodSettings.thresholdLabel}
+              </p>
               <p className="text-base font-semibold text-slate-900 mt-1">
                 {formatThreshold(method, methodSettings.scoreThreshold)}
               </p>
             </div>
             <div className="rounded-xl border border-rose-200 bg-rose-50 p-3">
               <p className="text-xs text-rose-700">Всего аномалий</p>
-              <p className="text-base font-semibold text-rose-800 mt-1">{totalAnomalies}</p>
+              <p className="text-base font-semibold text-rose-800 mt-1">
+                {totalAnomalies}
+              </p>
             </div>
           </div>
 
@@ -186,16 +218,23 @@ export default function LocalSummaryModal({
                 Аномалии по 12 ключевым параметрам
               </p>
               <p className="text-xs text-slate-500 mt-1">
-                Процент считается от общего количества аномалий в файле ({totalAnomalies}).
+                Процент считается от количества записей каждого параметра в
+                файле.
               </p>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="bg-slate-50 text-slate-700">
                   <tr>
-                    <th className="text-left px-4 py-2 font-semibold">Параметр</th>
-                    <th className="text-left px-4 py-2 font-semibold">Количество</th>
-                    <th className="text-left px-4 py-2 font-semibold">% от общего</th>
+                    <th className="text-left px-4 py-2 font-semibold">
+                      Параметр
+                    </th>
+                    <th className="text-left px-4 py-2 font-semibold">
+                      Аномалии / Записи
+                    </th>
+                    <th className="text-left px-4 py-2 font-semibold">
+                      % от всех записей
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -207,8 +246,12 @@ export default function LocalSummaryModal({
                       <td className="px-4 py-2 text-slate-900 font-medium">
                         {formatParamName(item.param)}
                       </td>
-                      <td className="px-4 py-2 text-slate-700">{item.count}</td>
-                      <td className="px-4 py-2 text-slate-700">{item.percent.toFixed(2)}%</td>
+                      <td className="px-4 py-2 text-slate-700">
+                        {item.count} из {item.total}
+                      </td>
+                      <td className="px-4 py-2 text-slate-700">
+                        {item.percent.toFixed(2)}%
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -225,9 +268,18 @@ export default function LocalSummaryModal({
               <table className="w-full text-sm">
                 <thead className="bg-slate-100 text-slate-700">
                   <tr>
-                    <th className="text-left px-4 py-3 font-semibold">Параметр</th>
-                    <th className="text-left px-4 py-3 font-semibold">Когда выявлено</th>
-                    <th className="text-left px-4 py-3 font-semibold">Значение</th>
+                    <th className="text-left px-4 py-3 font-semibold">
+                      Параметр
+                    </th>
+                    <th className="text-left px-4 py-3 font-semibold">
+                      Когда выявлено
+                    </th>
+                    <th className="text-left px-4 py-3 font-semibold">
+                      Значение
+                    </th>
+                    <th className="text-left px-4 py-3 font-semibold">
+                      Переход
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -244,6 +296,19 @@ export default function LocalSummaryModal({
                       </td>
                       <td className="px-4 py-3 text-slate-700 font-mono">
                         {formatValue(entry.value)}
+                      </td>
+                      <td className="px-4 py-3">
+                        {onNavigateToAnomaly ? (
+                          <button
+                            type="button"
+                            onClick={() => onNavigateToAnomaly(entry)}
+                            className="inline-flex items-center rounded-md border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-100 transition-colors"
+                          >
+                            На график
+                          </button>
+                        ) : (
+                          <span className="text-slate-400 text-xs">—</span>
+                        )}
                       </td>
                     </tr>
                   ))}

@@ -7,10 +7,31 @@ interface FileAnalysisParams {
   score_threshold: number;
 }
 
+export interface FileAnalysisProgress {
+  job_id: string;
+  status: string;
+  message: string;
+  uploaded_bytes: number;
+  total_rows: number;
+  processed_rows: number;
+  percentage: number;
+  total_anomalies: number;
+  error: string | null;
+  started_at: string;
+  updated_at: string;
+  finished_at: string | null;
+}
+
+interface AnalyzeFileResponse {
+  job_id?: string;
+  data?: DynamicSensorData[];
+}
+
 export async function analyzeFile(
   file: File,
   params: FileAnalysisParams,
-): Promise<DynamicSensorData[]> {
+  jobId?: string,
+): Promise<{ jobId: string; data: DynamicSensorData[] }> {
   const formData = new FormData();
   formData.append("file", file);
 
@@ -32,11 +53,21 @@ export async function analyzeFile(
       ? 0.8
       : methodParam === "fft"
         ? 0.5
-        : methodParam === "z_score"
-          ? 3
-          : 25);
+      : methodParam === "z_score"
+        ? 3
+        : 25);
 
-  const url = `http://127.0.0.1:8000/api/v1/analyze/file?method=${methodParam}&window_size=${windowSize}&score_threshold=${scoreThreshold}`;
+  const queryParams = new URLSearchParams({
+    method: methodParam,
+    window_size: String(windowSize),
+    score_threshold: String(scoreThreshold),
+  });
+
+  if (jobId) {
+    queryParams.set("job_id", jobId);
+  }
+
+  const url = `http://127.0.0.1:8000/api/v1/analyze/file?${queryParams.toString()}`;
 
   try {
     const response = await axios.post(url, formData, {
@@ -46,8 +77,14 @@ export async function analyzeFile(
       timeout: 3000000,
     });
 
-    if (response.data && response.data.data) {
-      return response.data.data as DynamicSensorData[];
+    const payload = response.data as AnalyzeFileResponse;
+    const resolvedJobId = String(payload.job_id || jobId || "");
+
+    if (payload && payload.data) {
+      return {
+        jobId: resolvedJobId,
+        data: payload.data as DynamicSensorData[],
+      };
     } else {
       throw new Error("Неверный формат ответа от сервера");
     }
@@ -61,6 +98,14 @@ export async function analyzeFile(
     }
     throw error;
   }
+}
+
+export async function getFileAnalysisProgress(
+  jobId: string,
+): Promise<FileAnalysisProgress> {
+  const url = `http://127.0.0.1:8000/api/v1/analyze/file-progress?job_id=${encodeURIComponent(jobId)}`;
+  const response = await axios.get(url, { timeout: 10000 });
+  return response.data as FileAnalysisProgress;
 }
 
 export function extractFlightStartTimeFromFile(

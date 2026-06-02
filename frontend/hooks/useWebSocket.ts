@@ -23,6 +23,7 @@ interface UseWebSocketProps {
   setFlightStart: (date: Date | null) => void;
   sendParametersToServer: () => void;
   MAX_DATA_POINTS: number;
+  MAX_ANOMALIES: number;
 }
 
 export interface SocketSelection {
@@ -38,6 +39,7 @@ function getAnomalyKey(anomaly: AnomalyInfo): string {
 function appendUniqueAnomalies(
   current: AnomalyInfo[],
   incoming: AnomalyInfo[],
+  maxItems: number,
 ): AnomalyInfo[] {
   if (incoming.length === 0) return current;
 
@@ -52,7 +54,7 @@ function appendUniqueAnomalies(
 
   if (uniqueIncoming.length === 0) return current;
 
-  return [...current, ...uniqueIncoming].slice(-500);
+  return [...current, ...uniqueIncoming].slice(-maxItems);
 }
 
 export function useWebSocket({
@@ -65,6 +67,7 @@ export function useWebSocket({
   setFlightStart,
   sendParametersToServer,
   MAX_DATA_POINTS,
+  MAX_ANOMALIES,
 }: UseWebSocketProps) {
   const wsRef = useRef<WebSocket | null>(null);
   const isStreamInitializedRef = useRef<boolean>(false);
@@ -123,7 +126,9 @@ export function useWebSocket({
 
           if (newAnomalies.length > 0) {
             setIsModalOpen(true);
-            setAnomalyInfo((prev) => appendUniqueAnomalies(prev, newAnomalies));
+            setAnomalyInfo((prev) =>
+              appendUniqueAnomalies(prev, newAnomalies, MAX_ANOMALIES),
+            );
           }
 
           setLiveData((prevData) => {
@@ -150,6 +155,7 @@ export function useWebSocket({
       setFlightStart,
       sendParametersToServer,
       MAX_DATA_POINTS,
+      MAX_ANOMALIES,
     ],
   );
 

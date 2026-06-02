@@ -1,4 +1,5 @@
-﻿import json
+﻿import asyncio
+import json
 from collections import deque
 from copy import deepcopy
 from pathlib import Path
@@ -420,22 +421,37 @@ class AMMADDetector:
         if len(h_list) < 20:
             return self._apply_persistence_and_cooldown(stall_hit)
 
-        # 4) Weighted hybrid score.
+        # 4) Weighted hybrid score - compute detector results in parallel
         w_z, w_lof, w_fft = self.param_weights.get(self.param_name, self.default_weights)
-        s_z = 1 / (1 + np.exp(-(_get_z_raw(h_list) - Z_SCORE_THRESHOLD)))
+        
+        # Compute all detector results in parallel instead of sequentially
+        z_result, lof_result, fft_result = await asyncio.gather(
+            z_score(h_list, window_size=self.window_size),
+            lof(h_list, window_size=self.window_size),
+            fft(h_list, window_size=self.window_size),
+        )
+        
+        z_raw = _get_z_raw(h_list)
+        # Safe sigmoid computation
+        try:
+            z_exp = np.clip(-(z_raw - Z_SCORE_THRESHOLD), -500, 500)
+            s_z = 1 / (1 + np.exp(z_exp))
+        except (OverflowError, RuntimeWarning):
+            s_z = 0.0 if z_raw < Z_SCORE_THRESHOLD else 1.0
+        
         s_fft = min(1.0, _get_fft_raw(h_list, window_size=self.window_size) / (FFT_SCORE_THRESHOLD * 1.5 + EPS))
-        s_lof = 1.0 if await lof(h_list, window_size=self.window_size) else 0.0
+        s_lof = 1.0 if lof_result else 0.0
 
         final_score = (s_z * w_z) + (s_lof * w_lof) + (s_fft * w_fft)
         if hard_window_hit:
             final_score = min(1.0, final_score + 0.12)
 
-        # 5) Consensus of base detectors.
+        # 5) Consensus of base detectors - reuse already computed results
         orig_votes = sum(
             [
-                1 if await z_score(h_list, window_size=self.window_size) else 0,
-                1 if await lof(h_list, window_size=self.window_size) else 0,
-                1 if await fft(h_list, window_size=self.window_size) else 0,
+                1 if z_result else 0,
+                1 if lof_result else 0,
+                1 if fft_result else 0,
             ]
         )
 
