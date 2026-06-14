@@ -183,34 +183,32 @@ const AnomalyModal: React.FC<AnomalyModalProps> = ({
         },
       }}
     >
-      <div className="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full mx-4 overflow-hidden border border-red-100 animate-fadeIn">
-        <div className="h-2 bg-gradient-to-r from-red-500 via-red-400 to-red-500" />
-
-        <div className="px-6 py-5 border-b border-red-100 bg-gradient-to-r from-red-50 to-white">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-red-100 rounded-xl">
-              <FaExclamationTriangle className="text-3xl text-red-600" />
+      <div className="relative mx-4 flex max-h-[92vh] w-full max-w-lg flex-col overflow-hidden rounded-lg border border-red-200 bg-white shadow-[var(--shadow)] animate-fadeIn">
+        <div className="shrink-0 border-b border-red-200 bg-red-50 px-4 py-4 sm:px-6 sm:py-5">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="rounded-md border border-red-200 bg-white p-2 sm:p-3">
+              <FaExclamationTriangle className="text-2xl text-red-600 sm:text-3xl" />
             </div>
             <div className="flex-1">
-              <h2 className="text-2xl font-bold text-red-700">
+              <h2 className="text-xl font-bold text-red-700 sm:text-2xl">
                 Обнаружена аномалия
               </h2>
-              <p className="text-sm text-red-500 flex items-center gap-2 mt-0.5">
+              <p className="mt-0.5 flex items-center gap-2 text-xs text-red-500 sm:text-sm">
                 <span className="inline-block w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" />
                 Метод: {method} • Порог: {threshold} • Окно: {windowSize}
               </p>
             </div>
             <button
               onClick={handleClose}
-              className="p-2 hover:bg-red-100 rounded-lg transition-colors"
+              className="rounded-md p-2 transition-colors hover:bg-red-100"
             >
               <FaTimes className="text-xl text-red-400 hover:text-red-600" />
             </button>
           </div>
         </div>
 
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-4 bg-slate-50 p-3 rounded-lg border border-slate-200">
+        <div className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6">
+          <div className="mb-4 flex items-center justify-between rounded-md border border-slate-200 bg-slate-50 p-3">
             <div className="flex items-center gap-2 text-slate-600">
               <FaChartLine className="text-blue-500" />
               <span className="text-sm font-medium">Всего аномалий:</span>
@@ -220,7 +218,7 @@ const AnomalyModal: React.FC<AnomalyModalProps> = ({
             </span>
           </div>
 
-          <div className="bg-slate-50 rounded-xl border border-slate-200 p-4 mb-4 max-h-96 overflow-y-auto">
+          <div className="mb-4 max-h-72 overflow-y-auto rounded-lg border border-slate-200 bg-slate-50 p-4 sm:max-h-96">
             {displayedAnomalies.length > 0 ? (
               <ul className="space-y-3">
                 {displayedAnomalies.map((info, index) => {
@@ -230,10 +228,10 @@ const AnomalyModal: React.FC<AnomalyModalProps> = ({
                   return (
                     <li
                       key={index}
-                      className="bg-white rounded-lg p-3 border border-slate-200 shadow-sm hover:shadow-md transition-shadow"
+                      className="rounded-md border border-slate-200 bg-white p-3 transition-colors hover:border-slate-300"
                     >
                       <div className="flex items-start gap-3">
-                        <div className="p-2 bg-red-50 rounded-lg text-red-500">
+                        <div className="rounded-md bg-red-50 p-2 text-red-500">
                           {icon}
                         </div>
                         <div className="flex-1">
@@ -268,7 +266,7 @@ const AnomalyModal: React.FC<AnomalyModalProps> = ({
                               <button
                                 type="button"
                                 onClick={() => onNavigateToAnomaly(info)}
-                                className="inline-flex items-center gap-2 rounded-md border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-100 transition-colors"
+                                className="inline-flex items-center gap-2 rounded-md border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700 transition-colors hover:bg-blue-100"
                               >
                                 <FaChartLine className="text-xs" />
                                 Перейти на график
@@ -289,11 +287,11 @@ const AnomalyModal: React.FC<AnomalyModalProps> = ({
           </div>
 
           {totalPages > 1 && (
-            <div className="flex items-center justify-between bg-slate-100 p-2 rounded-lg mb-4">
+            <div className="mb-4 flex items-center justify-between rounded-md border border-slate-200 bg-slate-100 p-2">
               <button
                 onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
                 disabled={currentPage === 0}
-                className="p-2 hover:bg-white rounded-lg disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                className="rounded-md p-2 transition-colors hover:bg-white disabled:opacity-30 disabled:hover:bg-transparent"
               >
                 <FaArrowLeft className="text-slate-600" />
               </button>
@@ -305,21 +303,22 @@ const AnomalyModal: React.FC<AnomalyModalProps> = ({
                   setCurrentPage((p) => Math.min(totalPages - 1, p + 1))
                 }
                 disabled={currentPage === totalPages - 1}
-                className="p-2 hover:bg-white rounded-lg disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                className="rounded-md p-2 transition-colors hover:bg-white disabled:opacity-30 disabled:hover:bg-transparent"
               >
                 <FaArrowRight className="text-slate-600" />
               </button>
             </div>
           )}
+        </div>
 
-          <div className="space-y-3">
+        <div className="shrink-0 space-y-2 border-t border-slate-200 bg-white p-4 sm:space-y-3 sm:p-6">
             <button
               onClick={handleSave}
               disabled={isSaving || isSaved || anomalyInfo.length === 0}
-              className={`w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl font-semibold transition-all ${
+              className={`flex w-full items-center justify-center gap-3 rounded-md px-4 py-3 font-bold transition-colors ${
                 isSaved
-                  ? "bg-green-600 text-white hover:bg-green-700"
-                  : "bg-blue-600 text-white hover:bg-blue-700 hover:shadow-lg"
+                  ? "bg-emerald-700 text-white hover:bg-emerald-800"
+                  : "bg-[var(--primary)] text-white hover:bg-[var(--primary-dark)]"
               } disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               {isSaved ? (
@@ -339,23 +338,22 @@ const AnomalyModal: React.FC<AnomalyModalProps> = ({
               )}
             </button>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3">
               <button
                 onClick={handleClose}
-                className="flex items-center justify-center gap-2 py-3 px-4 bg-slate-100 hover:bg-slate-200 rounded-xl font-medium text-slate-700 transition-colors"
+                className="flex items-center justify-center gap-2 rounded-md bg-slate-100 px-4 py-3 font-bold text-slate-700 transition-colors hover:bg-slate-200"
               >
                 <FaTimes className="text-lg" />
                 <span>Закрыть</span>
               </button>
               <button
                 onClick={handleDoNotShowAgain}
-                className="flex items-center justify-center gap-2 py-3 px-4 bg-slate-800 hover:bg-slate-900 rounded-xl font-medium text-white transition-colors"
+                className="flex items-center justify-center gap-2 rounded-md bg-slate-800 px-4 py-3 font-bold text-white transition-colors hover:bg-slate-900"
               >
                 <FaEyeSlash className="text-lg" />
                 <span>Не показывать</span>
               </button>
             </div>
-          </div>
         </div>
       </div>
     </Modal>

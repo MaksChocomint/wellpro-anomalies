@@ -22,17 +22,16 @@ export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-300">
-      <div className="bg-white p-8 rounded-2xl shadow-2xl text-center max-w-sm w-full border border-slate-200">
-        <div className="relative w-16 h-16 mx-auto mb-6">
-          <div className="absolute inset-0 rounded-full border-4 border-slate-200"></div>
-          <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-blue-500 border-r-blue-500 animate-spin"></div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 p-4 backdrop-blur-sm transition-opacity duration-300">
+      <div className="surface w-full max-w-md p-6 text-center shadow-[var(--shadow)]">
+        <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-md border border-blue-200 bg-blue-50">
+          <div className="h-7 w-7 animate-spin rounded-full border-2 border-blue-200 border-t-[var(--primary)]" />
         </div>
-        <h2 className="text-2xl font-bold text-slate-900 mb-2 flex items-center justify-center gap-2">
-          <FaHourglassHalf className="text-blue-500" />
-          Идет анализ данных...
+        <h2 className="mb-2 flex items-center justify-center gap-2 text-xl font-black text-slate-950">
+          <FaHourglassHalf className="text-[var(--primary)]" />
+          Идет анализ данных
         </h2>
-        <p className="text-slate-600">
+        <p className="text-sm text-slate-600">
           Пожалуйста, подождите, пока мы обработаем файл.
         </p>
         {progress && (
@@ -43,7 +42,7 @@ export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
             </div>
             <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
               <div
-                className="bg-blue-500 h-full transition-all duration-300"
+                className="h-full bg-[var(--primary)] transition-all duration-300"
                 style={{
                   width: `${Math.max(0, Math.min(100, progress.percentage))}%`,
                 }}

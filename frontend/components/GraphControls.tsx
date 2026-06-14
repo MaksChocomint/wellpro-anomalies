@@ -25,67 +25,78 @@ export function GraphControls({
   availableParameters,
 }: GraphControlsProps) {
   const [isVisible, setIsVisible] = useState(false);
-
-  const toggleVisibility = () => {
-    setIsVisible(!isVisible);
-  };
+  const selectedCount = availableParameters.filter(
+    (param) => graphVisibility[param],
+  ).length;
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-lg mb-8 border border-slate-200">
-      <div className="flex gap-6 items-center mb-4 flex-wrap">
-        <h3 className="text-2xl font-bold text-slate-900 flex items-center">
-          <FaChartArea className="mr-2" />
-          Выбрать параметры
-        </h3>
+    <section className="surface p-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex min-w-0 items-start gap-3">
+          <div className="rounded-md border border-slate-200 bg-slate-50 p-2 text-slate-700">
+            <FaChartArea />
+          </div>
+          <div className="min-w-0">
+            <div className="ui-label">Графики</div>
+            <h2 className="mt-1 text-lg font-black text-slate-950">
+              Выбрать параметры
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              {selectedCount}/{availableParameters.length || 0} каналов выбрано
+            </p>
+          </div>
+        </div>
 
         <button
-          onClick={toggleVisibility}
-          className="px-4 py-2 bg-gradient-to-r from-slate-200 to-slate-300 text-slate-700 font-semibold text-sm rounded-lg shadow-md hover:from-slate-300 hover:to-slate-400 transition duration-200 ease-in-out flex items-center gap-2"
+          onClick={() => setIsVisible((prev) => !prev)}
+          className="btn-secondary"
         >
           {isVisible ? <FaChevronDown /> : <FaChevronRight />}
-          {isVisible ? "Скрыть" : "Показать"}
+          {isVisible ? "Скрыть" : "Открыть"}
         </button>
       </div>
 
       {isVisible && (
-        <>
-          <div className="flex gap-3 mb-6 flex-wrap">
-            <button
-              onClick={onShowAll}
-              className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm font-semibold rounded-lg shadow-md hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 ease-in-out flex items-center gap-2"
-            >
+        <div className="mt-4 border-t border-slate-200 pt-4">
+          <div className="mb-4 flex flex-wrap gap-2">
+            <button onClick={onShowAll} className="btn-primary">
               <FaCheck /> Показать все
             </button>
 
-            <button
-              onClick={onHideAll}
-              className="px-4 py-2 bg-gradient-to-r from-slate-400 to-slate-500 text-white text-sm font-semibold rounded-lg shadow-md hover:from-slate-500 hover:to-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-400 transition duration-200 ease-in-out flex items-center gap-2"
-            >
+            <button onClick={onHideAll} className="btn-secondary">
               <FaTimes /> Скрыть все
             </button>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-            {availableParameters.map((paramKey) => (
-              <label
-                key={paramKey}
-                className="flex items-center cursor-pointer text-slate-700 hover:text-blue-600 transition duration-150 ease-in-out p-3 rounded-lg hover:bg-blue-50"
-              >
-                <input
-                  type="checkbox"
-                  className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer"
-                  checked={!!graphVisibility[paramKey]}
-                  onChange={() => onVisibilityChange(paramKey)}
-                />
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {availableParameters.map((paramKey) => {
+              const checked = Boolean(graphVisibility[paramKey]);
 
-                <span className="ml-2 font-medium text-sm">
-                  {formatParamName(paramKey)}
-                </span>
-              </label>
-            ))}
+              return (
+                <label
+                  key={paramKey}
+                  className={`flex cursor-pointer items-center gap-3 rounded-md border px-3 py-2 text-sm transition-colors ${
+                    checked
+                      ? "border-blue-200 bg-blue-50 text-slate-950"
+                      : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4 accent-[var(--primary)]"
+                    checked={checked}
+                    onChange={() => onVisibilityChange(paramKey)}
+                  />
+
+                  <span className="min-w-0 truncate font-semibold">
+                    {formatParamName(paramKey)}
+                  </span>
+                </label>
+              );
+            })}
           </div>
-        </>
+        </div>
       )}
-    </div>
+    </section>
   );
 }

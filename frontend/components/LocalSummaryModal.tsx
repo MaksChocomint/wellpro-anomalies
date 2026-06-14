@@ -160,8 +160,8 @@ export default function LocalSummaryModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[1200] bg-slate-950/60 backdrop-blur-sm p-4 flex items-center justify-center">
-      <div className="w-full max-w-6xl max-h-[90vh] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl flex flex-col">
+    <div className="fixed inset-0 z-[1200] flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm">
+      <div className="flex max-h-[90vh] w-full max-w-6xl flex-col overflow-hidden rounded-lg border border-slate-200 bg-white shadow-[var(--shadow)]">
         <div className="px-6 py-4 border-b border-slate-200 bg-slate-50 flex items-start justify-between gap-4">
           <div>
             <h2 className="text-xl font-bold text-slate-900">
@@ -175,7 +175,7 @@ export default function LocalSummaryModal({
 
           <button
             onClick={onClose}
-            className="p-2 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-200 transition-colors"
+            className="rounded-md p-2 text-slate-500 transition-colors hover:bg-slate-200 hover:text-slate-800"
             title="Закрыть"
           >
             <X size={20} />
@@ -183,20 +183,20 @@ export default function LocalSummaryModal({
         </div>
 
         <div className="overflow-auto p-6 space-y-5">
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
-            <div className="rounded-xl border border-slate-200 bg-white p-3">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+            <div className="rounded-md border border-slate-200 bg-white p-3">
               <p className="text-xs text-slate-500">Метод</p>
               <p className="text-base font-semibold text-slate-900 mt-1">
                 {method}
               </p>
             </div>
-            <div className="rounded-xl border border-slate-200 bg-white p-3">
+            <div className="rounded-md border border-slate-200 bg-white p-3">
               <p className="text-xs text-slate-500">Окно анализа</p>
               <p className="text-base font-semibold text-slate-900 mt-1">
                 {methodSettings.windowSize}
               </p>
             </div>
-            <div className="rounded-xl border border-slate-200 bg-white p-3">
+            <div className="rounded-md border border-slate-200 bg-white p-3">
               <p className="text-xs text-slate-500">
                 {methodSettings.thresholdLabel}
               </p>
@@ -204,7 +204,7 @@ export default function LocalSummaryModal({
                 {formatThreshold(method, methodSettings.scoreThreshold)}
               </p>
             </div>
-            <div className="rounded-xl border border-rose-200 bg-rose-50 p-3">
+            <div className="rounded-md border border-rose-200 bg-rose-50 p-3">
               <p className="text-xs text-rose-700">Всего аномалий</p>
               <p className="text-base font-semibold text-rose-800 mt-1">
                 {totalAnomalies}
@@ -212,7 +212,7 @@ export default function LocalSummaryModal({
             </div>
           </div>
 
-          <div className="rounded-xl border border-slate-200 overflow-hidden">
+          <div className="overflow-hidden rounded-lg border border-slate-200">
             <div className="px-4 py-3 bg-slate-100 border-b border-slate-200">
               <p className="text-sm font-semibold text-slate-800">
                 Аномалии по 12 ключевым параметрам
@@ -260,11 +260,11 @@ export default function LocalSummaryModal({
           </div>
 
           {anomalies.length === 0 ? (
-            <div className="rounded-xl border border-slate-200 bg-slate-50 p-8 text-center text-slate-600">
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-8 text-center text-slate-600">
               Аномалии в выбранном файле не обнаружены.
             </div>
           ) : (
-            <div className="overflow-x-auto rounded-xl border border-slate-200">
+            <div className="overflow-x-auto rounded-lg border border-slate-200">
               <table className="w-full text-sm">
                 <thead className="bg-slate-100 text-slate-700">
                   <tr>

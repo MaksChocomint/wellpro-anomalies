@@ -83,12 +83,10 @@ const getRangeBackground = (
   min: number,
   max: number,
 ): string => {
-  if (max <= min) return "#e2e8f0";
-  const progress = Math.max(
-    0,
-    Math.min(100, ((value - min) / (max - min)) * 100),
-  );
-  return `linear-gradient(90deg, #2563eb 0%, #3b82f6 ${progress}%, #e2e8f0 ${progress}%, #e2e8f0 100%)`;
+  void value;
+  void min;
+  void max;
+  return "#d8e0ea";
 };
 
 const getTimestampKey = (value: unknown): string => {
@@ -669,17 +667,17 @@ export function GraphGrid({
     const currentWindowAnomalies = getCurrentWindowAnomalies(paramKey);
 
     return (
-      <div className="fixed inset-0 bg-white z-50 p-4 flex flex-col">
-        <div className="flex justify-between items-center mb-4 border-b pb-4">
+      <div className="fixed inset-0 z-50 flex flex-col bg-white p-4">
+        <div className="mb-4 flex items-center justify-between border-b border-slate-200 pb-4">
           <div className="flex items-center gap-4">
             <button
               onClick={() => setIsFullscreen(null)}
-              className="p-2 hover:bg-slate-100 rounded-lg"
+              className="btn-secondary h-10 min-h-10 w-10 px-0"
             >
               <ChevronLeft size={20} />
             </button>
             <div>
-              <h2 className="text-xl font-bold text-slate-800">
+              <h2 className="text-xl font-black text-slate-950">
                 {formatParamName(paramKey).toUpperCase()} {unit && `(${unit})`}
               </h2>
               <p className="text-sm text-slate-500">
@@ -693,10 +691,10 @@ export function GraphGrid({
               <button
                 onClick={handlePrev}
                 disabled={trackNewData || currentIndex === 0}
-                className={`px-3 py-1 rounded ${
+                className={`rounded-md border px-3 py-2 transition-colors ${
                   trackNewData || currentIndex === 0
-                    ? "bg-slate-100 text-slate-400"
-                    : "bg-blue-500 text-white hover:bg-blue-600"
+                    ? "border-slate-200 bg-slate-100 text-slate-400"
+                    : "border-blue-700 bg-[var(--primary)] text-white hover:bg-[var(--primary-dark)]"
                 }`}
               >
                 <ChevronLeft size={18} />
@@ -705,10 +703,10 @@ export function GraphGrid({
               <button
                 onClick={handleNext}
                 disabled={trackNewData || currentIndex >= maxIndex}
-                className={`px-3 py-1 rounded ${
+                className={`rounded-md border px-3 py-2 transition-colors ${
                   trackNewData || currentIndex >= maxIndex
-                    ? "bg-slate-100 text-slate-400"
-                    : "bg-blue-500 text-white hover:bg-blue-600"
+                    ? "border-slate-200 bg-slate-100 text-slate-400"
+                    : "border-blue-700 bg-[var(--primary)] text-white hover:bg-[var(--primary-dark)]"
                 }`}
               >
                 <ChevronRight size={18} />
@@ -717,7 +715,7 @@ export function GraphGrid({
 
             <button
               onClick={() => handleExportData(paramKey)}
-              className="p-2 hover:bg-slate-100 rounded-lg text-slate-600 hover:text-slate-800"
+              className="btn-secondary h-10 min-h-10 w-10 px-0"
               title="Экспорт всех точек в CSV"
             >
               <Download size={20} />
@@ -725,7 +723,7 @@ export function GraphGrid({
 
             <button
               onClick={() => setIsFullscreen(null)}
-              className="p-2 hover:bg-slate-100 rounded-lg"
+              className="btn-secondary h-10 min-h-10 w-10 px-0"
             >
               <Maximize2 size={20} />
             </button>
@@ -831,10 +829,10 @@ export function GraphGrid({
           <div className="flex items-center gap-4">
             <button
               onClick={toggleTracking}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
+              className={`flex items-center gap-2 rounded-md border px-4 py-2 text-sm font-bold ${
                 trackNewData
-                  ? "bg-green-500 text-white"
-                  : "bg-slate-200 text-slate-700"
+                  ? "border-emerald-600 bg-emerald-600 text-white"
+                  : "border-slate-200 bg-slate-100 text-slate-700"
               }`}
             >
               {trackNewData ? <Eye size={18} /> : <EyeOff size={18} />}
@@ -851,7 +849,7 @@ export function GraphGrid({
           {showJumpToLatest && !trackNewData && (
             <button
               onClick={handleJumpToLatest}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex items-center gap-2"
+              className="btn-primary"
             >
               <ArrowDown size={16} />
               Перейти к последним данным
@@ -863,33 +861,33 @@ export function GraphGrid({
   }
 
   return (
-    <div className="space-y-6">
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
+    <div className="space-y-4">
+      <div className="surface p-4">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={handlePrev}
               disabled={trackNewData || currentIndex === 0}
-              className={`p-2 rounded-lg ${
+              className={`rounded-md border p-2 transition-colors ${
                 trackNewData || currentIndex === 0
-                  ? "text-slate-300"
-                  : "text-slate-700 hover:bg-slate-100"
+                  ? "border-slate-200 text-slate-300"
+                  : "border-slate-200 text-slate-700 hover:bg-slate-50"
               }`}
             >
               <ChevronLeft size={20} />
             </button>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-3">
               <div className="text-sm">
-                <span className="text-slate-600">Временной диапазон:</span>
-                <span className="font-medium text-slate-800 ml-2">
+                <span className="ui-label">Временной диапазон</span>
+                <span className="ml-2 font-black text-slate-900">
                   {getTimeRange(currentIndex).start} -{" "}
                   {getTimeRange(currentIndex).end}
                 </span>
               </div>
-              <div className="w-48 h-2 bg-slate-200 rounded-full overflow-hidden">
+              <div className="h-2 w-48 overflow-hidden rounded-full bg-slate-200">
                 <div
-                  className="h-full bg-blue-500 rounded-full transition-all duration-300"
+                  className="h-full rounded-full bg-[var(--primary)] transition-all duration-300"
                   style={{
                     width: `${Math.min(
                       100,
@@ -906,10 +904,10 @@ export function GraphGrid({
             <button
               onClick={handleNext}
               disabled={trackNewData || currentIndex >= maxIndex}
-              className={`p-2 rounded-lg ${
+              className={`rounded-md border p-2 transition-colors ${
                 trackNewData || currentIndex >= maxIndex
-                  ? "text-slate-300"
-                  : "text-slate-700 hover:bg-slate-100"
+                  ? "border-slate-200 text-slate-300"
+                  : "border-slate-200 text-slate-700 hover:bg-slate-50"
               }`}
             >
               <ChevronRight size={20} />
@@ -920,10 +918,10 @@ export function GraphGrid({
             <div className="relative" ref={settingsContainerRef}>
               <button
                 onClick={() => setShowSettings((prev) => !prev)}
-                className={`p-2 rounded-lg transition-all duration-200 ${
+                className={`rounded-md border p-2 transition-colors ${
                   showSettings
-                    ? "bg-blue-100 text-blue-700"
-                    : "hover:bg-slate-100 text-slate-600 hover:text-slate-800"
+                    ? "border-blue-200 bg-blue-50 text-blue-700"
+                    : "border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-800"
                 }`}
                 title="Настройки"
               >
@@ -931,7 +929,7 @@ export function GraphGrid({
               </button>
 
               <div
-                className={`absolute right-0 top-full mt-2 w-72 rounded-xl shadow-lg border border-slate-200 bg-white p-4 z-10 origin-top-right transition-all duration-200 ${
+                className={`absolute right-0 top-full z-10 mt-2 w-72 origin-top-right rounded-lg border border-slate-200 bg-white p-4 shadow-[var(--shadow)] transition-all duration-200 ${
                   showSettings
                     ? "opacity-100 translate-y-0 scale-100 pointer-events-auto"
                     : "opacity-0 -translate-y-1 scale-95 pointer-events-none"
@@ -983,7 +981,7 @@ export function GraphGrid({
                     onChange={(event) =>
                       handleVisiblePointsChange(Number(event.target.value))
                     }
-                    className="w-full h-2 rounded-full appearance-none cursor-pointer transition-all duration-200"
+                    className="h-2 w-full cursor-pointer accent-[var(--primary)] transition-all duration-200"
                     style={{
                       background: getRangeBackground(
                         visiblePoints,
@@ -999,10 +997,10 @@ export function GraphGrid({
                         key={preset}
                         type="button"
                         onClick={() => handleVisiblePointsChange(preset)}
-                        className={`rounded-lg px-2 py-1 text-xs font-medium transition-all duration-200 ${
+                        className={`rounded-md border px-2 py-1 text-xs font-bold transition-colors ${
                           visiblePoints === preset
-                            ? "bg-blue-100 text-blue-700 border border-blue-200"
-                            : "bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100"
+                            ? "border-blue-200 bg-blue-50 text-blue-700"
+                            : "border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100"
                         }`}
                       >
                         {preset}
@@ -1014,7 +1012,7 @@ export function GraphGrid({
                     <button
                       type="button"
                       onClick={() => handleVisiblePointsStepChange(-1)}
-                      className="h-8 w-8 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 transition-colors"
+                      className="btn-secondary h-8 min-h-8 w-8 px-0"
                       disabled={visiblePoints <= MIN_VISIBLE_POINTS}
                     >
                       -
@@ -1029,13 +1027,13 @@ export function GraphGrid({
                       onChange={(event) =>
                         handleVisiblePointsChange(Number(event.target.value))
                       }
-                      className="h-8 flex-1 rounded-lg border border-slate-300 px-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
+                      className="input-control h-8 min-h-8 flex-1"
                     />
 
                     <button
                       type="button"
                       onClick={() => handleVisiblePointsStepChange(1)}
-                      className="h-8 w-8 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 transition-colors"
+                      className="btn-secondary h-8 min-h-8 w-8 px-0"
                       disabled={visiblePoints >= MAX_VISIBLE_POINTS_LIMIT}
                     >
                       +
@@ -1048,7 +1046,7 @@ export function GraphGrid({
             {showJumpToLatest && !trackNewData && (
               <button
                 onClick={handleJumpToLatest}
-                className="px-3 py-1.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex items-center gap-2 text-sm"
+                className="btn-primary min-h-9 px-3 text-xs"
               >
                 <ArrowDown size={14} />
                 Новые данные
@@ -1059,13 +1057,13 @@ export function GraphGrid({
           </div>
         </div>
 
-        <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
+        <div className="mt-3 flex items-center justify-between border-t border-slate-200 pt-3">
           <div className="flex items-center gap-2">
             <div
-              className={`flex items-center gap-1 px-2 py-1 rounded text-xs ${
+              className={`flex items-center gap-1 rounded border px-2 py-1 text-xs font-bold ${
                 trackNewData
-                  ? "bg-green-100 text-green-700"
-                  : "bg-slate-100 text-slate-600"
+                  ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                  : "border-slate-200 bg-slate-100 text-slate-600"
               }`}
             >
               {trackNewData ? <Eye size={12} /> : <EyeOff size={12} />}
@@ -1083,7 +1081,7 @@ export function GraphGrid({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {availableParameters.map((paramKey, index) => {
           if (!graphVisibility[paramKey]) return null;
 
@@ -1102,27 +1100,27 @@ export function GraphGrid({
               ref={(node) => {
                 cardRefs.current[paramKey] = node;
               }}
-              className={`bg-white rounded-xl shadow-sm border overflow-hidden hover:shadow-md transition-all duration-300 flex flex-col group ${
+              className={`group flex flex-col overflow-hidden rounded-lg border bg-white transition-colors duration-200 ${
                 focusedParam === paramKey
                   ? "border-amber-400 ring-2 ring-amber-200"
                   : "border-slate-200"
               }`}
             >
-              <div className="px-4 py-3 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
-                <span className="text-sm font-bold text-slate-700 truncate mr-2">
+              <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-3">
+                <span className="mr-2 truncate text-sm font-black text-slate-900">
                   {formatParamName(paramKey).toUpperCase()}
                 </span>
-                <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex items-center gap-1 opacity-60 transition-opacity group-hover:opacity-100">
                   <button
                     onClick={() => handleExportData(paramKey)}
-                    className="p-1 hover:bg-slate-200 rounded text-slate-500 hover:text-slate-700"
+                    className="rounded border border-transparent p-1 text-slate-500 hover:border-slate-200 hover:bg-white hover:text-slate-800"
                     title="Экспорт всех точек в CSV"
                   >
                     <Download size={14} />
                   </button>
                   <button
                     onClick={() => handleFullscreen(paramKey)}
-                    className="p-1 hover:bg-slate-200 rounded text-slate-500 hover:text-slate-700"
+                    className="rounded border border-transparent p-1 text-slate-500 hover:border-slate-200 hover:bg-white hover:text-slate-800"
                     title="Полноэкранный режим"
                   >
                     <Maximize2 size={14} />
@@ -1130,7 +1128,7 @@ export function GraphGrid({
                 </div>
               </div>
 
-              <div className="p-1 flex-1 relative">
+              <div className="relative flex-1 p-1">
                 <Plot
                   key={`card-${plotResetKey}-${paramKey}`}
                   data={[
@@ -1139,10 +1137,7 @@ export function GraphGrid({
                       y: yValues,
                       type: "scatter",
                       mode: "lines",
-                      line: {
-                        color: GRAPH_COLORS[index % GRAPH_COLORS.length],
-                        width: 2,
-                      },
+                      line: { color: "#f97316", width: 2 },
                       hovertemplate: `<b>%{x:.2f}</b> ${unit}<br>%{y|%H:%M:%S}<extra></extra>`,
                     },
                     {
@@ -1152,7 +1147,7 @@ export function GraphGrid({
                       ),
                       mode: "markers",
                       type: "scatter",
-                      marker: { color: "#ff4d4f", symbol: "diamond", size: 8 },
+                      marker: { color: "#c9372c", symbol: "diamond", size: 8 },
                       hovertemplate: `<b>АНОМАЛИЯ</b><br>%{x:.2f} ${unit}<extra></extra>`,
                       name: "Аномалии",
                     },
@@ -1166,14 +1161,14 @@ export function GraphGrid({
                       autorange: "reversed",
                       tickformat: "%H:%M:%S",
                       nticks: 6,
-                      gridcolor: "#f1f5f9",
-                      tickfont: { size: 10 },
+                      gridcolor: "#e8eef5",
+                      tickfont: { size: 10, color: "#66758a" },
                       tickangle: 0,
                     },
                     xaxis: {
-                      gridcolor: "#f1f5f9",
+                      gridcolor: "#e8eef5",
                       zeroline: false,
-                      tickfont: { size: 10 },
+                      tickfont: { size: 10, color: "#66758a" },
                     },
                     height: 250,
                     hovermode: "closest",
@@ -1200,7 +1195,7 @@ export function GraphGrid({
 
                 {!trackNewData && currentIndex < maxIndex && (
                   <div className="absolute top-2 right-2">
-                    <div className="px-2 py-1 bg-slate-800/80 text-white text-xs rounded flex items-center gap-1">
+                    <div className="flex items-center gap-1 rounded border border-slate-700 bg-slate-900/85 px-2 py-1 text-xs text-white">
                       <EyeOff size={10} />
                       История
                     </div>
@@ -1208,10 +1203,10 @@ export function GraphGrid({
                 )}
               </div>
 
-              <div className="px-4 py-2 border-t border-slate-100 flex items-center justify-between">
+              <div className="flex items-center justify-between border-t border-slate-200 px-4 py-2">
                 <div className="flex items-center gap-4">
                   {unit && (
-                    <span className="px-2 py-0.5 bg-blue-50 text-blue-600 rounded text-[10px] font-medium">
+                    <span className="rounded border border-blue-100 bg-blue-50 px-2 py-0.5 text-[10px] font-bold text-blue-700">
                       {unit}
                     </span>
                   )}

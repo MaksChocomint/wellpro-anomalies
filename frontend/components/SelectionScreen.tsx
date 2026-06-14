@@ -248,11 +248,11 @@ export default function SelectionScreen({
     iconType: string,
     index: number,
   ) => (
-    <div className="bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-      <div className={`px-5 py-4 border-b border-slate-100 ${getBgColor(index)}`}>
+    <div className="surface overflow-hidden">
+      <div className="border-b border-slate-200 bg-white px-5 py-4">
         <div className="flex items-center gap-3">
           <div
-            className="p-2 bg-white rounded-lg shadow-sm"
+            className="rounded-md border border-slate-200 bg-slate-50 p-2"
             style={{ color: getColor(index) }}
           >
             {getIcon(iconType)}
@@ -271,7 +271,7 @@ export default function SelectionScreen({
         </div>
       </div>
 
-      <div className="p-3 max-h-80 overflow-y-auto">
+      <div className="max-h-80 overflow-y-auto p-3">
         {items.length > 0 ? (
           <div className="space-y-1">
             {items.map((item) => {
@@ -289,12 +289,12 @@ export default function SelectionScreen({
                   onClick={() => handleSelect(setKey, item)}
                   onMouseEnter={() => setHoveredItem(hoverKey)}
                   onMouseLeave={() => setHoveredItem(null)}
-                  className={`w-full text-left px-4 py-2.5 rounded-lg transition-all ${
+                  className={`w-full rounded-md border px-4 py-2.5 text-left transition-colors ${
                     isSelected
-                      ? "bg-blue-600 text-white shadow-sm"
+                      ? "border-blue-700 bg-[var(--primary)] text-white"
                       : isHovered
-                        ? "bg-slate-100 text-slate-900"
-                        : "text-slate-600 hover:bg-slate-50"
+                        ? "border-slate-300 bg-slate-50 text-slate-900"
+                        : "border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50"
                   }`}
                 >
                   <div className="flex items-center gap-3">
@@ -341,21 +341,21 @@ export default function SelectionScreen({
   const progress = selectionSteps.filter(Boolean).length * 25;
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="app-shell">
       <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-slate-200 shadow-sm mb-6">
-            <HardHat className="w-4 h-4 text-blue-600" />
-            <span className="text-sm text-slate-600 font-medium">
-              WellPro • Система мониторинга
+        <div className="mb-12 text-center">
+          <div className="mb-4 flex items-center justify-center gap-2 text-[var(--primary)]">
+            <HardHat className="h-5 w-5" />
+            <span className="ui-label text-[var(--primary)]">
+              WellPro / Система мониторинга
             </span>
           </div>
 
-          <h1 className="text-4xl font-bold text-slate-800 mb-3">
+          <h1 className="mb-3 text-4xl font-black tracking-tight text-slate-950">
             Выбор буровой установки
           </h1>
 
-          <p className="text-lg text-slate-500 max-w-2xl mx-auto">
+          <p className="mx-auto max-w-2xl text-base font-medium text-slate-500">
             Выберите объект для мониторинга в иерархической структуре предприятия
           </p>
 
@@ -381,7 +381,7 @@ export default function SelectionScreen({
           )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-12">
+        <div className="mb-12 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
           {renderList(
             "Компания",
             data.companies,
@@ -421,7 +421,7 @@ export default function SelectionScreen({
         </div>
 
         {loadingError && (
-          <div className="mb-8 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-center text-sm text-red-700">
+          <div className="mb-8 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-center text-sm text-red-700">
             {loadingError}
           </div>
         )}
@@ -443,10 +443,10 @@ export default function SelectionScreen({
                 });
               }}
               disabled={!targetRig}
-              className={`inline-flex items-center gap-3 px-8 py-4 rounded-xl font-semibold text-lg text-white shadow-lg transition-all ${
+              className={`inline-flex items-center gap-3 rounded-lg border px-8 py-4 text-lg font-black transition-colors ${
                 targetRig
-                  ? "bg-blue-600 hover:bg-blue-700 hover:shadow-xl"
-                  : "bg-slate-400 cursor-not-allowed"
+                  ? "border-blue-700 bg-[var(--primary)] text-white hover:bg-[var(--primary-dark)]"
+                  : "cursor-not-allowed border-slate-300 bg-slate-300 text-white"
               }`}
             >
               <Drill className="w-5 h-5" />

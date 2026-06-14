@@ -17,60 +17,81 @@ export function StatusDisplay({
   onDismissAnomaly,
 }: StatusDisplayProps) {
   return (
-    <>
-      {/* Блок статуса аномалии */}
+    <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2">
       <div
-        className={`p-6 mb-4 rounded-xl shadow-lg text-center transition-all duration-300
-${
-  anomalyDetected
-    ? "bg-gradient-to-r from-red-50 to-rose-50 text-red-900 border border-red-200"
-    : "bg-gradient-to-r from-green-50 to-emerald-50 text-green-900 border border-green-200"
-}`}
+        className={`surface p-4 transition-colors duration-200 ${
+          anomalyDetected ? "border-red-200 bg-red-50" : "border-emerald-200"
+        }`}
       >
-        <h2 className="text-2xl font-bold flex items-center justify-center">
-          {anomalyDetected ? (
-            <FaExclamationTriangle className="mr-3 text-3xl text-red-600" />
-          ) : (
-            <FaCheckCircle className="mr-3 text-3xl text-green-600" />
-          )}
-          {anomalyDetected ? "АНОМАЛИЯ ОБНАРУЖЕНА" : "Нормальная работа"}
-        </h2>
-        {anomalyDetected && (
-          <>
-            <p className="mt-3 text-lg text-red-800">
-              Обнаружено аномальное значение! Требуется внимание.
+        <div className="flex items-start gap-4">
+          <div
+            className={`rounded-md border p-2 ${
+              anomalyDetected
+                ? "border-red-200 bg-white text-red-700"
+                : "border-emerald-200 bg-emerald-50 text-emerald-700"
+            }`}
+          >
+            {anomalyDetected ? (
+              <FaExclamationTriangle className="text-xl" />
+            ) : (
+              <FaCheckCircle className="text-xl" />
+            )}
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="ui-label">Статус аномалий</div>
+            <h2
+              className={`mt-1 text-lg font-black ${
+                anomalyDetected ? "text-red-800" : "text-emerald-800"
+              }`}
+            >
+              {anomalyDetected ? "Аномалия обнаружена" : "Нормальная работа"}
+            </h2>
+            <p className="mt-1 text-sm text-slate-600">
+              {anomalyDetected
+                ? "Есть параметры, требующие проверки оператором."
+                : "Критических отклонений сейчас не найдено."}
             </p>
+          </div>
+          {anomalyDetected && (
             <button
               onClick={onDismissAnomaly}
-              className="mt-4 px-6 py-2 bg-white text-red-700 border border-red-300 rounded-lg shadow-md hover:bg-red-50 hover:border-red-400 transition duration-300 font-semibold flex items-center justify-center mx-auto"
+              className="btn-secondary whitespace-nowrap"
             >
-              <FaCheckCircle className="mr-2" /> Отметить как проверенное
+              <FaCheckCircle /> Проверено
             </button>
-          </>
-        )}
-      </div>
-
-      {/* Блок статуса подключения к бэкенду/симуляции */}
-      <div
-        className={`p-4 mb-6 rounded-xl text-center font-semibold shadow-md transition-all duration-300
-${
-  isBackendConnected
-    ? "bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-900 border border-blue-200"
-    : "bg-gradient-to-r from-yellow-50 to-amber-50 text-yellow-900 border border-yellow-200"
-}`}
-      >
-        <div className="flex items-center justify-center gap-2">
-          {isBackendConnected ? (
-            <FaSignal className="text-xl" />
-          ) : (
-            <FaDatabase className="text-xl" />
           )}
-          <span>Режим данных:</span>
-          <span className="font-bold">
-            {isBackendConnected ? "Real-time" : "Локальная симуляция"}
-          </span>
         </div>
       </div>
-    </>
+
+      <div className="surface p-4">
+        <div className="flex items-start gap-4">
+          <div className="rounded-md border border-slate-200 bg-slate-50 p-2 text-slate-700">
+            {isBackendConnected ? (
+              <FaSignal className="text-xl" />
+            ) : (
+              <FaDatabase className="text-xl" />
+            )}
+          </div>
+          <div>
+            <div className="ui-label">Режим данных</div>
+            <div className="mt-1 flex items-center gap-2">
+              <span
+                className={`status-dot ${
+                  isBackendConnected ? "bg-emerald-600" : "bg-amber-500"
+                }`}
+              />
+              <span className="text-lg font-black text-slate-900">
+                {isBackendConnected ? "Real-time" : "Локальная симуляция"}
+              </span>
+            </div>
+            <p className="mt-1 text-sm text-slate-600">
+              {isBackendConnected
+                ? "Backend подключен, поток данных активен."
+                : "Работа идёт с локальным файлом или симуляцией."}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

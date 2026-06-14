@@ -22,28 +22,27 @@ const METHOD_OPTIONS: Array<{
   {
     value: "FFT",
     title: "FFT",
-    description: "Поиск аномалий в частотной составляющей сигнала",
+    description: "Частотные отклонения сигнала",
   },
   {
     value: "Z_score",
     title: "Z-score",
-    description: "Статистический контроль выбросов относительно среднего",
+    description: "Статистические выбросы",
   },
   {
     value: "LOF",
     title: "LOF",
-    description: "Поиск локальных аномалий по соседним точкам",
+    description: "Локальная плотность точек",
   },
   {
     value: "AMMAD",
     title: "AMMAD",
-    description: "Адаптивный гибридный метод для параметров бурения",
+    description: "Гибридный метод для буровой телеметрии",
   },
 ];
 
-const getMethodDescription = (method: AnomalyDetectionMethod): string => {
-  return METHOD_OPTIONS.find((option) => option.value === method)?.description || "";
-};
+const getMethodDescription = (method: AnomalyDetectionMethod): string =>
+  METHOD_OPTIONS.find((option) => option.value === method)?.description || "";
 
 const getMethodStep = (key: keyof Thresholds): number => {
   if (key === "AMMAD") return 0.05;
@@ -52,7 +51,9 @@ const getMethodStep = (key: keyof Thresholds): number => {
   return 0.1;
 };
 
-const getMethodMinMax = (key: keyof Thresholds): { min: number; max: number } => {
+const getMethodMinMax = (
+  key: keyof Thresholds,
+): { min: number; max: number } => {
   switch (key) {
     case "FFT":
       return { min: 0.1, max: 1 };
@@ -94,11 +95,6 @@ const normalizeThresholdValue = (
   return Number(snapped.toFixed(2));
 };
 
-const toSliderProgress = (value: number, min: number, max: number): number => {
-  if (max <= min) return 0;
-  return Math.max(0, Math.min(100, ((value - min) / (max - min)) * 100));
-};
-
 const formatValue = (key: keyof Thresholds, value: number): string => {
   if (key.includes("WINDOW")) return String(Math.round(value));
   return value.toFixed(2);
@@ -128,8 +124,8 @@ export function AnalysisMethodSelector({
   return (
     <div className="space-y-5">
       <div className="space-y-3">
-        <p className="text-sm font-semibold text-slate-700">Метод анализа</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <p className="text-sm font-bold text-slate-800">Метод анализа</p>
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-4">
           {METHOD_OPTIONS.map((methodOption) => {
             const isSelected = methodOption.value === analysisMethod;
 
@@ -139,23 +135,23 @@ export function AnalysisMethodSelector({
                 type="button"
                 disabled={isDisabled}
                 onClick={() => onMethodChange(methodOption.value)}
-                className={`rounded-xl border px-3 py-3 text-left transition-all duration-200 ${
+                className={`rounded-md border px-3 py-3 text-left transition-colors ${
                   isSelected
-                    ? "border-blue-500 bg-blue-50 shadow-sm"
-                    : "border-slate-200 bg-white hover:border-blue-200 hover:bg-slate-50"
-                } disabled:opacity-60 disabled:cursor-not-allowed`}
+                    ? "border-blue-300 bg-blue-50"
+                    : "border-slate-200 bg-white hover:border-slate-300"
+                } disabled:cursor-not-allowed disabled:opacity-60`}
               >
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-sm font-semibold text-slate-800">
+                  <span className="text-sm font-black text-slate-900">
                     {methodOption.title}
                   </span>
                   {isSelected && (
-                    <span className="text-[10px] font-semibold uppercase tracking-wide text-blue-600 bg-blue-100 px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-blue-700">
                       выбран
                     </span>
                   )}
                 </div>
-                <p className="mt-1 text-xs text-slate-500 leading-relaxed">
+                <p className="mt-1 text-xs leading-relaxed text-slate-500">
                   {methodOption.description}
                 </p>
               </button>
@@ -166,35 +162,39 @@ export function AnalysisMethodSelector({
         <p className="text-xs text-slate-500">
           {getMethodDescription(analysisMethod)}
           {analysisMethod === "AMMAD" && (
-            <span className="ml-1 text-blue-600 font-medium">⚡ Рекомендуется для параметров бурения</span>
+            <span className="ml-1 font-semibold text-blue-700">
+              Рекомендуется для параметров бурения.
+            </span>
           )}
         </p>
       </div>
 
       {analysisMethod === "AMMAD" && (
-        <div className="rounded-xl border border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50 px-3 py-2.5">
-          <p className="text-xs leading-relaxed text-blue-800">
-            <span className="font-semibold">AMMAD:</span> объединяет Z-score, LOF и FFT с автоматической
-            подстройкой весов по параметрам бурения.
+        <div className="rounded-md border border-blue-200 bg-white px-3 py-2.5">
+          <p className="text-xs leading-relaxed text-slate-700">
+            <span className="font-black text-slate-900">AMMAD:</span>{" "}
+            объединяет Z-score, LOF и FFT с весами, настроенными под каналы
+            буровой телеметрии.
           </p>
         </div>
       )}
 
-      <div className="space-y-3">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
         {thresholdKeys.map((key) => {
           const { min, max } = getMethodMinMax(key);
           const step = getMethodStep(key);
           const value = thresholds[key] ?? getDefaultThresholdByKey(key);
-          const sliderProgress = toSliderProgress(value, min, max);
 
           return (
             <div
               key={key}
-              className="rounded-xl border border-slate-200 bg-white p-3 transition-all duration-200 hover:border-slate-300"
+              className="rounded-md border border-slate-200 bg-white p-3"
             >
               <div className="mb-2 flex items-center justify-between gap-2">
-                <label className="text-sm font-semibold text-slate-700">{getThresholdLabel(key)}</label>
-                <span className="text-xs font-semibold text-blue-700 bg-blue-100 px-2 py-1 rounded-full min-w-[64px] text-center">
+                <label className="text-sm font-bold text-slate-700">
+                  {getThresholdLabel(key)}
+                </label>
+                <span className="min-w-[64px] rounded border border-slate-200 bg-slate-50 px-2 py-1 text-center text-xs font-black text-slate-900">
                   {formatValue(key, value)}
                 </span>
               </div>
@@ -207,10 +207,7 @@ export function AnalysisMethodSelector({
                 value={value}
                 onChange={(event) => updateThreshold(key, Number(event.target.value))}
                 disabled={isDisabled}
-                className="w-full h-2 rounded-full appearance-none cursor-pointer transition-all duration-200 disabled:cursor-not-allowed"
-                style={{
-                  background: `linear-gradient(90deg, #2563eb 0%, #3b82f6 ${sliderProgress}%, #e2e8f0 ${sliderProgress}%, #e2e8f0 100%)`,
-                }}
+                className="h-2 w-full cursor-pointer accent-[var(--primary)] disabled:cursor-not-allowed"
               />
 
               <div className="mt-2 flex items-center gap-2">
@@ -218,7 +215,7 @@ export function AnalysisMethodSelector({
                   type="button"
                   onClick={() => adjustThreshold(key, -step)}
                   disabled={isDisabled || value <= min}
-                  className="h-8 w-8 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="btn-secondary h-8 min-h-8 w-8 px-0 disabled:opacity-40"
                 >
                   -
                 </button>
@@ -236,20 +233,20 @@ export function AnalysisMethodSelector({
                     }
                   }}
                   disabled={isDisabled}
-                  className="h-8 flex-1 rounded-lg border border-slate-300 px-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 disabled:bg-slate-100 disabled:cursor-not-allowed"
+                  className="input-control h-8 min-h-8 flex-1 disabled:bg-slate-100 disabled:opacity-70"
                 />
 
                 <button
                   type="button"
                   onClick={() => adjustThreshold(key, step)}
                   disabled={isDisabled || value >= max}
-                  className="h-8 w-8 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="btn-secondary h-8 min-h-8 w-8 px-0 disabled:opacity-40"
                 >
                   +
                 </button>
               </div>
 
-              <div className="mt-1.5 flex items-center justify-between text-[11px] text-slate-400">
+              <div className="mt-1.5 flex items-center justify-between text-[11px] font-semibold text-slate-400">
                 <span>Мин: {formatValue(key, min)}</span>
                 <span>Макс: {formatValue(key, max)}</span>
               </div>
