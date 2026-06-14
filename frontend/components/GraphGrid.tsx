@@ -1,4 +1,10 @@
-import React, { useMemo, useState, useCallback, useEffect, useRef } from "react";
+import React, {
+  useMemo,
+  useState,
+  useCallback,
+  useEffect,
+  useRef,
+} from "react";
 import dynamic from "next/dynamic";
 import {
   DynamicSensorData,
@@ -72,9 +78,16 @@ const getPointTimestamp = (row: Record<string, unknown>): number => {
   );
 };
 
-const getRangeBackground = (value: number, min: number, max: number): string => {
+const getRangeBackground = (
+  value: number,
+  min: number,
+  max: number,
+): string => {
   if (max <= min) return "#e2e8f0";
-  const progress = Math.max(0, Math.min(100, ((value - min) / (max - min)) * 100));
+  const progress = Math.max(
+    0,
+    Math.min(100, ((value - min) / (max - min)) * 100),
+  );
   return `linear-gradient(90deg, #2563eb 0%, #3b82f6 ${progress}%, #e2e8f0 ${progress}%, #e2e8f0 100%)`;
 };
 
@@ -109,7 +122,10 @@ const getSensorAnomalyFlag = (value: unknown): boolean => {
   return false;
 };
 
-const formatExportDateTime = (date: unknown, fallbackTimestamp: unknown): string => {
+const formatExportDateTime = (
+  date: unknown,
+  fallbackTimestamp: unknown,
+): string => {
   const jsDate =
     date instanceof Date && !Number.isNaN(date.getTime())
       ? date
@@ -176,6 +192,7 @@ export function GraphGrid({
     DEFAULT_VISIBLE_POINTS,
   );
   const [plotRevision, setPlotRevision] = useState<number>(0);
+  const [plotResetKey, setPlotResetKey] = useState<number>(0);
   const [focusedParam, setFocusedParam] = useState<string | null>(null);
 
   const lastLiveDataLength = useRef<number>(liveData.length);
@@ -202,6 +219,21 @@ export function GraphGrid({
       };
     });
   }, [liveData]);
+
+  useEffect(() => {
+    if (liveData.length !== 0) return;
+
+    setCurrentIndex(0);
+    setIsFullscreen(null);
+    setTrackNewData(true);
+    setShowJumpToLatest(false);
+    setShowSettings(false);
+    setFocusedParam(null);
+    isProgrammaticRelayout.current = false;
+    lastLiveDataLength.current = 0;
+    setPlotRevision((prev) => prev + 1);
+    setPlotResetKey((prev) => prev + 1);
+  }, [liveData.length]);
 
   const maxIndex = Math.max(0, processedData.length - visiblePoints);
 
@@ -373,7 +405,10 @@ export function GraphGrid({
       if (processedData.length === 0) return { start: "", end: "" };
 
       const startData = processedData[startIdx];
-      const endIdx = Math.min(startIdx + visiblePoints - 1, processedData.length - 1);
+      const endIdx = Math.min(
+        startIdx + visiblePoints - 1,
+        processedData.length - 1,
+      );
       const endData = processedData[endIdx];
 
       return {
@@ -519,7 +554,9 @@ export function GraphGrid({
         index: index + 1,
         time: formatExportDateTime(point.dateTime, pointTs),
         value:
-          numericValue !== null && numericValue !== undefined ? numericValue : "",
+          numericValue !== null && numericValue !== undefined
+            ? numericValue
+            : "",
         isAnomaly,
         anomalyLabel: isAnomaly ? "Да" : "Нет",
         unit,
@@ -532,13 +569,7 @@ export function GraphGrid({
     const anomalyRows = dataRows.filter((row) => row.isAnomaly);
     const firstTime = dataRows[0]?.time || "";
     const lastTime = dataRows[dataRows.length - 1]?.time || "";
-    const mainHeaders = [
-      "№",
-      "Время",
-      "Значение",
-      "Аномалия",
-      "Единица",
-    ];
+    const mainHeaders = ["№", "Время", "Значение", "Аномалия", "Единица"];
     const anomalyHeaders = [
       "№ аномалии",
       "Время",
@@ -613,7 +644,10 @@ export function GraphGrid({
         .slice(0, 80) || "all";
 
     link.setAttribute("href", url);
-    link.setAttribute("download", `график_${safeParamName}_${safeTimeRange}.csv`);
+    link.setAttribute(
+      "download",
+      `график_${safeParamName}_${safeTimeRange}.csv`,
+    );
     link.style.visibility = "hidden";
 
     document.body.appendChild(link);
@@ -700,6 +734,7 @@ export function GraphGrid({
 
         <div className="flex-1 relative">
           <Plot
+            key={`fullscreen-${plotResetKey}-${paramKey}`}
             data={[
               {
                 x: xValues,
@@ -709,7 +744,8 @@ export function GraphGrid({
                 line: {
                   color:
                     GRAPH_COLORS[
-                      availableParameters.indexOf(paramKey) % GRAPH_COLORS.length
+                      availableParameters.indexOf(paramKey) %
+                        GRAPH_COLORS.length
                     ],
                   width: 2,
                 },
@@ -761,8 +797,8 @@ export function GraphGrid({
               paper_bgcolor: "#ffffff",
               dragmode: trackNewData ? false : "pan",
               uirevision: trackNewData
-                ? `tracking-${currentIndex}-${visiblePoints}-${plotRevision}`
-                : "fixed",
+                ? `tracking-${plotResetKey}-${currentIndex}-${visiblePoints}-${plotRevision}`
+                : `fixed-${plotResetKey}`,
             }}
             config={{
               displayModeBar: true,
@@ -847,7 +883,7 @@ export function GraphGrid({
               <div className="text-sm">
                 <span className="text-slate-600">Временной диапазон:</span>
                 <span className="font-medium text-slate-800 ml-2">
-                  {getTimeRange(currentIndex).start} - {" "}
+                  {getTimeRange(currentIndex).start} -{" "}
                   {getTimeRange(currentIndex).end}
                 </span>
               </div>
@@ -855,12 +891,10 @@ export function GraphGrid({
                 <div
                   className="h-full bg-blue-500 rounded-full transition-all duration-300"
                   style={{
-                    width: `${
-                      Math.min(
-                        100,
-                        (visiblePoints / Math.max(processedData.length, 1)) * 100,
-                      )
-                    }%`,
+                    width: `${Math.min(
+                      100,
+                      (visiblePoints / Math.max(processedData.length, 1)) * 100,
+                    )}%`,
                     marginLeft: `${
                       (currentIndex / Math.max(processedData.length, 1)) * 100
                     }%`,
@@ -1042,7 +1076,9 @@ export function GraphGrid({
             </span>
           </div>
           <span className="text-xs text-slate-400">
-            {currentIndex === maxIndex ? "Показаны последние данные" : "Просмотр истории"}
+            {currentIndex === maxIndex
+              ? "Показаны последние данные"
+              : "Просмотр истории"}
           </span>
         </div>
       </div>
@@ -1096,6 +1132,7 @@ export function GraphGrid({
 
               <div className="p-1 flex-1 relative">
                 <Plot
+                  key={`card-${plotResetKey}-${paramKey}`}
                   data={[
                     {
                       x: xValues,
@@ -1144,8 +1181,8 @@ export function GraphGrid({
                     paper_bgcolor: "#ffffff",
                     dragmode: trackNewData ? false : "pan",
                     uirevision: trackNewData
-                      ? `tracking-${currentIndex}-${visiblePoints}-${plotRevision}`
-                      : "fixed",
+                      ? `tracking-${plotResetKey}-${currentIndex}-${visiblePoints}-${plotRevision}`
+                      : `fixed-${plotResetKey}`,
                   }}
                   config={{
                     displayModeBar: false,
